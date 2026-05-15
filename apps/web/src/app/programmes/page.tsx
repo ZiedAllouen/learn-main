@@ -32,12 +32,12 @@ function buildHref(
   clearKey?: keyof typeof current,
 ) {
   const params = new URLSearchParams()
-  
+
   // Keep all current filters except the one being cleared
   if (current.discipline && clearKey !== 'discipline') params.set('discipline', current.discipline)
   if (current.public && clearKey !== 'public') params.set('public', current.public)
   if (current.type && clearKey !== 'type') params.set('type', current.type)
-  
+
   const query = params.toString()
   return query ? `/programmes?${query}` : '/programmes'
 }
@@ -99,110 +99,103 @@ export default async function ProgrammesPage({
       <section className="border-b border-bsmk-black/10 bg-bsmk-white sticky top-0 z-20">
         <Container>
           <FadeIn>
-          <div className="py-4 flex flex-wrap gap-6 items-start">
-            <div className="flex flex-wrap gap-2 items-center">
-              <Link
-                href="/programmes"
-                className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
-                  !filters.discipline && !filters.public && !filters.type
-                    ? 'bg-bsmk-terracotta text-white border-bsmk-terracotta'
-                    : 'border-bsmk-terracotta text-bsmk-terracotta hover:bg-bsmk-terracotta hover:text-white'
-                }`}
-              >
-                Tous les programmes
-              </Link>
-            </div>
-
-            {/* By discipline */}
-            <div className="flex flex-wrap gap-2 items-center">
-              <span className="text-xs tracking-widest uppercase text-bsmk-black/40 mr-1">
-                Discipline
-              </span>
-              <Link
-                href={buildHref(filters, 'discipline')}
-                className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
-                  !filters.discipline
-                    ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
-                    : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
-                }`}
-              >
-                Tous
-              </Link>
-              {disciplines.map((d) => (
+            <div className="py-4 flex flex-wrap gap-6 items-start">
+              <div className="flex flex-wrap gap-2 items-center">
                 <Link
-                  key={d.slug}
-                  href={buildHrefWithUpdate(filters, { discipline: d.slug })}
-                  className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
-                    filters.discipline === d.slug
+                  href="/programmes"
+                  className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${!filters.discipline && !filters.public && !filters.type
+                      ? 'bg-bsmk-terracotta text-white border-bsmk-terracotta'
+                      : 'border-bsmk-terracotta text-bsmk-terracotta hover:bg-bsmk-terracotta hover:text-white'
+                    }`}
+                >
+                  Tous les programmes
+                </Link>
+              </div>
+
+              {/* By discipline */}
+              <div className="flex flex-wrap gap-2 items-center">
+                <span className="text-xs tracking-widest uppercase text-bsmk-black/40 mr-1">
+                  Discipline
+                </span>
+                <Link
+                  href={buildHref(filters, 'discipline')}
+                  className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${!filters.discipline
                       ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
                       : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
-                  }`}
+                    }`}
                 >
-                  {d.shortName}
+                  Tous
                 </Link>
-              ))}
-            </div>
+                {disciplines.map((d) => (
+                  <Link
+                    key={d.slug}
+                    href={buildHrefWithUpdate(filters, { discipline: d.slug })}
+                    className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${filters.discipline === d.slug
+                        ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
+                        : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
+                      }`}
+                  >
+                    {d.shortName}
+                  </Link>
+                ))}
+              </div>
 
-            {/* By audience */}
-            <div className="flex flex-wrap gap-2 items-center">
-              <span className="text-xs tracking-widest uppercase text-bsmk-black/40 mr-1">
-                Public
-              </span>
-              <Link
-                href={buildHref(filters, 'public')}
-                className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
-                  !filters.public
-                    ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
-                    : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
-                }`}
-              >
-                Tous
-              </Link>
-              {audienceTypes.map((audience) => (
+              {/* By audience */}
+              <div className="flex flex-wrap gap-2 items-center">
+                <span className="text-xs tracking-widest uppercase text-bsmk-black/40 mr-1">
+                  Public
+                </span>
                 <Link
-                  key={audience.slug}
-                  href={buildHrefWithUpdate(filters, { public: audience.slug })}
-                  className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
-                    filters.public === audience.slug
+                  href={buildHref(filters, 'public')}
+                  className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${!filters.public
                       ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
                       : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
-                  }`}
+                    }`}
                 >
-                  {audience.name}
+                  Tous
                 </Link>
-              ))}
-            </div>
+                {audienceTypes.map((audience) => (
+                  <Link
+                    key={audience.slug}
+                    href={buildHrefWithUpdate(filters, { public: audience.slug })}
+                    className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${filters.public === audience.slug
+                        ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
+                        : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
+                      }`}
+                  >
+                    {audience.name}
+                  </Link>
+                ))}
+              </div>
 
-            {/* By type */}
-            <div className="flex flex-wrap gap-2 items-center">
-              <span className="text-xs tracking-widest uppercase text-bsmk-black/40 mr-1">
-                Type
-              </span>
-              <Link
-                href={buildHref(filters, 'type')}
-                className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
-                  !filters.type
-                    ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
-                    : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
-                }`}
-              >
-                Tous
-              </Link>
-              {programTypes.map((t) => (
+              {/* By type */}
+              <div className="flex flex-wrap gap-2 items-center">
+                <span className="text-xs tracking-widest uppercase text-bsmk-black/40 mr-1">
+                  Type
+                </span>
                 <Link
-                  key={t.slug}
-                  href={buildHrefWithUpdate(filters, { type: t.slug })}
-                  className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
-                    filters.type === t.slug
+                  href={buildHref(filters, 'type')}
+                  className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${!filters.type
                       ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
                       : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
-                  }`}
+                    }`}
                 >
-                  {t.name}
+                  Tous
                 </Link>
-              ))}
+                {programTypes.map((t) => (
+                  <Link
+                    key={t.slug}
+                    href={buildHrefWithUpdate(filters, { type: t.slug })}
+                    className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${filters.type === t.slug
+                        ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
+                        : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
+                      }`}
+                  >
+                    {t.name}
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
           </FadeIn>
         </Container>
       </section>
@@ -220,52 +213,52 @@ export default async function ProgrammesPage({
           <StaggerContainer className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {featured.map((program) => (
               <StaggerItem key={program.id} className="h-full">
-              <Link
-                href={`/programmes/${program.slug}`}
-                className="group bg-bsmk-white border border-bsmk-black/10 flex flex-col h-full hover:border-bsmk-terracotta transition-colors rounded-xl overflow-hidden"
-              >
-                {/* Cover */}
-                <div className="relative aspect-video overflow-hidden">
-                  <Image
-                    src={program.coverUrl}
-                    alt={program.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-bsmk-black/40 to-transparent" />
-                  <div className="absolute top-3 left-3">
-                    <Badge variant="dark">{program.programType}</Badge>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-6 flex flex-col flex-1">
-                  <h3 className="font-display text-xl font-bold mb-3 group-hover:text-bsmk-terracotta transition-colors">
-                    {program.title}
-                  </h3>
-                  <p className="text-sm text-bsmk-black/60 leading-relaxed mb-4 line-clamp-2">
-                    {program.description}
-                  </p>
-
-                  <div className="mt-auto flex flex-wrap gap-2 items-center justify-between">
-                    <Badge variant={modalityVariant[program.modality]}>
-                      {modalityLabels[program.modality]}
-                    </Badge>
-                    <span className="text-sm font-medium text-bsmk-black/70">
-                      {program.priceIndicative.toLowerCase().startsWith('gratuit')
-                        ? 'Gratuit'
-                        : `À partir de ${program.priceIndicative.split(' ')[0]}`}
-                    </span>
+                <Link
+                  href={`/programmes/${program.slug}`}
+                  className="group bg-bsmk-white border border-bsmk-black/10 flex flex-col h-full hover:border-bsmk-terracotta transition-colors rounded-xl overflow-hidden"
+                >
+                  {/* Cover */}
+                  <div className="relative aspect-video overflow-hidden">
+                    <Image
+                      src={program.coverUrl}
+                      alt={program.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-bsmk-black/40 to-transparent" />
+                    <div className="absolute top-3 left-3">
+                      <Badge variant="dark">{program.programType}</Badge>
+                    </div>
                   </div>
 
-                  <div className="mt-4 pt-4 border-t border-bsmk-black/10 flex items-center justify-between">
-                    <span className="text-xs text-bsmk-black/40">{program.duration}</span>
-                    <span className="text-xs tracking-widest uppercase text-bsmk-terracotta group-hover:translate-x-1 transition-transform inline-block">
-                      En savoir plus →
-                    </span>
+                  {/* Content */}
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="font-display text-xl font-bold mb-3 group-hover:text-bsmk-terracotta transition-colors">
+                      {program.title}
+                    </h3>
+                    <p className="text-sm text-bsmk-black/60 leading-relaxed mb-4 line-clamp-2">
+                      {program.description}
+                    </p>
+
+                    <div className="mt-auto flex flex-wrap gap-2 items-center justify-between">
+                      <Badge variant={modalityVariant[program.modality]}>
+                        {modalityLabels[program.modality]}
+                      </Badge>
+                      <span className="text-sm font-medium text-bsmk-black/70">
+                        {program.priceIndicative.toLowerCase().startsWith('gratuit')
+                          ? 'Gratuit'
+                          : `À partir de ${program.priceIndicative.split(' ')[0]}`}
+                      </span>
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-bsmk-black/10 flex items-center justify-between">
+                      <span className="text-xs text-bsmk-black/40">{program.duration}</span>
+                      <span className="text-xs tracking-widest uppercase text-bsmk-terracotta group-hover:translate-x-1 transition-transform inline-block">
+                        En savoir plus →
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -285,49 +278,49 @@ export default async function ProgrammesPage({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredPrograms.map((program, index) => (
               <div key={program.id}>
-              <Link
-                href={`/programmes/${program.slug}`}
-                className="group flex bg-bsmk-white border border-bsmk-black/10 hover:border-bsmk-terracotta transition-colors rounded-xl overflow-hidden"
-              >
-                {/* Thumbnail */}
-                <div className="relative w-40 shrink-0 overflow-hidden">
-                  <Image
-                    src={program.coverUrl}
-                    alt={program.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-
-                {/* Content */}
-                <div className="p-5 flex flex-col flex-1 min-w-0">
-                  <p className="text-xs tracking-widest uppercase text-bsmk-terracotta mb-1">
-                    {program.programType}
-                  </p>
-                  <h3 className="font-display text-lg font-bold leading-tight mb-2 group-hover:text-bsmk-terracotta transition-colors line-clamp-2">
-                    {program.title}
-                  </h3>
-                  <p className="text-xs text-bsmk-black/60 leading-relaxed mb-3 line-clamp-2">
-                    {program.description}
-                  </p>
-
-                  <div className="mt-auto flex flex-wrap gap-2 items-center">
-                    <Badge variant={modalityVariant[program.modality]} className="text-[10px]">
-                      {modalityLabels[program.modality]}
-                    </Badge>
-                    <span className="text-xs text-bsmk-black/40">{program.duration}</span>
+                <Link
+                  href={`/programmes/${program.slug}`}
+                  className="group flex bg-bsmk-white border border-bsmk-black/10 hover:border-bsmk-terracotta transition-colors rounded-xl overflow-hidden"
+                >
+                  {/* Thumbnail */}
+                  <div className="relative w-40 shrink-0 overflow-hidden">
+                    <Image
+                      src={program.coverUrl}
+                      alt={program.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
                   </div>
 
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-bsmk-black">
-                      {program.priceIndicative}
-                    </span>
-                    <span className="text-xs tracking-widest uppercase text-bsmk-terracotta opacity-0 group-hover:opacity-100 transition-opacity">
-                      Voir →
-                    </span>
+                  {/* Content */}
+                  <div className="p-5 flex flex-col flex-1 min-w-0">
+                    <p className="text-xs tracking-widest uppercase text-bsmk-terracotta mb-1">
+                      {program.programType}
+                    </p>
+                    <h3 className="font-display text-lg font-bold leading-tight mb-2 group-hover:text-bsmk-terracotta transition-colors line-clamp-2">
+                      {program.title}
+                    </h3>
+                    <p className="text-xs text-bsmk-black/60 leading-relaxed mb-3 line-clamp-2">
+                      {program.description}
+                    </p>
+
+                    <div className="mt-auto flex flex-wrap gap-2 items-center">
+                      <Badge variant={modalityVariant[program.modality]} className="text-[10px]">
+                        {modalityLabels[program.modality]}
+                      </Badge>
+                      <span className="text-xs text-bsmk-black/40">{program.duration}</span>
+                    </div>
+
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="text-xs font-semibold text-bsmk-black">
+                        {program.priceIndicative}
+                      </span>
+                      <span className="text-xs tracking-widest uppercase text-bsmk-terracotta opacity-0 group-hover:opacity-100 transition-opacity">
+                        Voir →
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
               </div>
             ))}
           </div>
