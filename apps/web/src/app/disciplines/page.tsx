@@ -8,7 +8,7 @@ import { HeroText, StaggerContainer, StaggerItem, FadeUp } from '@/components/ui
 
 export const metadata: Metadata = {
   title: 'Disciplines | BSMK',
-  description: 'Sept disciplines artistiques pour explorer, créer et partager au BSMK, centre culturel tunisien.',
+  description: 'Sept univers artistiques pour créer, se former, s’entraîner et diffuser au BSMK, centre culturel tunisien.',
 }
 
 export default function DisciplinesPage() {
@@ -29,7 +29,7 @@ export default function DisciplinesPage() {
           </HeroText>
           <HeroText delay={0.25}>
             <p className="font-sans text-lg text-bsmk-white/70 max-w-xl leading-relaxed">
-              Sept disciplines artistiques pour explorer, créer et partager
+              Sept univers artistiques pour créer, se former, s’entraîner et diffuser
             </p>
           </HeroText>
         </Container>

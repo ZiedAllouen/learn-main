@@ -14,6 +14,7 @@ const navLinks = [
   { label: 'Espaces', href: '/espaces' },
   { label: 'Magazine', href: '/magazine' },
   { label: 'Agenda', href: '/agenda' },
+  { label: 'VetrinArt', href: '/vetrinart' },
 ]
 
 export function Header() {
@@ -124,10 +125,10 @@ export function Header() {
               Contact
             </Link>
             <Link
-              href="/programmes"
+              href="/participer"
               className="bg-bsmk-terracotta text-white text-sm font-medium px-5 py-2.5 hover:bg-bsmk-terracotta/85 transition-colors tracking-wide rounded-lg"
             >
-              Rejoindre
+              Participer
             </Link>
           </div>
 
@@ -191,10 +192,10 @@ export function Header() {
               </div>
 
               <Link
-                href="/contact"
+                href="/participer"
                 className="mt-4 block bg-bsmk-terracotta text-white text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:bg-bsmk-terracotta/85 transition-colors"
               >
-                Rejoindre le BSMK
+                Participer au BSMK
               </Link>
             </nav>
           </Container>

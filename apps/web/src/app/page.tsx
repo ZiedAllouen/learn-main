@@ -23,11 +23,11 @@ export const metadata = {
 }
 
 const quickActions = [
-  { label: 'Découvrir nos disciplines', href: '/disciplines', icon: '✦' },
-  { label: 'Réserver un espace', href: '/espaces', icon: '⬡' },
-  { label: 'Rejoindre un programme', href: '/programmes', icon: '◈' },
-  { label: 'Consulter l\'agenda', href: '/agenda', icon: '◷' },
-  { label: 'Lire le magazine', href: '/magazine', icon: '◻' },
+  { label: 'Créer', href: '/espaces', icon: '✦', desc: 'Studios, ateliers et lieux de production' },
+  { label: 'Se former', href: '/programmes', icon: '◈', desc: 'Formations, ateliers et résidences' },
+  { label: 'S’entraîner', href: '/programmes?type=training', icon: '⬡', desc: 'Pratique régulière et culture urbaine' },
+  { label: 'Diffuser', href: '/vetrinart', icon: '◻', desc: 'Profils artistes, médias et visibilité' },
+  { label: 'Se connecter', href: '/communaute', icon: '◷', desc: 'Réseau, partenaires et communauté' },
 ]
 
 const stats = [
@@ -122,6 +122,9 @@ export default function HomePage() {
                   <span className="text-2xl text-bsmk-terracotta">{action.icon}</span>
                   <span className="text-xs tracking-widest uppercase text-center leading-snug">
                     {action.label}
+                  </span>
+                  <span className="text-[11px] text-bsmk-white/35 text-center leading-snug max-w-32">
+                    {action.desc}
                   </span>
                 </Link>
               </StaggerItem>
@@ -366,10 +369,10 @@ export default function HomePage() {
                   Voir les programmes
                 </Button>
                 <Link
-                  href="/contact"
+                  href="/participer"
                   className="text-white/80 hover:text-white text-sm tracking-wide underline underline-offset-4"
                 >
-                  Ou contactez-nous
+                  Ou proposer un projet
                 </Link>
               </div>
             </div>

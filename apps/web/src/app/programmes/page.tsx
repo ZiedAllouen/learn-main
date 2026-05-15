@@ -3,9 +3,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
-import { programs, programTypes, getFeaturedPrograms } from '@/data/programs'
+import { programs, programTypes, audienceTypes, getFeaturedPrograms } from '@/data/programs'
 import { disciplines } from '@/data/disciplines'
 import { HeroText, FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/Motion'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Programmes | BSMK',
@@ -25,8 +27,47 @@ const modalityVariant: Record<string, 'terracotta' | 'olive' | 'blue'> = {
   HYBRID: 'olive',
 }
 
-export default function ProgrammesPage() {
+function buildHref(
+  current: { discipline?: string; public?: string; type?: string },
+  clearKey?: keyof typeof current,
+) {
+  const params = new URLSearchParams()
+  
+  // Keep all current filters except the one being cleared
+  if (current.discipline && clearKey !== 'discipline') params.set('discipline', current.discipline)
+  if (current.public && clearKey !== 'public') params.set('public', current.public)
+  if (current.type && clearKey !== 'type') params.set('type', current.type)
+  
+  const query = params.toString()
+  return query ? `/programmes?${query}` : '/programmes'
+}
+
+function buildHrefWithUpdate(
+  current: { discipline?: string; public?: string; type?: string },
+  update: { discipline?: string; public?: string; type?: string },
+) {
+  const merged = { ...current, ...update }
+  const params = new URLSearchParams()
+  if (merged.discipline) params.set('discipline', merged.discipline)
+  if (merged.public) params.set('public', merged.public)
+  if (merged.type) params.set('type', merged.type)
+  const query = params.toString()
+  return query ? `/programmes?${query}` : '/programmes'
+}
+
+export default async function ProgrammesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ discipline?: string; public?: string; type?: string }>
+}) {
+  const filters = await searchParams
   const featured = getFeaturedPrograms(3)
+  const filteredPrograms = programs.filter((program) => {
+    if (filters.discipline && !program.disciplineSlugs.includes(filters.discipline)) return false
+    if (filters.public && !program.audienceSlugs.includes(filters.public)) return false
+    if (filters.type && program.programTypeSlug !== filters.type) return false
+    return true
+  })
 
   return (
     <main className="bg-bsmk-white text-bsmk-black">
@@ -59,33 +100,76 @@ export default function ProgrammesPage() {
         <Container>
           <FadeIn>
           <div className="py-4 flex flex-wrap gap-6 items-start">
+            <div className="flex flex-wrap gap-2 items-center">
+              <Link
+                href="/programmes"
+                className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
+                  !filters.discipline && !filters.public && !filters.type
+                    ? 'bg-bsmk-terracotta text-white border-bsmk-terracotta'
+                    : 'border-bsmk-terracotta text-bsmk-terracotta hover:bg-bsmk-terracotta hover:text-white'
+                }`}
+              >
+                Tous les programmes
+              </Link>
+            </div>
+
             {/* By discipline */}
             <div className="flex flex-wrap gap-2 items-center">
               <span className="text-xs tracking-widest uppercase text-bsmk-black/40 mr-1">
                 Discipline
               </span>
+              <Link
+                href={buildHref(filters, 'discipline')}
+                className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
+                  !filters.discipline
+                    ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
+                    : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
+                }`}
+              >
+                Tous
+              </Link>
               {disciplines.map((d) => (
-                <span
+                <Link
                   key={d.slug}
-                  className="px-3 py-1 text-xs tracking-widest uppercase border border-bsmk-black/20 text-bsmk-black/60 cursor-default rounded-full"
+                  href={buildHrefWithUpdate(filters, { discipline: d.slug })}
+                  className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
+                    filters.discipline === d.slug
+                      ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
+                      : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
+                  }`}
                 >
                   {d.shortName}
-                </span>
+                </Link>
               ))}
             </div>
 
-            {/* By modality */}
+            {/* By audience */}
             <div className="flex flex-wrap gap-2 items-center">
               <span className="text-xs tracking-widest uppercase text-bsmk-black/40 mr-1">
-                Modalité
+                Public
               </span>
-              {(['IN_PERSON', 'ONLINE', 'HYBRID'] as const).map((m) => (
-                <span
-                  key={m}
-                  className="px-3 py-1 text-xs tracking-widest uppercase border border-bsmk-black/20 text-bsmk-black/60 cursor-default rounded-full"
+              <Link
+                href={buildHref(filters, 'public')}
+                className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
+                  !filters.public
+                    ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
+                    : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
+                }`}
+              >
+                Tous
+              </Link>
+              {audienceTypes.map((audience) => (
+                <Link
+                  key={audience.slug}
+                  href={buildHrefWithUpdate(filters, { public: audience.slug })}
+                  className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
+                    filters.public === audience.slug
+                      ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
+                      : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
+                  }`}
                 >
-                  {modalityLabels[m]}
-                </span>
+                  {audience.name}
+                </Link>
               ))}
             </div>
 
@@ -94,13 +178,28 @@ export default function ProgrammesPage() {
               <span className="text-xs tracking-widest uppercase text-bsmk-black/40 mr-1">
                 Type
               </span>
+              <Link
+                href={buildHref(filters, 'type')}
+                className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
+                  !filters.type
+                    ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
+                    : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
+                }`}
+              >
+                Tous
+              </Link>
               {programTypes.map((t) => (
-                <span
+                <Link
                   key={t.slug}
-                  className="px-3 py-1 text-xs tracking-widest uppercase border border-bsmk-black/20 text-bsmk-black/60 cursor-default rounded-full"
+                  href={buildHrefWithUpdate(filters, { type: t.slug })}
+                  className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${
+                    filters.type === t.slug
+                      ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
+                      : 'border-bsmk-black/20 text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
+                  }`}
                 >
                   {t.name}
-                </span>
+                </Link>
               ))}
             </div>
           </div>
@@ -179,13 +278,13 @@ export default function ProgrammesPage() {
           <div className="flex items-baseline justify-between mb-10">
             <h2 className="font-display text-3xl font-bold">Tous les programmes</h2>
             <span className="text-xs tracking-widest uppercase text-bsmk-black/40">
-              {programs.length} programmes
+              {filteredPrograms.length} programme{filteredPrograms.length > 1 ? 's' : ''}
             </span>
           </div>
 
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {programs.map((program) => (
-              <StaggerItem key={program.id}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {filteredPrograms.map((program, index) => (
+              <div key={program.id}>
               <Link
                 href={`/programmes/${program.slug}`}
                 className="group flex bg-bsmk-white border border-bsmk-black/10 hover:border-bsmk-terracotta transition-colors rounded-xl overflow-hidden"
@@ -229,9 +328,23 @@ export default function ProgrammesPage() {
                   </div>
                 </div>
               </Link>
-              </StaggerItem>
+              </div>
             ))}
-          </StaggerContainer>
+          </div>
+          {filteredPrograms.length === 0 && (
+            <div className="border border-bsmk-black/10 bg-bsmk-sand/20 p-8 text-center rounded-xl">
+              <h3 className="font-display text-2xl font-bold mb-2">Aucun programme pour ce filtre</h3>
+              <p className="text-sm text-bsmk-black/60 mb-6">
+                Essayez une autre discipline, un autre public ou proposez-nous un besoin spécifique.
+              </p>
+              <Link
+                href="/participer"
+                className="inline-flex items-center h-11 px-6 bg-bsmk-terracotta text-white text-sm font-medium tracking-wide hover:bg-bsmk-terracotta/90 transition-colors rounded-lg"
+              >
+                Proposer un projet
+              </Link>
+            </div>
+          )}
         </Container>
       </section>
 

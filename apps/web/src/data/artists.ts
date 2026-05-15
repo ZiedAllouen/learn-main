@@ -53,7 +53,7 @@ export const artists: Artist[] = [
     name: 'Omar Kaddouri',
     city: 'Casablanca',
     country: 'Maroc',
-    disciplineSlugs: ['arts-visuels', 'photographie'],
+    disciplineSlugs: ['arts-visuels'],
     bio: 'Photographe documentaire et plasticien, Omar Kaddouri construit une œuvre au croisement de l\'anthropologie visuelle et de l\'art contemporain. Ses séries photographiques explorent les mutations des espaces urbains méditerranéens, de Casablanca à Marseille. Il a exposé dans une dizaine de pays et remporté le Prix de la Photographie Africaine en 2022.',
     statement: 'Photographier la ville, c\'est lire l\'histoire que les hommes écrivent sans le savoir sur les murs.',
     photoUrl: 'https://picsum.photos/seed/omar-k/400/500',

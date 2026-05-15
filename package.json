@@ -5,6 +5,8 @@
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "turbo dev",
+    "dev:web": "turbo run dev --filter @bsmk/web",
+    "dev:api": "turbo run dev --filter @bsmk/api",
     "build": "turbo build",
     "vercel-build": "turbo run build --filter=web",
     "lint": "turbo lint",

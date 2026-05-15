@@ -19,10 +19,10 @@ const footerSections = [
       { label: 'Musique & Production', href: '/disciplines/musique-production' },
       { label: 'Danse & Performance', href: '/disciplines/danse-performance' },
       { label: 'Arts Visuels', href: '/disciplines/arts-visuels' },
-      { label: 'Théâtre & Arts Vivants', href: '/disciplines/theatre-arts-vivants' },
+      { label: 'Sport & Culture Urbaine', href: '/disciplines/theatre-arts-vivants' },
       { label: 'Cinéma & Audiovisuel', href: '/disciplines/cinema-audiovisuel' },
-      { label: 'Arts Numériques', href: '/disciplines/arts-numeriques' },
-      { label: 'Artisanat & Design', href: '/disciplines/artisanat-design' },
+      { label: 'Arts Numériques & Gaming', href: '/disciplines/arts-numeriques' },
+      { label: 'Mode & Design', href: '/disciplines/artisanat-design' },
     ],
   },
   {
@@ -33,6 +33,9 @@ const footerSections = [
       { label: 'Agenda', href: '/agenda' },
       { label: 'Magazine', href: '/magazine' },
       { label: 'VetrinArt', href: '/vetrinart' },
+      { label: 'Communauté', href: '/communaute' },
+      { label: 'Cartographie', href: '/cartographie' },
+      { label: 'Participer', href: '/participer' },
     ],
   },
 ]

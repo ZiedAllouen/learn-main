@@ -136,6 +136,42 @@ Le programme se termine par une exposition collective ou une soirée de performa
     audienceSlugs: ['jeunes'],
     featured: true,
   },
+  {
+    id: '7',
+    slug: 'kids-lab-recyclage-creatif',
+    title: 'Kids Lab recyclage créatif',
+    description: 'Atelier ludique pour enfants autour du dessin, de la fabrication, du recyclage créatif et des objets à transformer.',
+    longDescription: `Le Kids Lab initie les enfants à la création par la matière : carton, textile, objets récupérés, peinture, collage et petites constructions. L'objectif est de développer l'imagination, la motricité, l'attention écologique et la joie de fabriquer ensemble.
+
+Chaque cycle se termine par une mini-restitution ouverte aux familles. Les enfants repartent avec leurs créations et une première compréhension de la logique circulaire portée par le BSMK.`,
+    coverUrl: 'https://picsum.photos/seed/prog-kids-lab/800/450',
+    programType: 'Atelier',
+    programTypeSlug: 'workshop',
+    modality: 'IN_PERSON',
+    duration: '6 samedis',
+    priceIndicative: '150 DT / cycle',
+    disciplineSlugs: ['arts-visuels', 'artisanat-design'],
+    audienceSlugs: ['enfants'],
+    featured: false,
+  },
+  {
+    id: '8',
+    slug: 'training-culture-urbaine',
+    title: 'Training culture urbaine',
+    description: 'Sessions d’entraînement pour adolescents et jeunes autour du mouvement, de la performance physique et des cultures urbaines.',
+    longDescription: `Ce programme combine entraînement physique, mouvement, danse urbaine, présence scénique et culture collective. Il s'adresse aux adolescents et jeunes qui veulent pratiquer régulièrement, rejoindre une communauté et préparer des restitutions publiques.
+
+Les sessions alternent travail corporel, ateliers avec artistes invités, préparation de battles, initiation à la scène et discussion sur les cultures urbaines à Tunis et en Méditerranée.`,
+    coverUrl: 'https://picsum.photos/seed/prog-urban-training/800/450',
+    programType: 'Entraînement',
+    programTypeSlug: 'training',
+    modality: 'IN_PERSON',
+    duration: 'Continu',
+    priceIndicative: '60 DT / mois',
+    disciplineSlugs: ['danse-performance', 'theatre-arts-vivants'],
+    audienceSlugs: ['adolescents', 'jeunes'],
+    featured: false,
+  },
 ]
 
 export const programTypes = [
@@ -143,9 +179,12 @@ export const programTypes = [
   { slug: 'residency', name: 'Résidence' },
   { slug: 'workshop', name: 'Atelier / Stage' },
   { slug: 'mentoring', name: 'Mentorat' },
+  { slug: 'training', name: 'Entraînement' },
 ]
 
 export const audienceTypes = [
+  { slug: 'enfants', name: 'Enfants' },
+  { slug: 'adolescents', name: 'Adolescents' },
   { slug: 'jeunes', name: 'Jeunes (16-30 ans)' },
   { slug: 'adultes', name: 'Adultes' },
   { slug: 'professionnels', name: 'Professionnels' },
