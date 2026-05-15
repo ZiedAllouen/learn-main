@@ -1,0 +1,374 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ─────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  ADMIN
+  EDITOR
+  ARTIST
+  USER
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ProgramModality {
+  IN_PERSON
+  ONLINE
+  HYBRID
+}
+
+enum ProgramStatus {
+  DRAFT
+  PUBLISHED
+  FULL
+  ARCHIVED
+}
+
+enum EventType {
+  CONCERT
+  EXHIBITION
+  WORKSHOP
+  RESIDENCY
+  SCREENING
+  CONFERENCE
+  FESTIVAL
+  OTHER
+}
+
+// ── Users & Auth ──────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(USER)
+  firstName    String?
+  lastName     String?
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  articles        Article[]
+  teamMember      TeamMember?
+  contactMessages ContactMessage[]
+  refreshTokens   RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+// ── Taxonomy ──────────────────────────────────────────────────────────────────
+
+model Discipline {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  description String?
+  iconUrl     String?
+  coverUrl    String?
+  sortOrder   Int     @default(0)
+
+  articles ArticleDiscipline[]
+  spaces   SpaceDiscipline[]
+  programs ProgramDiscipline[]
+  events   EventDiscipline[]
+
+  @@map("disciplines")
+}
+
+model AudienceType {
+  id   String @id @default(cuid())
+  slug String @unique
+  name String
+
+  programs ProgramAudience[]
+
+  @@map("audience_types")
+}
+
+model ProgramType {
+  id   String @id @default(cuid())
+  slug String @unique
+  name String
+
+  programs Program[]
+
+  @@map("program_types")
+}
+
+// ── Content ───────────────────────────────────────────────────────────────────
+
+model Category {
+  id       String    @id @default(cuid())
+  slug     String    @unique
+  name     String
+  articles Article[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id       String       @id @default(cuid())
+  slug     String       @unique
+  name     String
+  articles ArticleTag[]
+
+  @@map("tags")
+}
+
+model Article {
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  title        String
+  excerpt      String?
+  body         Json
+  coverUrl     String?
+  authorId     String
+  categoryId   String?
+  status       ContentStatus @default(DRAFT)
+  featured     Boolean       @default(false)
+  readingTime  Int?
+  publishedAt  DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  author      User                @relation(fields: [authorId], references: [id])
+  category    Category?           @relation(fields: [categoryId], references: [id])
+  tags        ArticleTag[]
+  disciplines ArticleDiscipline[]
+
+  @@map("articles")
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@map("article_tags")
+}
+
+model ArticleDiscipline {
+  articleId    String
+  disciplineId String
+
+  article    Article    @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  discipline Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, disciplineId])
+  @@map("article_disciplines")
+}
+
+// ── Static Pages ──────────────────────────────────────────────────────────────
+
+model Page {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  body      Json
+  updatedAt DateTime @updatedAt
+
+  @@map("pages")
+}
+
+// ── Team & Partners ───────────────────────────────────────────────────────────
+
+model TeamMember {
+  id          String  @id @default(cuid())
+  userId      String? @unique
+  name        String
+  jobTitle    String
+  bio         String?
+  photoUrl    String?
+  sortOrder   Int     @default(0)
+  linkedInUrl String?
+  instagramUrl String?
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("team_members")
+}
+
+model Partner {
+  id         String  @id @default(cuid())
+  name       String
+  logoUrl    String?
+  websiteUrl String?
+  sortOrder  Int     @default(0)
+
+  @@map("partners")
+}
+
+// ── Spaces ────────────────────────────────────────────────────────────────────
+
+model Space {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  name        String
+  description String?
+  address     String?
+  floor       String?
+  surfaceSqm  Float?
+  capacity    Int?
+  equipment   String[]
+  imageUrls   String[]
+  status      ContentStatus @default(DRAFT)
+  sortOrder   Int           @default(0)
+
+  disciplines SpaceDiscipline[]
+
+  @@map("spaces")
+}
+
+model SpaceDiscipline {
+  spaceId      String
+  disciplineId String
+
+  space      Space      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  discipline Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+
+  @@id([spaceId, disciplineId])
+  @@map("space_disciplines")
+}
+
+// ── Programs ──────────────────────────────────────────────────────────────────
+
+model Program {
+  id              String          @id @default(cuid())
+  slug            String          @unique
+  title           String
+  description     String?
+  body            Json?
+  coverUrl        String?
+  programTypeId   String?
+  modality        ProgramModality @default(IN_PERSON)
+  duration        String?
+  priceIndicative String?
+  featured        Boolean         @default(false)
+  status          ProgramStatus   @default(DRAFT)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  programType ProgramType?       @relation(fields: [programTypeId], references: [id])
+  disciplines ProgramDiscipline[]
+  audiences   ProgramAudience[]
+
+  @@map("programs")
+}
+
+model ProgramDiscipline {
+  programId    String
+  disciplineId String
+
+  program    Program    @relation(fields: [programId], references: [id], onDelete: Cascade)
+  discipline Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+
+  @@id([programId, disciplineId])
+  @@map("program_disciplines")
+}
+
+model ProgramAudience {
+  programId      String
+  audienceTypeId String
+
+  program      Program      @relation(fields: [programId], references: [id], onDelete: Cascade)
+  audienceType AudienceType @relation(fields: [audienceTypeId], references: [id], onDelete: Cascade)
+
+  @@id([programId, audienceTypeId])
+  @@map("program_audiences")
+}
+
+// ── Events ────────────────────────────────────────────────────────────────────
+
+model Event {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  description String?
+  eventType   EventType     @default(OTHER)
+  startDate   DateTime
+  endDate     DateTime?
+  location    String?
+  coverUrl    String?
+  ticketUrl   String?
+  status      ContentStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  disciplines EventDiscipline[]
+
+  @@map("events")
+}
+
+model EventDiscipline {
+  eventId      String
+  disciplineId String
+
+  event      Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  discipline Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, disciplineId])
+  @@map("event_disciplines")
+}
+
+// ── Contact & Newsletter ──────────────────────────────────────────────────────
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  userId    String?
+  ipAddress String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("contact_messages")
+}
+
+model NewsletterSubscriber {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  confirmedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@map("newsletter_subscribers")
+}
+
+// ── Site Config ───────────────────────────────────────────────────────────────
+
+model SiteStat {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+
+  @@map("site_stats")
+}
