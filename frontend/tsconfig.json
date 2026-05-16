@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "module": "ESNext",
     "jsx": "preserve",
@@ -18,10 +18,10 @@
         "./src/*"
       ],
       "@bsmk/types": [
-        "../../packages/types/src/index.ts"
+        "../packages/types/src/index.ts"
       ],
       "@bsmk/ui": [
-        "../../packages/ui/src/index.ts"
+        "../packages/ui/src/index.ts"
       ]
     },
     "noEmit": true,

@@ -21,14 +21,14 @@ importers:
         specifier: ^5.7.3
         version: 5.9.3
 
-  apps/api:
+  backend:
     dependencies:
       '@bsmk/db':
         specifier: workspace:*
-        version: link:../../packages/db
+        version: link:../packages/db
       '@bsmk/types':
         specifier: workspace:*
-        version: link:../../packages/types
+        version: link:../packages/types
       '@nestjs/common':
         specifier: ^11.0.0
         version: 11.1.21(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -109,14 +109,14 @@ importers:
         specifier: ^5.7.3
         version: 5.9.3
 
-  apps/web:
+  frontend:
     dependencies:
       '@bsmk/types':
         specifier: workspace:*
-        version: link:../../packages/types
+        version: link:../packages/types
       '@bsmk/ui':
         specifier: workspace:*
-        version: link:../../packages/ui
+        version: link:../packages/ui
       framer-motion:
         specifier: ^12.38.0
         version: 12.38.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)

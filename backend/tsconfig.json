@@ -20,8 +20,8 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "paths": {
-      "@bsmk/db": ["../../packages/db/src/index.ts"],
-      "@bsmk/types": ["../../packages/types/src/index.ts"]
+      "@bsmk/db": ["../packages/db/src/index.ts"],
+      "@bsmk/types": ["../packages/types/src/index.ts"]
     }
   },
   "include": ["src/**/*"],
