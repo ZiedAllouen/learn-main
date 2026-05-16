@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   },
   description:
     'BSMK est un centre culturel et artistique dédié à la création, la formation et la diffusion des arts en Méditerranée.',
+  icons: {
+    icon: '/favicon.svg',
+  },
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
   openGraph: {
     type: 'website',
