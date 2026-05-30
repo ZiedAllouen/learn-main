@@ -17,7 +17,7 @@ export class SectorsService {
   async findOne(slug: string) {
     const sector = await this.prisma.sector.findUnique({
       where: { slug },
-      include: { disciplines: true },
+      include: { disciplines: { select: { id: true, slug: true, name: true, color: true } } },
     });
     if (!sector) throw new NotFoundException('Sector not found');
     return sector;
