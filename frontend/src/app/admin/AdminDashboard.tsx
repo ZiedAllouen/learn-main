@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getAuthUser, getAccessToken, logout } from '@/lib/auth'
@@ -39,6 +39,59 @@ const ROLE_LABELS: Record<string, string> = {
   EDITOR: 'Éditeur',
   ARTIST: 'Artiste',
   USER: 'Membre',
+}
+
+function RoleSelect({
+  value,
+  disabled,
+  onChange,
+}: {
+  value: string
+  disabled: boolean
+  onChange: (role: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
+  }, [])
+
+  return (
+    <div ref={ref} className="relative inline-block">
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center gap-1.5 border border-white/10 rounded-lg px-2.5 py-1 text-xs bg-transparent disabled:opacity-40 disabled:cursor-not-allowed hover:border-white/25 transition-colors"
+        style={{ color: ROLE_COLORS[value] ?? '#fff' }}
+      >
+        {ROLE_LABELS[value] ?? value}
+        {!disabled && <span className="opacity-40 text-[10px]">▾</span>}
+      </button>
+      {open && !disabled && (
+        <div className="absolute left-0 top-full mt-1 z-50 bg-[#111] border border-white/15 rounded-xl shadow-2xl overflow-hidden min-w-[110px]">
+          {Object.entries(ROLE_LABELS).map(([val, label]) => (
+            <button
+              key={val}
+              type="button"
+              onClick={() => { onChange(val); setOpen(false) }}
+              className="w-full text-left px-3 py-2 text-xs hover:bg-white/8 transition-colors flex items-center gap-2"
+              style={{ color: ROLE_COLORS[val] ?? '#fff' }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: ROLE_COLORS[val] }} />
+              {label}
+              {val === value && <span className="ml-auto opacity-40">✓</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
 
 export function AdminDashboard() {
@@ -90,16 +143,16 @@ export function AdminDashboard() {
   async function changeRole(id: string, role: string) {
     if (!token) return
     setUpdatingId(id)
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ role }),
-    })
     setUsers(prev =>
       prev
         ? { ...prev, data: prev.data.map(u => (u.id === id ? { ...u, role } : u)) }
         : prev,
     )
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ role }),
+    })
     setUpdatingId(null)
   }
 
@@ -213,13 +266,14 @@ export function AdminDashboard() {
               <select
                 value={roleFilter}
                 onChange={e => { setRoleFilter(e.target.value); setPage(1) }}
-                className="bg-white/5 border border-white/10 text-white/70 rounded-lg px-3 py-1.5 text-sm focus:outline-none"
+                className="bg-[#111] border border-white/10 text-white/70 rounded-lg px-3 py-1.5 text-sm focus:outline-none appearance-none cursor-pointer"
+                style={{ colorScheme: 'dark' }}
               >
-                <option value="">Tous les rôles</option>
-                <option value="ADMIN">Admin</option>
-                <option value="EDITOR">Éditeur</option>
-                <option value="ARTIST">Artiste</option>
-                <option value="USER">Membre</option>
+                <option value="" style={{ background: '#111' }}>Tous les rôles</option>
+                <option value="ADMIN" style={{ background: '#111' }}>Admin</option>
+                <option value="EDITOR" style={{ background: '#111' }}>Éditeur</option>
+                <option value="ARTIST" style={{ background: '#111' }}>Artiste</option>
+                <option value="USER" style={{ background: '#111' }}>Membre</option>
               </select>
             </div>
           </div>
@@ -250,19 +304,11 @@ export function AdminDashboard() {
                     </td>
                     <td className="px-6 py-4 text-white/55 hidden md:table-cell">{u.email}</td>
                     <td className="px-6 py-4">
-                      <select
+                      <RoleSelect
                         value={u.role}
                         disabled={u.id === user.id || updatingId === u.id}
-                        onChange={e => changeRole(u.id, e.target.value)}
-                        className="bg-transparent border border-white/10 rounded-lg px-2 py-1 text-xs focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
-                        style={{ color: ROLE_COLORS[u.role] ?? '#fff' }}
-                      >
-                        {Object.entries(ROLE_LABELS).map(([val, label]) => (
-                          <option key={val} value={val} style={{ color: ROLE_COLORS[val], background: '#0a0a0a' }}>
-                            {label}
-                          </option>
-                        ))}
-                      </select>
+                        onChange={role => changeRole(u.id, role)}
+                      />
                     </td>
                     <td className="px-6 py-4 text-white/30 text-xs hidden lg:table-cell">
                       {new Date(u.createdAt).toLocaleDateString('fr-FR')}

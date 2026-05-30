@@ -7,19 +7,18 @@ import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { disciplines } from '@/data/disciplines'
 import { Container } from '@/components/ui/Container'
-import { getAuthUser } from '@/lib/auth'
+import { getAuthUser, logout } from '@/lib/auth'
 
-// Vivid sector color per top-level section
 const SECTION_COLORS: Record<string, string> = {
-  '/bsmk': '#2D5F99',           // Arts de scène
+  '/bsmk': '#2D5F99',
   '/disciplines': '#2D5F99',
-  '/programmes': '#C0392B',     // Événements
+  '/programmes': '#C0392B',
   '/agenda': '#C0392B',
-  '/espaces': '#5C8A3A',        // Sports & loisirs
-  '/magazine': '#7A2E73',       // Médias
-  '/vetrinart': '#C99A2E',      // Partenaires
+  '/espaces': '#5C8A3A',
+  '/magazine': '#7A2E73',
+  '/vetrinart': '#C99A2E',
   '/cartographie': '#C99A2E',
-  '/communaute': '#147070',     // Consulting
+  '/communaute': '#147070',
   '/contact': '#147070',
   '/participer': '#C0392B',
 }
@@ -47,6 +46,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [disciplinesOpen, setDisciplinesOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [user, setUser] = useState<ReturnType<typeof getAuthUser>>(null)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -59,10 +59,18 @@ export function Header() {
     setMobileOpen(false)
   }, [pathname])
 
-  const [isAdmin, setIsAdmin] = useState(false)
   useEffect(() => {
-    setIsAdmin(getAuthUser()?.role === 'ADMIN')
-  }, [])
+    setUser(getAuthUser())
+  }, [pathname])
+
+  const isAdmin = user?.role === 'ADMIN'
+  const isLoggedIn = !!user
+
+  function handleLogout() {
+    logout()
+    setUser(null)
+    window.location.href = '/'
+  }
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
   const sectionColor = getSectionColor(pathname)
@@ -167,13 +175,22 @@ export function Header() {
             >
               Contact
             </Link>
-            <Link
-              href="/login"
-              className="text-sm font-medium text-bsmk-white/60 hover:text-bsmk-white transition-colors tracking-wide"
-              style={isActive('/login') ? { color: sectionColor ?? '#E07B54' } : {}}
-            >
-              Connexion
-            </Link>
+            {isLoggedIn ? (
+              <button
+                onClick={handleLogout}
+                className="text-sm font-medium text-bsmk-white/60 hover:text-bsmk-white transition-colors tracking-wide"
+              >
+                Déconnexion
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm font-medium text-bsmk-white/60 hover:text-bsmk-white transition-colors tracking-wide"
+                style={isActive('/login') ? { color: sectionColor ?? '#E07B54' } : {}}
+              >
+                Connexion
+              </Link>
+            )}
             <Link
               href="/participer"
               className="bg-bsmk-terracotta text-white text-sm font-medium px-5 py-2.5 hover:bg-bsmk-terracotta/85 transition-colors tracking-wide rounded-lg"
@@ -236,7 +253,7 @@ export function Header() {
                 </Link>
               ))}
 
-              {/* Disciplines quick links with sector color dots */}
+              {/* Disciplines quick links */}
               <div className="pt-5 pb-2">
                 <p className="text-xs text-bsmk-sand/40 tracking-widest uppercase mb-3">Disciplines</p>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
@@ -265,12 +282,21 @@ export function Header() {
                   Administration
                 </Link>
               )}
-              <Link
-                href="/login"
-                className="mt-2 block border border-white/20 text-white/70 text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:border-white/50 hover:text-white transition-colors rounded-lg"
-              >
-                Connexion
-              </Link>
+              {isLoggedIn ? (
+                <button
+                  onClick={handleLogout}
+                  className="mt-2 block w-full border border-white/20 text-white/70 text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:border-white/50 hover:text-white transition-colors rounded-lg"
+                >
+                  Déconnexion
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  className="mt-2 block border border-white/20 text-white/70 text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:border-white/50 hover:text-white transition-colors rounded-lg"
+                >
+                  Connexion
+                </Link>
+              )}
               <Link
                 href="/participer"
                 className="mt-2 block bg-bsmk-terracotta text-white text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:bg-bsmk-terracotta/85 transition-colors rounded-lg"
