@@ -1,75 +1,150 @@
 import { PrismaClient } from '@prisma/client';
+import * as argon2 from 'argon2';
 
 const prisma = new PrismaClient();
 
+const SECTORS = [
+  { slug: 'arts-de-scene', name: 'Arts de scène', color: '#2D5F99' },
+  { slug: 'evenements-expositions-festivals', name: 'Événements, expositions & festivals', color: '#C0392B' },
+  { slug: 'medias', name: 'Médias', color: '#7A2E73' },
+  { slug: 'sports-loisirs-alternatifs', name: 'Sports & loisirs alternatifs', color: '#5C8A3A' },
+  { slug: 'consulting-accompagnement', name: 'Consulting & accompagnement artistiques', color: '#147070' },
+  { slug: 'partenaires-communautes', name: 'Partenaires & communautés', color: '#C99A2E' },
+  { slug: 'showroom-recyclage', name: 'Showroom et recyclage', color: '#8A8F7A' },
+];
+
+const DISCIPLINES = [
+  { slug: 'musique-production', name: 'Musique & Production', color: '#D8C3A5', sector: 'arts-de-scene' },
+  { slug: 'danse-mouvement', name: 'Danse & Mouvement', color: '#E0D2BE', sector: 'arts-de-scene' },
+  { slug: 'theatre-arts-vivants', name: 'Théâtre & Arts vivants', color: '#CDBBA0', sector: 'arts-de-scene' },
+  { slug: 'arts-visuels', name: 'Street Art & Arts Visuels', color: '#C9C2B0', sector: 'evenements-expositions-festivals' },
+  { slug: 'cinema-audiovisuel', name: 'Cinéma & Audiovisuel', color: '#BFB39A', sector: 'medias' },
+  { slug: 'medias', name: 'Médias', color: '#B7AE9C', sector: 'medias' },
+  { slug: 'arts-numeriques-gaming', name: 'Arts Numériques & Gaming', color: '#C7BEAA', sector: 'medias' },
+  { slug: 'mode-design', name: 'Mode & Design', color: '#D2C0A8', sector: 'showroom-recyclage' },
+  { slug: 'sport-culture-urbaine', name: 'Sport & Culture Urbaine', color: '#C6CBB6', sector: 'sports-loisirs-alternatifs' },
+];
+
 async function main() {
-  // Disciplines
-  const disciplines = await Promise.all([
-    'musique-production',
-    'danse-performance',
-    'arts-visuels',
-    'theatre-arts-vivants',
-    'cinema-audiovisuel',
-    'arts-numeriques',
-    'artisanat-design',
-  ].map((slug, i) =>
-    prisma.discipline.upsert({
-      where: { slug },
-      update: {},
-      create: {
-        slug,
-        name: slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' & ').replace('-', ' '),
-        sortOrder: i,
-      },
-    }),
-  ));
+  // Sectors
+  for (const [i, s] of SECTORS.entries()) {
+    await prisma.sector.upsert({
+      where: { slug: s.slug },
+      update: { name: s.name, color: s.color, sortOrder: i },
+      create: { ...s, sortOrder: i },
+    });
+  }
+
+  // Disciplines (linked to sectors)
+  for (const [i, d] of DISCIPLINES.entries()) {
+    const sector = await prisma.sector.findUnique({ where: { slug: d.sector } });
+    await prisma.discipline.upsert({
+      where: { slug: d.slug },
+      update: { name: d.name, color: d.color, sectorId: sector?.id, sortOrder: i },
+      create: { slug: d.slug, name: d.name, color: d.color, sectorId: sector?.id, sortOrder: i },
+    });
+  }
 
   // Audience types
-  await Promise.all([
+  for (const a of [
     { slug: 'jeunes', name: 'Jeunes (12-25 ans)' },
     { slug: 'adultes', name: 'Adultes' },
     { slug: 'professionnels', name: 'Professionnels' },
     { slug: 'tout-public', name: 'Tout public' },
-  ].map(a =>
-    prisma.audienceType.upsert({ where: { slug: a.slug }, update: {}, create: a }),
-  ));
+  ]) {
+    await prisma.audienceType.upsert({ where: { slug: a.slug }, update: {}, create: a });
+  }
 
   // Program types
-  await Promise.all([
+  for (const p of [
     { slug: 'formation', name: 'Formation' },
     { slug: 'residency', name: 'Résidence artistique' },
     { slug: 'workshop', name: 'Atelier' },
     { slug: 'mentoring', name: 'Mentorat' },
-  ].map(p =>
-    prisma.programType.upsert({ where: { slug: p.slug }, update: {}, create: p }),
-  ));
+  ]) {
+    await prisma.programType.upsert({ where: { slug: p.slug }, update: {}, create: p });
+  }
 
-  // Admin user — passwordHash is bcrypt of "changeme", replace after first login
+  // Admin user — argon2 hash of "changeme123". CHANGE THIS PASSWORD AFTER FIRST LOGIN.
+  const passwordHash = await argon2.hash('changeme123');
   await prisma.user.upsert({
     where: { email: 'admin@bsmk.tn' },
-    update: {},
+    update: { passwordHash },
     create: {
       email: 'admin@bsmk.tn',
-      passwordHash: '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/RK.s5uO3G',
+      passwordHash,
       role: 'ADMIN',
       firstName: 'Admin',
       lastName: 'BSMK',
     },
   });
 
+  // Sample artists (Vitrinart) — linked to disciplines, with works + geo
+  const artVisuels = await prisma.discipline.findUnique({ where: { slug: 'arts-visuels' } });
+  const modeDesign = await prisma.discipline.findUnique({ where: { slug: 'mode-design' } });
+
+  const sampleArtists = [
+    {
+      slug: 'amira-ben-salah', name: 'Amira Ben Salah', city: 'Tunis',
+      bio: 'Artiste muraliste tunisoise.', status: 'PUBLISHED' as const, featured: true,
+      latitude: 36.8065, longitude: 10.1815, disciplineId: artVisuels?.id,
+      works: [{ title: 'Fresque Medina', type: 'mural', year: 2024 }],
+    },
+    {
+      slug: 'karim-designer', name: 'Karim Designer', city: 'Sfax',
+      bio: 'Designer objet et mobilier.', status: 'PUBLISHED' as const, featured: false,
+      latitude: 34.7406, longitude: 10.7603, disciplineId: modeDesign?.id,
+      works: [{ title: 'Collection Sahel', type: 'produit', year: 2025 }],
+    },
+  ];
+
+  for (const [i, a] of sampleArtists.entries()) {
+    const { disciplineId, works, ...rest } = a;
+    await prisma.artist.upsert({
+      where: { slug: a.slug },
+      update: {},
+      create: {
+        ...rest,
+        sortOrder: i,
+        disciplines: disciplineId ? { create: [{ disciplineId }] } : undefined,
+        works: { create: works },
+      },
+    });
+  }
+
+  // Sample media
+  const sampleMedia = [
+    { slug: 'video-presentation-bsmk', title: 'Présentation BSMK', type: 'VIDEO' as const, status: 'PUBLISHED' as const, featured: true, url: 'https://example.com/video', disciplineSlug: 'medias' },
+    { slug: 'galerie-vernissage-2025', title: 'Vernissage 2025', type: 'PHOTO' as const, status: 'PUBLISHED' as const, featured: false, disciplineSlug: 'arts-visuels' },
+  ];
+
+  for (const m of sampleMedia) {
+    const { disciplineSlug, ...rest } = m;
+    const disc = await prisma.discipline.findUnique({ where: { slug: disciplineSlug } });
+    await prisma.media.upsert({
+      where: { slug: m.slug },
+      update: {},
+      create: {
+        ...rest,
+        publishedAt: new Date('2025-01-01'),
+        disciplines: disc ? { create: [{ disciplineId: disc.id }] } : undefined,
+      },
+    });
+  }
+
   // Site stats
-  await Promise.all([
+  for (const s of [
     { key: 'artists_count', value: '150' },
     { key: 'programs_count', value: '24' },
     { key: 'spaces_count', value: '10' },
     { key: 'events_per_year', value: '80' },
-  ].map(s =>
-    prisma.siteStat.upsert({ where: { key: s.key }, update: { value: s.value }, create: s }),
-  ));
+  ]) {
+    await prisma.siteStat.upsert({ where: { key: s.key }, update: { value: s.value }, create: s });
+  }
 
-  console.log('✓ Seed complete');
+  console.log('✓ Seed complete — admin@bsmk.tn / changeme123 (CHANGE THIS)');
 }
 
 main()
-  .catch(e => { console.error(e); process.exit(1); })
+  .catch((e) => { console.error(e); process.exit(1); })
   .finally(() => prisma.$disconnect());
