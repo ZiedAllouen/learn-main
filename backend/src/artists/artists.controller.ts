@@ -30,7 +30,7 @@ export class ArtistsController {
 
   @Roles('ADMIN', 'EDITOR', 'ARTIST')
   @Post()
-  create(@Body() dto: CreateArtistDto) {
+  create(@Body() dto: CreateArtistDto): Promise<unknown> {
     return this.artists.create(dto);
   }
 

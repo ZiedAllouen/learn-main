@@ -60,7 +60,7 @@ export class ArtistsService {
     });
   }
 
-  create(dto: CreateArtistDto) {
+  create(dto: CreateArtistDto): Promise<unknown> {
     const { disciplineIds, works, ...rest } = dto;
     return this.prisma.artist.create({
       data: {
