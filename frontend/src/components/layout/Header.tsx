@@ -1,20 +1,45 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { disciplines } from '@/data/disciplines'
 import { Container } from '@/components/ui/Container'
 
+// Vivid sector color per top-level section
+const SECTION_COLORS: Record<string, string> = {
+  '/bsmk': '#2D5F99',           // Arts de scène
+  '/disciplines': '#2D5F99',
+  '/programmes': '#C0392B',     // Événements
+  '/agenda': '#C0392B',
+  '/espaces': '#5C8A3A',        // Sports & loisirs
+  '/magazine': '#7A2E73',       // Médias
+  '/vetrinart': '#C99A2E',      // Partenaires
+  '/cartographie': '#C99A2E',
+  '/communaute': '#147070',     // Consulting
+  '/contact': '#147070',
+  '/participer': '#C0392B',
+}
+
+function getSectionColor(pathname: string): string | null {
+  for (const prefix of Object.keys(SECTION_COLORS)) {
+    if (pathname === prefix || pathname.startsWith(prefix + '/')) {
+      return SECTION_COLORS[prefix]
+    }
+  }
+  return null
+}
+
 const navLinks = [
   { label: 'Le Centre', href: '/bsmk' },
   { label: 'Disciplines', href: '/disciplines', hasDropdown: true },
   { label: 'Programmes', href: '/programmes' },
   { label: 'Espaces', href: '/espaces' },
-  { label: 'Magazine', href: '/magazine' },
+  { label: 'Médias', href: '/magazine' },
   { label: 'Agenda', href: '/agenda' },
-  { label: 'VetrinArt', href: '/vetrinart' },
+  { label: 'Vitrinart', href: '/vetrinart' },
 ]
 
 export function Header() {
@@ -34,6 +59,7 @@ export function Header() {
   }, [pathname])
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
+  const sectionColor = getSectionColor(pathname)
 
   return (
     <motion.header
@@ -47,11 +73,15 @@ export function Header() {
       <Container>
         <div className="flex h-16 items-center justify-between lg:h-20">
           {/* Logo */}
-          <Link
-            href="/"
-            className="text-xl font-display font-bold tracking-widest text-bsmk-white hover:text-bsmk-terracotta transition-colors"
-          >
-            BSMK
+          <Link href="/" className="shrink-0 flex items-center">
+            <Image
+              src="/logo.png"
+              alt="BSMK"
+              width={150}
+              height={150}
+              className="h-16 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop nav */}
@@ -66,11 +96,8 @@ export function Header() {
                 >
                   <Link
                     href={item.href}
-                    className={`text-sm font-medium tracking-wide transition-colors ${
-                      isActive(item.href)
-                        ? 'text-bsmk-terracotta'
-                        : 'text-bsmk-white/75 hover:text-bsmk-white'
-                    }`}
+                    className="text-sm font-medium tracking-wide transition-colors text-bsmk-white/75 hover:text-bsmk-white"
+                    style={isActive(item.href) ? { color: sectionColor ?? '#E07B54' } : {}}
                   >
                     {item.label}
                     <span className="ml-1 opacity-50">↓</span>
@@ -83,8 +110,12 @@ export function Header() {
                           <Link
                             key={d.slug}
                             href={`/disciplines/${d.slug}`}
-                            className="block px-4 py-2.5 text-sm text-bsmk-white/65 hover:text-bsmk-white hover:bg-white/5 transition-colors"
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-bsmk-white/65 hover:text-bsmk-white hover:bg-white/5 transition-colors group"
                           >
+                            <span
+                              className="w-2 h-2 rounded-full shrink-0 opacity-70 group-hover:opacity-100"
+                              style={{ backgroundColor: d.sectorColor }}
+                            />
                             {d.name}
                           </Link>
                         ))}
@@ -104,11 +135,8 @@ export function Header() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`text-sm font-medium tracking-wide transition-colors ${
-                    isActive(item.href)
-                      ? 'text-bsmk-terracotta'
-                      : 'text-bsmk-white/75 hover:text-bsmk-white'
-                  }`}
+                  className="text-sm font-medium tracking-wide transition-colors text-bsmk-white/75 hover:text-bsmk-white"
+                  style={isActive(item.href) ? { color: sectionColor ?? '#E07B54' } : {}}
                 >
                   {item.label}
                 </Link>
@@ -123,6 +151,13 @@ export function Header() {
               className="text-sm font-medium text-bsmk-white/60 hover:text-bsmk-white transition-colors tracking-wide"
             >
               Contact
+            </Link>
+            <Link
+              href="/login"
+              className="text-sm font-medium text-bsmk-white/60 hover:text-bsmk-white transition-colors tracking-wide"
+              style={isActive('/login') ? { color: sectionColor ?? '#E07B54' } : {}}
+            >
+              Connexion
             </Link>
             <Link
               href="/participer"
@@ -152,6 +187,18 @@ export function Header() {
         </div>
       </Container>
 
+      {/* Section color stripe */}
+      {sectionColor && (
+        <motion.div
+          key={sectionColor}
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{ scaleX: 1, opacity: 1 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="h-[3px] origin-left"
+          style={{ backgroundColor: sectionColor }}
+        />
+      )}
+
       {/* Mobile menu */}
       {mobileOpen && (
         <motion.div
@@ -167,15 +214,14 @@ export function Header() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`py-3.5 text-sm font-medium tracking-wide border-b border-white/5 transition-colors ${
-                    isActive(item.href) ? 'text-bsmk-terracotta' : 'text-bsmk-white/75 hover:text-bsmk-white'
-                  }`}
+                  className="py-3.5 text-sm font-medium tracking-wide border-b border-white/5 transition-colors text-bsmk-white/75 hover:text-bsmk-white"
+                  style={isActive(item.href) ? { color: sectionColor ?? '#E07B54' } : {}}
                 >
                   {item.label}
                 </Link>
               ))}
 
-              {/* Disciplines quick links */}
+              {/* Disciplines quick links with sector color dots */}
               <div className="pt-5 pb-2">
                 <p className="text-xs text-bsmk-sand/40 tracking-widest uppercase mb-3">Disciplines</p>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
@@ -183,8 +229,12 @@ export function Header() {
                     <Link
                       key={d.slug}
                       href={`/disciplines/${d.slug}`}
-                      className="text-sm text-bsmk-white/50 hover:text-bsmk-white transition-colors py-1"
+                      className="flex items-center gap-2 text-sm text-bsmk-white/50 hover:text-bsmk-white transition-colors py-1"
                     >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full shrink-0"
+                        style={{ backgroundColor: d.sectorColor }}
+                      />
                       {d.shortName}
                     </Link>
                   ))}
@@ -192,8 +242,14 @@ export function Header() {
               </div>
 
               <Link
+                href="/login"
+                className="mt-4 block border border-white/20 text-white/70 text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:border-white/50 hover:text-white transition-colors rounded-lg"
+              >
+                Connexion
+              </Link>
+              <Link
                 href="/participer"
-                className="mt-4 block bg-bsmk-terracotta text-white text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:bg-bsmk-terracotta/85 transition-colors"
+                className="mt-2 block bg-bsmk-terracotta text-white text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:bg-bsmk-terracotta/85 transition-colors rounded-lg"
               >
                 Participer au BSMK
               </Link>

@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 
@@ -17,9 +18,9 @@ const footerSections = [
     title: 'Disciplines',
     links: [
       { label: 'Musique & Production', href: '/disciplines/musique-production' },
-      { label: 'Danse & Performance', href: '/disciplines/danse-performance' },
+      { label: 'Danse & Mouvement', href: '/disciplines/danse-performance' },
       { label: 'Arts Visuels', href: '/disciplines/arts-visuels' },
-      { label: 'Sport & Culture Urbaine', href: '/disciplines/theatre-arts-vivants' },
+      { label: 'Théâtre & Arts vivants', href: '/disciplines/theatre-arts-vivants' },
       { label: 'Cinéma & Audiovisuel', href: '/disciplines/cinema-audiovisuel' },
       { label: 'Arts Numériques & Gaming', href: '/disciplines/arts-numeriques' },
       { label: 'Mode & Design', href: '/disciplines/artisanat-design' },
@@ -31,8 +32,8 @@ const footerSections = [
       { label: 'Programmes', href: '/programmes' },
       { label: 'Espaces', href: '/espaces' },
       { label: 'Agenda', href: '/agenda' },
-      { label: 'Magazine', href: '/magazine' },
-      { label: 'VetrinArt', href: '/vetrinart' },
+      { label: 'Médias', href: '/magazine' },
+      { label: 'Vitrinart', href: '/vetrinart' },
       { label: 'Communauté', href: '/communaute' },
       { label: 'Cartographie', href: '/cartographie' },
       { label: 'Participer', href: '/participer' },
@@ -48,11 +49,14 @@ export function Footer() {
         <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand column */}
           <div className="space-y-5">
-            <Link
-              href="/"
-              className="inline-block text-2xl font-display font-bold tracking-widest hover:text-bsmk-terracotta transition-colors"
-            >
-              BSMK
+            <Link href="/" className="inline-block">
+              <Image
+                src="/logo.png"
+                alt="BSMK"
+                width={80}
+                height={80}
+                className="h-14 w-auto object-contain brightness-0 invert"
+              />
             </Link>
             <p className="text-sm text-bsmk-white/45 leading-relaxed">
               Centre des arts et de la culture.<br />

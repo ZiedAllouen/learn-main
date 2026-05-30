@@ -4,40 +4,39 @@ import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import { artists, getFeaturedArtists } from '@/data/artists'
 import { disciplines } from '@/data/disciplines'
+import { getSectors } from '@/lib/api/sectors'
+import { getArtists } from '@/lib/api/artists'
 import { HeroText, StaggerContainer, StaggerItem, FadeIn, FadeUp, CountUp } from '@/components/ui/Motion'
 
 export const metadata: Metadata = {
-  title: 'VetrinArt — Annuaire des artistes | BSMK',
+  title: 'Vitrinart — Annuaire des artistes | BSMK',
   description: 'Découvrez les artistes méditerranéens référencés par le BSMK : musiciens, danseurs, plasticiens, cinéastes et créateurs de toute la Méditerranée.',
 }
 
 export const dynamic = 'force-dynamic'
 
-const countries = Array.from(new Set(artists.map(a => a.country))).sort()
-
 function buildHref(
-  current: { discipline?: string; pays?: string; collaboration?: string },
+  current: { discipline?: string; sector?: string; city?: string },
   clearKey?: keyof typeof current,
 ) {
   const params = new URLSearchParams()
   if (current.discipline && clearKey !== 'discipline') params.set('discipline', current.discipline)
-  if (current.pays && clearKey !== 'pays') params.set('pays', current.pays)
-  if (current.collaboration && clearKey !== 'collaboration') params.set('collaboration', current.collaboration)
+  if (current.sector && clearKey !== 'sector') params.set('sector', current.sector)
+  if (current.city && clearKey !== 'city') params.set('city', current.city)
   const query = params.toString()
   return query ? `/vetrinart?${query}` : '/vetrinart'
 }
 
 function buildHrefWithUpdate(
-  current: { discipline?: string; pays?: string; collaboration?: string },
-  update: { discipline?: string; pays?: string; collaboration?: string },
+  current: { discipline?: string; sector?: string; city?: string },
+  update: Partial<{ discipline: string | undefined; sector: string | undefined; city: string | undefined }>,
 ) {
   const merged = { ...current, ...update }
   const params = new URLSearchParams()
   if (merged.discipline) params.set('discipline', merged.discipline)
-  if (merged.pays) params.set('pays', merged.pays)
-  if (merged.collaboration) params.set('collaboration', merged.collaboration)
+  if (merged.sector) params.set('sector', merged.sector)
+  if (merged.city) params.set('city', merged.city)
   const query = params.toString()
   return query ? `/vetrinart?${query}` : '/vetrinart'
 }
@@ -45,16 +44,29 @@ function buildHrefWithUpdate(
 export default async function VetrinArtPage({
   searchParams,
 }: {
-  searchParams: Promise<{ discipline?: string; pays?: string; collaboration?: string }>
+  searchParams: Promise<{ discipline?: string; sector?: string; city?: string; page?: string }>
 }) {
   const filters = await searchParams
-  const featured = getFeaturedArtists()
-  const filteredArtists = artists.filter((artist) => {
-    if (filters.discipline && !artist.disciplineSlugs.includes(filters.discipline)) return false
-    if (filters.pays && artist.country !== filters.pays) return false
-    if (filters.collaboration && !artist.availableForCollaboration) return false
-    return true
-  })
+  const page = Number(filters.page ?? 1)
+
+  const [featuredResult, allResult, sectorsData] = await Promise.allSettled([
+    getArtists({ featured: true, status: 'PUBLISHED', pageSize: 4 }),
+    getArtists({
+      status: 'PUBLISHED',
+      discipline: filters.discipline,
+      sector: filters.sector,
+      city: filters.city,
+      page,
+      pageSize: 24,
+    }),
+    getSectors(),
+  ])
+
+  const featured = featuredResult.status === 'fulfilled' ? featuredResult.value.data : []
+  const allArtists = allResult.status === 'fulfilled' ? allResult.value : { data: [], total: 0, totalPages: 1, page: 1, pageSize: 24 }
+  const sectors = sectorsData.status === 'fulfilled' ? sectorsData.value : []
+
+  const cities = Array.from(new Set(allArtists.data.map(a => a.city).filter(Boolean) as string[])).sort()
 
   return (
     <main className="bg-bsmk-white min-h-screen">
@@ -69,7 +81,7 @@ export default async function VetrinArtPage({
           </HeroText>
           <HeroText delay={0.1}>
             <h1 className="font-display text-6xl lg:text-8xl xl:text-9xl text-bsmk-white leading-none mb-6">
-              VetrinArt
+              Vitrinart
             </h1>
           </HeroText>
           <HeroText delay={0.25}>
@@ -79,7 +91,7 @@ export default async function VetrinArtPage({
           </HeroText>
           <HeroText delay={0.4}>
             <p className="font-sans text-sm text-bsmk-sand/60 max-w-xl leading-relaxed">
-              VetrinArt est le répertoire professionnel du BSMK : un espace pour rendre visible les créateurs
+              Vitrinart est le répertoire professionnel du BSMK : un espace pour rendre visible les créateurs
               du pourtour méditerranéen, faciliter les rencontres et encourager les collaborations
               artistiques transnationales.
             </p>
@@ -92,16 +104,16 @@ export default async function VetrinArtPage({
         <Container>
           <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-white text-center">
             <StaggerItem>
-              <CountUp value={12} className="font-display text-3xl lg:text-4xl" />
+              <CountUp value={allArtists.total || 0} className="font-display text-3xl lg:text-4xl" />
               <p className="font-sans text-xs tracking-widest uppercase mt-1 text-white/70">artistes référencés</p>
             </StaggerItem>
             <StaggerItem>
-              <CountUp value={7} className="font-display text-3xl lg:text-4xl" />
+              <CountUp value={disciplines.length} className="font-display text-3xl lg:text-4xl" />
               <p className="font-sans text-xs tracking-widest uppercase mt-1 text-white/70">disciplines représentées</p>
             </StaggerItem>
             <StaggerItem>
-              <CountUp value={6} className="font-display text-3xl lg:text-4xl" />
-              <p className="font-sans text-xs tracking-widest uppercase mt-1 text-white/70">pays méditerranéens</p>
+              <CountUp value={sectors.length} className="font-display text-3xl lg:text-4xl" />
+              <p className="font-sans text-xs tracking-widest uppercase mt-1 text-white/70">secteurs artistiques</p>
             </StaggerItem>
             <StaggerItem>
               <p className="font-display text-3xl lg:text-4xl">∞</p>
@@ -112,111 +124,146 @@ export default async function VetrinArtPage({
       </section>
 
       {/* ── Featured artists ── */}
-      <section className="py-20 lg:py-28 border-b border-bsmk-black/10">
-        <Container>
-          <div className="flex items-baseline justify-between mb-12">
-            <div>
-              <p className="font-sans text-xs tracking-widest uppercase text-bsmk-terracotta mb-3">
-                Sélection
-              </p>
-              <h2 className="font-display text-4xl lg:text-5xl text-bsmk-black">
-                Artistes à la une
-              </h2>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {featured.map((artist) => (
-              <div key={artist.id}>
-                <Link
-                  href={`/vetrinart/${artist.slug}`}
-                  className="group flex gap-0 bg-bsmk-black overflow-hidden hover:bg-bsmk-black/90 transition-colors rounded-xl"
-                >
-                  {/* Photo */}
-                  <div className="relative w-48 lg:w-56 shrink-0 aspect-[3/4]">
-                    <Image
-                      src={artist.photoUrl}
-                      alt={artist.name}
-                      fill
-                      className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex flex-col justify-between p-6 flex-1 min-w-0">
-                    <div>
-                      <p className="font-sans text-xs tracking-widest uppercase text-bsmk-sand/50 mb-3">
-                        {artist.city}, {artist.country}
-                      </p>
-                      <h3 className="font-display text-2xl lg:text-3xl text-bsmk-white leading-tight mb-3 group-hover:text-bsmk-sand transition-colors">
-                        {artist.name}
-                      </h3>
-
-                      {/* Disciplines */}
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {artist.disciplineSlugs.map((slug) => {
-                          const d = disciplines.find(d => d.slug === slug)
-                          return d ? (
-                            <Badge key={slug} variant="dark">{d.shortName}</Badge>
-                          ) : null
-                        })}
-                      </div>
-
-                      {/* Bio excerpt */}
-                      <p className="font-sans text-sm text-bsmk-white/60 leading-relaxed line-clamp-2 mb-4">
-                        {artist.bio}
-                      </p>
-
-                      {/* Specialties */}
-                      <div className="flex flex-wrap gap-1.5 mb-4">
-                        {artist.specialties.slice(0, 3).map((s) => (
-                          <span
-                            key={s}
-                            className="font-sans text-xs text-bsmk-sand/50 border border-bsmk-white/10 px-2 py-0.5 rounded-full"
-                          >
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      {artist.availableForCollaboration && (
-                        <span className="inline-flex items-center gap-1.5 font-sans text-xs text-bsmk-olive">
-                          <span className="w-1.5 h-1.5 bg-bsmk-olive inline-block" />
-                          Disponible pour collaboration
-                        </span>
-                      )}
-                      <span className="font-sans text-xs text-bsmk-white/30 tracking-widest uppercase ml-auto group-hover:text-bsmk-sand transition-colors">
-                        Voir le profil →
-                      </span>
-                    </div>
-                  </div>
-                </Link>
+      {featured.length > 0 && (
+        <section className="py-20 lg:py-28 border-b border-bsmk-black/10">
+          <Container>
+            <div className="flex items-baseline justify-between mb-12">
+              <div>
+                <p className="font-sans text-xs tracking-widest uppercase text-bsmk-terracotta mb-3">
+                  Sélection
+                </p>
+                <h2 className="font-display text-4xl lg:text-5xl text-bsmk-black">
+                  Artistes à la une
+                </h2>
               </div>
-            ))}
-          </div>
-        </Container>
-      </section>
+            </div>
 
-      {/* ── Filter bar (static) ── */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {featured.map((artist) => {
+                const primaryDiscipline = artist.disciplines[0]?.discipline
+                return (
+                  <div key={artist.id}>
+                    <Link
+                      href={`/vetrinart/${artist.slug}`}
+                      className="group flex gap-0 bg-bsmk-black overflow-hidden hover:bg-bsmk-black/90 transition-colors rounded-xl"
+                    >
+                      <div className="relative w-48 lg:w-56 shrink-0 aspect-[3/4]">
+                        <Image
+                          src={artist.photoUrl ?? 'https://picsum.photos/seed/artist/400/600'}
+                          alt={artist.name}
+                          fill
+                          className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                        />
+                        {primaryDiscipline?.color && (
+                          <div
+                            className="absolute inset-0 opacity-25"
+                            style={{
+                              background: `linear-gradient(to right, ${primaryDiscipline.color}80, transparent)`,
+                            }}
+                          />
+                        )}
+                      </div>
+
+                      <div className="flex flex-col justify-between p-6 flex-1 min-w-0">
+                        <div>
+                          <p className="font-sans text-xs tracking-widest uppercase text-bsmk-sand/50 mb-3">
+                            {artist.city ?? '—'}
+                          </p>
+                          <h3 className="font-display text-2xl lg:text-3xl text-bsmk-white leading-tight mb-3 group-hover:text-bsmk-sand transition-colors">
+                            {artist.name}
+                          </h3>
+
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {artist.disciplines.map(({ discipline: d }) => (
+                              <span
+                                key={d.id}
+                                className="inline-flex items-center gap-1.5 text-xs text-bsmk-white/70 border border-white/10 px-2 py-0.5 rounded-full"
+                              >
+                                <span
+                                  className="w-1.5 h-1.5 rounded-full"
+                                  style={{ backgroundColor: d.color ?? '#888' }}
+                                />
+                                {d.name}
+                              </span>
+                            ))}
+                          </div>
+
+                          <p className="font-sans text-sm text-bsmk-white/60 leading-relaxed line-clamp-2 mb-4">
+                            {artist.bio}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center justify-end">
+                          <span className="font-sans text-xs text-bsmk-white/30 tracking-widest uppercase ml-auto group-hover:text-bsmk-sand transition-colors">
+                            Voir le profil →
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                )
+              })}
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {/* ── Filter bar ── */}
       <section className="py-10 border-b border-bsmk-black/10 bg-bsmk-white sticky top-0 z-10 shadow-sm">
         <Container>
           <FadeIn>
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-8">
+              {/* Sector filters */}
+              {sectors.length > 0 && (
+                <div>
+                  <p className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
+                    Secteur
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <Link
+                      href={buildHref(filters, 'sector')}
+                      scroll={false}
+                      className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 rounded-full transition-colors ${
+                        !filters.sector
+                          ? 'bg-bsmk-black text-bsmk-white'
+                          : 'border border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'
+                      }`}
+                    >
+                      Tous
+                    </Link>
+                    {sectors.map((s) => (
+                      <Link
+                        key={s.slug}
+                        href={buildHrefWithUpdate(filters, { sector: s.slug })}
+                        scroll={false}
+                        className="font-sans text-xs tracking-widest uppercase px-3 py-1.5 rounded-full border transition-all"
+                        style={{
+                          borderColor: filters.sector === s.slug ? s.color : `${s.color}60`,
+                          color: filters.sector === s.slug ? 'white' : s.color,
+                          backgroundColor: filters.sector === s.slug ? s.color : 'transparent',
+                        }}
+                      >
+                        {s.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Discipline filters */}
               <div className="flex-1">
                 <p className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
-                  Filtrer par discipline
+                  Discipline
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Link
                     href={buildHref(filters, 'discipline')}
                     scroll={false}
-                    className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 transition-colors ${!filters.discipline
+                    className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 transition-colors ${
+                      !filters.discipline
                         ? 'bg-bsmk-black text-bsmk-white'
                         : 'border border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'
-                      }`}
+                    }`}
                   >
                     Toutes
                   </Link>
@@ -225,10 +272,11 @@ export default async function VetrinArtPage({
                       key={d.slug}
                       href={buildHrefWithUpdate(filters, { discipline: d.slug })}
                       scroll={false}
-                      className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors ${filters.discipline === d.slug
+                      className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors ${
+                        filters.discipline === d.slug
                           ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
                           : 'border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'
-                        }`}
+                      }`}
                     >
                       {d.shortName}
                     </Link>
@@ -236,58 +284,41 @@ export default async function VetrinArtPage({
                 </div>
               </div>
 
-              {/* Country filters */}
-              <div>
-                <p className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
-                  Par pays
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <Link
-                    href={buildHref(filters, 'pays')}
-                    scroll={false}
-                    className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 transition-colors ${!filters.pays
-                        ? 'bg-bsmk-black text-bsmk-white'
-                        : 'border border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'
-                      }`}
-                  >
-                    Tous
-                  </Link>
-                  {countries.map((country) => (
+              {/* City filter */}
+              {cities.length > 0 && (
+                <div className="shrink-0">
+                  <p className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
+                    Ville
+                  </p>
+                  <div className="flex flex-wrap gap-2">
                     <Link
-                      key={country}
-                      href={buildHrefWithUpdate(filters, { pays: country })}
+                      href={buildHref(filters, 'city')}
                       scroll={false}
-                      className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors ${filters.pays === country
-                          ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
-                          : 'border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'
-                        }`}
-                    >
-                      {country}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              {/* Collaboration filter */}
-              <div className="shrink-0">
-                <p className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
-                  Disponibilité
-                </p>
-                <Link
-                  href={buildHrefWithUpdate(filters, { collaboration: filters.collaboration ? undefined : '1' })}
-                  scroll={false}
-                  className={`inline-flex items-center gap-2 font-sans text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors rounded-md ${filters.collaboration
-                      ? 'border-bsmk-olive bg-bsmk-olive text-white'
-                      : 'border-bsmk-olive text-bsmk-olive hover:bg-bsmk-olive hover:text-white'
-                    }`}
-                >
-                  <span
-                    className={`w-1.5 h-1.5 inline-block ${filters.collaboration ? 'bg-white' : 'bg-bsmk-olive'
+                      className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 transition-colors ${
+                        !filters.city
+                          ? 'bg-bsmk-black text-bsmk-white'
+                          : 'border border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'
                       }`}
-                  />
-                  Disponible pour collaboration
-                </Link>
-              </div>
+                    >
+                      Toutes
+                    </Link>
+                    {cities.map((city) => (
+                      <Link
+                        key={city}
+                        href={buildHrefWithUpdate(filters, { city })}
+                        scroll={false}
+                        className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors ${
+                          filters.city === city
+                            ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
+                            : 'border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'
+                        }`}
+                      >
+                        {city}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </FadeIn>
         </Container>
@@ -301,28 +332,26 @@ export default async function VetrinArtPage({
               Tous les artistes
             </h2>
             <p className="font-sans text-sm text-bsmk-black/40">
-              {filteredArtists.length} artiste{filteredArtists.length > 1 ? 's' : ''}
+              {allArtists.total} artiste{allArtists.total > 1 ? 's' : ''}
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-            {filteredArtists.map((artist) => {
-              const primaryDiscipline = disciplines.find(d => d.slug === artist.disciplineSlugs[0])
+            {allArtists.data.map((artist) => {
+              const primaryDiscipline = artist.disciplines[0]?.discipline
               return (
                 <div key={artist.id}>
-                  <Link
-                    href={`/vetrinart/${artist.slug}`}
-                    className="group block"
-                  >
-                    {/* Square photo */}
-                    <div className="relative aspect-square overflow-hidden bg-bsmk-sand/20 mb-3 rounded-lg">
+                  <Link href={`/vetrinart/${artist.slug}`} className="group block">
+                    <div
+                      className="relative aspect-square overflow-hidden mb-3 rounded-lg"
+                      style={{ backgroundColor: primaryDiscipline?.color ?? '#D4C5A9' }}
+                    >
                       <Image
-                        src={artist.photoUrl}
+                        src={artist.photoUrl ?? 'https://picsum.photos/seed/artist/400/400'}
                         alt={artist.name}
                         fill
                         className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
-                      {/* Featured indicator */}
                       {artist.featured && (
                         <div className="absolute top-2 right-2">
                           <span className="font-sans text-xs tracking-widest uppercase bg-bsmk-terracotta text-white px-2 py-0.5">
@@ -330,34 +359,34 @@ export default async function VetrinArtPage({
                           </span>
                         </div>
                       )}
+                      {primaryDiscipline?.color && (
+                        <div
+                          className="absolute bottom-0 inset-x-0 h-1"
+                          style={{ backgroundColor: primaryDiscipline.color }}
+                        />
+                      )}
                     </div>
 
-                    {/* Info */}
                     <h3 className="font-display text-base lg:text-lg text-bsmk-black group-hover:text-bsmk-terracotta transition-colors leading-tight mb-1">
                       {artist.name}
                     </h3>
                     <p className="font-sans text-xs text-bsmk-black/50 mb-2">
-                      {artist.city} · {artist.country}
+                      {artist.city ?? '—'}
                     </p>
                     {primaryDiscipline && (
-                      <Badge variant="default">{primaryDiscipline.shortName}</Badge>
-                    )}
-                    {artist.availableForCollaboration && (
-                      <div className="flex items-center gap-1.5 mt-2">
-                        <span className="w-1.5 h-1.5 bg-bsmk-olive inline-block shrink-0" />
-                        <span className="font-sans text-xs text-bsmk-olive">Disponible</span>
-                      </div>
+                      <Badge variant="default">{primaryDiscipline.name}</Badge>
                     )}
                   </Link>
                 </div>
               )
             })}
           </div>
-          {filteredArtists.length === 0 && (
+
+          {allArtists.data.length === 0 && (
             <div className="border border-bsmk-black/10 bg-bsmk-sand/20 p-8 text-center rounded-xl">
               <h3 className="font-display text-2xl text-bsmk-black mb-2">Aucun profil pour ce filtre</h3>
               <p className="font-sans text-sm text-bsmk-black/60 mb-6">
-                La base VetrinArt est pensée pour grandir avec le réseau.
+                La base Vitrinart est pensée pour grandir avec le réseau.
               </p>
               <Link
                 href="/vetrinart"
@@ -366,6 +395,24 @@ export default async function VetrinArtPage({
               >
                 Réinitialiser les filtres
               </Link>
+            </div>
+          )}
+
+          {allArtists.totalPages > 1 && (
+            <div className="mt-12 flex justify-center gap-2">
+              {Array.from({ length: allArtists.totalPages }, (_, i) => i + 1).map((p) => (
+                <Link
+                  key={p}
+                  href={`/vetrinart?page=${p}${filters.discipline ? `&discipline=${filters.discipline}` : ''}${filters.sector ? `&sector=${filters.sector}` : ''}${filters.city ? `&city=${filters.city}` : ''}`}
+                  className={`w-10 h-10 flex items-center justify-center text-sm border transition-colors rounded ${
+                    p === allArtists.page
+                      ? 'bg-bsmk-black text-white border-bsmk-black'
+                      : 'border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-white'
+                  }`}
+                >
+                  {p}
+                </Link>
+              ))}
             </div>
           )}
         </Container>
@@ -377,18 +424,17 @@ export default async function VetrinArtPage({
           <FadeUp>
             <div className="max-w-2xl mx-auto text-center">
               <p className="font-sans text-xs tracking-widest uppercase text-bsmk-sand/50 mb-6">
-                Rejoindre VetrinArt
+                Rejoindre Vitrinart
               </p>
               <h2 className="font-display text-4xl lg:text-5xl text-bsmk-white mb-6 leading-tight">
-                Vous êtes artiste ? Rejoignez VetrinArt.
+                Vous êtes artiste ? Rejoignez Vitrinart.
               </h2>
               <p className="font-sans text-bsmk-white/60 leading-relaxed mb-8 max-w-lg mx-auto">
-                VetrinArt vous offre une vitrine professionnelle au cœur du réseau BSMK.
+                Vitrinart vous offre une vitrine professionnelle au cœur du réseau BSMK.
                 Valorisez votre travail, trouvez des collaborateurs, accédez à des opportunités
-                de résidences et de diffusion dans toute la Méditerranée. L'inscription est gratuite
-                pour les artistes accompagnés par le BSMK.
+                de résidences et de diffusion dans toute la Méditerranée.
               </p>
-              <Button href="/contact?sujet=Inscription+VetrinArt" variant="primary" size="lg">
+              <Button href="/contact?sujet=Inscription+Vitrinart" variant="primary" size="lg">
                 Soumettre mon profil →
               </Button>
             </div>

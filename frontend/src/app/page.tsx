@@ -7,6 +7,7 @@ import { getFeaturedPrograms } from '@/data/programs'
 import { getLatestArticles } from '@/data/articles'
 import { getUpcomingEvents, eventTypeLabels } from '@/data/events'
 import { formatDate } from '@/lib/utils'
+import { getSectors } from '@/lib/api/sectors'
 import {
   HeroText,
   FadeUp,
@@ -25,9 +26,8 @@ export const metadata = {
 const quickActions = [
   { label: 'Créer', href: '/espaces', icon: '✦', desc: 'Studios, ateliers et lieux de production' },
   { label: 'Se former', href: '/programmes', icon: '◈', desc: 'Formations, ateliers et résidences' },
-  { label: 'S’entraîner', href: '/programmes?type=training', icon: '⬡', desc: 'Pratique régulière et culture urbaine' },
-  { label: 'Diffuser', href: '/vetrinart', icon: '◻', desc: 'Profils artistes, médias et visibilité' },
-  { label: 'Se connecter', href: '/communaute', icon: '◷', desc: 'Réseau, partenaires et communauté' },
+  { label: 'Médiation', href: '/vetrinart', icon: '◻', desc: 'Profils artistes, médias et visibilité' },
+  { label: 'Consulter', href: '/contact', icon: '◷', desc: 'Accompagnement et conseil artistique' },
 ]
 
 const stats = [
@@ -43,16 +43,23 @@ const modalityLabels: Record<string, string> = {
   HYBRID: 'Hybride',
 }
 
-export default function HomePage() {
+export default async function HomePage() {
   const featuredPrograms = getFeaturedPrograms(3)
   const latestArticles = getLatestArticles(3)
   const upcomingEvents = getUpcomingEvents(4)
+
+  // Fetch sectors from API (non-blocking — show placeholder if API is down)
+  let sectors: Awaited<ReturnType<typeof getSectors>> = []
+  try {
+    sectors = await getSectors()
+  } catch {
+    // API not available — sectors strip will be hidden
+  }
 
   return (
     <main>
       {/* ── HERO ── */}
       <section className="relative min-h-screen bg-bsmk-black flex flex-col justify-center overflow-hidden">
-        {/* Background image */}
         <div className="absolute inset-0">
           <Image
             src="https://picsum.photos/seed/bsmk-hero/1920/1080"
@@ -112,7 +119,7 @@ export default function HomePage() {
       {/* ── 5 ACTIONS STRIP ── */}
       <section className="bg-bsmk-black border-t border-white/10">
         <Container>
-          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-white/10">
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 divide-x divide-white/10">
             {quickActions.map((action) => (
               <StaggerItem key={action.href}>
                 <Link
@@ -132,6 +139,40 @@ export default function HomePage() {
           </StaggerContainer>
         </Container>
       </section>
+
+      {/* ── SECTORS STRIP (from API) ── */}
+      {sectors.length > 0 && (
+        <section className="py-12 bg-bsmk-white border-b border-bsmk-sand/40">
+          <Container>
+            <FadeUp>
+              <p className="text-xs tracking-widest uppercase text-bsmk-black/40 mb-6 text-center">
+                Secteurs artistiques
+              </p>
+            </FadeUp>
+            <StaggerContainer className="flex flex-wrap justify-center gap-3">
+              {sectors.map((sector) => (
+                <StaggerItem key={sector.slug}>
+                  <Link
+                    href={`/disciplines?sector=${sector.slug}`}
+                    className="sector-pill inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium tracking-wide transition-all"
+                    style={{
+                      '--sc': sector.color,
+                      borderColor: sector.color,
+                      color: sector.color,
+                    } as React.CSSProperties}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: sector.color }}
+                    />
+                    {sector.name}
+                  </Link>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </Container>
+        </section>
+      )}
 
       {/* ── PROGRAMMES PHARES ── */}
       <section className="py-24 bg-bsmk-white">
@@ -201,7 +242,7 @@ export default function HomePage() {
               <div>
                 <p className="text-bsmk-olive text-xs tracking-widest uppercase mb-3">Magazine · Culture · Création</p>
                 <h2 className="text-4xl lg:text-5xl font-display font-bold text-bsmk-black">
-                  Du côté du magazine
+                  Du côté des médias
                 </h2>
               </div>
             </FadeUp>
@@ -250,7 +291,7 @@ export default function HomePage() {
 
           <div className="mt-8 sm:hidden">
             <Link href="/magazine" className="text-sm text-bsmk-terracotta hover:underline">
-              Voir tout le magazine →
+              Voir tout →
             </Link>
           </div>
         </Container>
@@ -287,7 +328,6 @@ export default function HomePage() {
                   href={`/agenda/${event.slug}`}
                   className="flex items-center gap-6 py-6 group hover:bg-bsmk-sand/10 -mx-6 px-6 transition-colors"
                 >
-                  {/* Date block */}
                   <div className="flex-shrink-0 w-16 text-center">
                     <div className="text-3xl font-display font-bold text-bsmk-terracotta leading-none">
                       {day}
@@ -297,7 +337,6 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <Badge variant="default">{eventTypeLabels[event.eventType]}</Badge>

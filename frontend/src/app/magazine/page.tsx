@@ -5,19 +5,30 @@ import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
 import { articles, categories, getFeaturedArticles } from '@/data/articles'
 import { formatDate } from '@/lib/utils'
-import { HeroText, FadeIn, ScaleIn, StaggerContainer, StaggerItem } from '@/components/ui/Motion'
+import { getMedia, type MediaType, mediaTypeLabels } from '@/lib/api/media'
+import { HeroText, FadeIn, ScaleIn, StaggerContainer, StaggerItem, FadeUp } from '@/components/ui/Motion'
 
 export const metadata: Metadata = {
-  title: 'Magazine | BSMK',
-  description: 'Actualités, réflexions et regards sur la création contemporaine en Méditerranée.',
+  title: 'Médias | BSMK',
+  description: 'Vidéos, photos, éditoriaux, magazine et publications du BSMK — la création en Méditerranée.',
 }
+
+const mediaTypeColors: Record<MediaType, string> = {
+  VIDEO: '#C0392B',
+  PHOTO: '#7A2E73',
+  EDITO: '#2D5F99',
+  MAGAZINE: '#C99A2E',
+  PUBLICATION: '#147070',
+}
+
+const ALL_MEDIA_TYPES: MediaType[] = ['VIDEO', 'PHOTO', 'EDITO', 'MAGAZINE', 'PUBLICATION']
 
 export default async function MagazinePage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string }>
+  searchParams: Promise<{ category?: string; type?: string }>
 }) {
-  const { category } = await searchParams
+  const { category, type } = await searchParams
   const featured = getFeaturedArticles(1)[0]
   const allArticles = category
     ? articles.filter((a) => {
@@ -26,33 +37,169 @@ export default async function MagazinePage({
       })
     : articles
 
+  // Load media items from API (graceful fallback)
+  let mediaItems: Awaited<ReturnType<typeof getMedia>>['data'] = []
+  let mediaTotal = 0
+  try {
+    const result = await getMedia({
+      type: type as MediaType | undefined,
+      status: 'PUBLISHED',
+      pageSize: 12,
+    })
+    mediaItems = result.data
+    mediaTotal = result.total
+  } catch {
+    // API unavailable
+  }
+
   return (
     <main className="bg-bsmk-white min-h-screen">
       {/* Hero */}
       <section className="bg-bsmk-black text-bsmk-white py-20 lg:py-28">
-        <Container narrow>
+        <Container>
           <HeroText delay={0}>
             <p className="text-xs tracking-widest uppercase text-bsmk-sand mb-4 font-sans">
-              BSMK — Publication
+              BSMK — Médias & Publication
             </p>
           </HeroText>
           <HeroText delay={0.1}>
             <h1 className="font-display text-5xl lg:text-7xl text-bsmk-white mb-6 leading-none">
-              Magazine
+              Médias
             </h1>
           </HeroText>
           <HeroText delay={0.25}>
             <p className="font-sans text-lg text-bsmk-white/70 max-w-2xl leading-relaxed">
-              Actualités, réflexions et regards sur la création contemporaine en Méditerranée
+              Vidéos, photos, éditoriaux, magazine et publications sur la création méditerranéenne
             </p>
           </HeroText>
         </Container>
       </section>
 
-      {/* Category filter bar */}
-      <section className="border-b border-bsmk-black/10 bg-bsmk-white sticky top-0 z-10">
+      {/* Media type filter strip (new API types) */}
+      {mediaTotal > 0 && (
+        <section className="border-b border-bsmk-black/10 bg-bsmk-white sticky top-0 z-20 shadow-sm">
+          <Container>
+            <FadeIn className="flex items-center gap-2 overflow-x-auto py-4 scrollbar-hide">
+              <Link
+                href="/magazine"
+                className={`shrink-0 px-4 py-1.5 text-xs font-medium tracking-widest uppercase font-sans transition-colors rounded-full ${
+                  !type ? 'bg-bsmk-black text-bsmk-white' : 'text-bsmk-black/60 border border-bsmk-black/20 hover:bg-bsmk-black hover:text-bsmk-white'
+                }`}
+              >
+                Tout
+              </Link>
+              {ALL_MEDIA_TYPES.map((t) => (
+                <Link
+                  key={t}
+                  href={`/magazine?type=${t}`}
+                  className="shrink-0 px-4 py-1.5 text-xs font-medium tracking-widest uppercase font-sans transition-all rounded-full border hover:text-white"
+                  style={{
+                    borderColor: type === t ? mediaTypeColors[t] : `${mediaTypeColors[t]}60`,
+                    color: type === t ? 'white' : mediaTypeColors[t],
+                    backgroundColor: type === t ? mediaTypeColors[t] : 'transparent',
+                  }}
+                >
+                  {mediaTypeLabels[t]}
+                </Link>
+              ))}
+            </FadeIn>
+          </Container>
+        </section>
+      )}
+
+      {/* Media grid from API */}
+      {mediaItems.length > 0 && (
+        <section className="py-16 bg-bsmk-black">
+          <Container>
+            <div className="flex items-baseline justify-between mb-10">
+              <FadeUp>
+                <h2 className="font-display text-3xl text-bsmk-white">
+                  {type ? mediaTypeLabels[type as MediaType] : 'Tous les médias'}
+                </h2>
+              </FadeUp>
+              <span className="font-sans text-sm text-bsmk-white/40">{mediaTotal} éléments</span>
+            </div>
+
+            <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {mediaItems.map((item) => (
+                <StaggerItem key={item.id}>
+                  <div className="group block">
+                    {/* Thumbnail */}
+                    <div
+                      className="relative aspect-video overflow-hidden rounded-lg mb-3"
+                      style={{ backgroundColor: `${mediaTypeColors[item.type]}30` }}
+                    >
+                      {item.thumbnailUrl ? (
+                        <Image
+                          src={item.thumbnailUrl}
+                          alt={item.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div
+                          className="absolute inset-0 flex items-center justify-center"
+                          style={{ backgroundColor: `${mediaTypeColors[item.type]}20` }}
+                        >
+                          <span className="text-4xl opacity-40">
+                            {item.type === 'VIDEO' ? '▶' : item.type === 'PHOTO' ? '◼' : '✦'}
+                          </span>
+                        </div>
+                      )}
+                      {/* Type badge overlay */}
+                      <div className="absolute top-2 left-2">
+                        <span
+                          className="font-sans text-[10px] tracking-widest uppercase px-2 py-0.5 text-white rounded"
+                          style={{ backgroundColor: mediaTypeColors[item.type] }}
+                        >
+                          {mediaTypeLabels[item.type]}
+                        </span>
+                      </div>
+                      {item.url && (
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-bsmk-black/40"
+                        >
+                          <span className="text-white text-2xl">→</span>
+                        </a>
+                      )}
+                    </div>
+
+                    <h3 className="font-display text-base text-bsmk-white leading-snug mb-1 group-hover:text-bsmk-sand transition-colors line-clamp-2">
+                      {item.title}
+                    </h3>
+                    {item.publishedAt && (
+                      <p className="font-sans text-xs text-bsmk-white/40">
+                        {formatDate(item.publishedAt)}
+                      </p>
+                    )}
+                    {item.disciplines.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {item.disciplines.map(({ discipline: d }) => (
+                          <span
+                            key={d.id}
+                            className="font-sans text-[10px] text-bsmk-white/50 border border-white/10 px-1.5 py-0.5 rounded"
+                          >
+                            {d.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </Container>
+        </section>
+      )}
+
+      {/* Category filter bar for articles */}
+      <section className="border-b border-bsmk-black/10 bg-bsmk-white">
         <Container>
           <FadeIn className="flex items-center gap-1 overflow-x-auto py-4 scrollbar-hide">
+            <span className="text-xs tracking-widest uppercase text-bsmk-black/30 mr-3 shrink-0">Articles :</span>
             <Link
               href="/magazine"
               className={`shrink-0 px-4 py-2 text-xs font-medium tracking-widest uppercase font-sans transition-colors rounded-full ${
@@ -83,7 +230,6 @@ export default async function MagazinePage({
             <ScaleIn>
             <Link href={`/magazine/${featured.slug}`} className="group block">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden rounded-xl">
-                {/* Text side */}
                 <div className="bg-bsmk-black p-8 lg:p-12 flex flex-col justify-between order-2 lg:order-1">
                   <div>
                     <div className="flex items-center gap-3 mb-6">
@@ -116,7 +262,6 @@ export default async function MagazinePage({
                     </div>
                   </div>
                 </div>
-                {/* Image side */}
                 <div className="relative aspect-[4/3] lg:aspect-auto lg:min-h-[460px] overflow-hidden order-1 lg:order-2">
                   <Image
                     src={featured.coverUrl}
@@ -137,19 +282,15 @@ export default async function MagazinePage({
       <section className="py-16 lg:py-20">
         <Container>
           <div className="flex items-baseline justify-between mb-10">
-            <h2 className="font-display text-2xl text-bsmk-black">Tous les articles</h2>
+            <h2 className="font-display text-2xl text-bsmk-black">Articles</h2>
             <span className="font-sans text-sm text-bsmk-black/40">{allArticles.length} articles</span>
           </div>
 
           <StaggerContainer key={category ?? 'all'} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {allArticles.map((article) => (
               <StaggerItem key={article.id}>
-              <Link
-                href={`/magazine/${article.slug}`}
-                className="group block"
-              >
+              <Link href={`/magazine/${article.slug}`} className="group block">
                 <article className="flex flex-col h-full">
-                  {/* Image */}
                   <div className="relative aspect-video overflow-hidden bg-bsmk-sand/20 mb-4 rounded-lg">
                     <Image
                       src={article.coverUrl}
@@ -159,7 +300,6 @@ export default async function MagazinePage({
                     />
                   </div>
 
-                  {/* Content */}
                   <div className="flex flex-col flex-1">
                     <div className="mb-3">
                       <Badge variant="terracotta">{article.category}</Badge>
@@ -170,7 +310,6 @@ export default async function MagazinePage({
                     <p className="font-sans text-sm text-bsmk-black/60 leading-relaxed line-clamp-3 mb-4 flex-1">
                       {article.excerpt}
                     </p>
-                    {/* Meta */}
                     <div className="flex items-center gap-2 pt-4 border-t border-bsmk-black/10">
                       <div className="w-6 h-6 relative overflow-hidden shrink-0 rounded-full">
                         <Image

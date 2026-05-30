@@ -3,15 +3,34 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Button } from '@/components/ui/Button'
-import { disciplines } from '@/data/disciplines'
+import { disciplines, getDisciplinesBySector } from '@/data/disciplines'
+import { getSectors } from '@/lib/api/sectors'
 import { HeroText, StaggerContainer, StaggerItem, FadeUp } from '@/components/ui/Motion'
 
 export const metadata: Metadata = {
   title: 'Disciplines | BSMK',
-  description: 'Sept univers artistiques pour créer, se former, s’entraîner et diffuser au BSMK, centre culturel tunisien.',
+  description: 'Les disciplines artistiques du BSMK — créer, se former, produire et diffuser en Méditerranée.',
 }
 
-export default function DisciplinesPage() {
+export default async function DisciplinesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sector?: string }>
+}) {
+  const { sector: activeSector } = await searchParams
+
+  // Load sectors from API for the filter strip (graceful fallback)
+  let sectors: Awaited<ReturnType<typeof getSectors>> = []
+  try {
+    sectors = await getSectors()
+  } catch {
+    // API unavailable — show all disciplines ungrouped
+  }
+
+  const filtered = activeSector
+    ? getDisciplinesBySector(activeSector)
+    : disciplines
+
   return (
     <main className="bg-bsmk-white min-h-screen">
       {/* Hero */}
@@ -29,23 +48,56 @@ export default function DisciplinesPage() {
           </HeroText>
           <HeroText delay={0.25}>
             <p className="font-sans text-lg text-bsmk-white/70 max-w-xl leading-relaxed">
-              Sept univers artistiques pour créer, se former, s’entraîner et diffuser
+              Des univers artistiques pour créer, se former, produire et diffuser
             </p>
           </HeroText>
         </Container>
       </section>
 
+      {/* Sector filter strip */}
+      {sectors.length > 0 && (
+        <section className="border-b border-bsmk-black/10 bg-bsmk-white sticky top-0 z-20 shadow-sm">
+          <Container>
+            <div className="py-4 flex flex-wrap gap-2 items-center">
+              <Link
+                href="/disciplines"
+                className={`px-3 py-1.5 text-xs tracking-widest uppercase rounded-full border transition-colors ${
+                  !activeSector
+                    ? 'bg-bsmk-black text-white border-bsmk-black'
+                    : 'border-bsmk-black/20 text-bsmk-black/60 hover:border-bsmk-black hover:text-bsmk-black'
+                }`}
+              >
+                Toutes
+              </Link>
+              {sectors.map((s) => (
+                <Link
+                  key={s.slug}
+                  href={`/disciplines?sector=${s.slug}`}
+                  className="px-3 py-1.5 text-xs tracking-widest uppercase rounded-full border transition-all hover:text-white"
+                  style={{
+                    borderColor: activeSector === s.slug ? s.color : `${s.color}60`,
+                    color: activeSector === s.slug ? 'white' : s.color,
+                    backgroundColor: activeSector === s.slug ? s.color : 'transparent',
+                  }}
+                >
+                  {s.name}
+                </Link>
+              ))}
+            </div>
+          </Container>
+        </section>
+      )}
+
       {/* Disciplines grid */}
       <section className="py-16 lg:py-20">
         <Container>
           <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {disciplines.map((discipline, idx) => (
+            {filtered.map((discipline, idx) => (
               <StaggerItem key={discipline.id}>
               <Link
                 href={`/disciplines/${discipline.slug}`}
                 className="group block relative overflow-hidden rounded-xl"
               >
-                {/* Card container with image + overlay */}
                 <div className="relative aspect-[3/4] bg-bsmk-black overflow-hidden rounded-xl">
                   <Image
                     src={discipline.coverUrl}
@@ -53,15 +105,26 @@ export default function DisciplinesPage() {
                     fill
                     className="object-cover opacity-70 group-hover:opacity-50 group-hover:scale-110 transition-all duration-700"
                   />
-                  {/* Gradient overlay */}
+                  {/* Vivid sector color gradient at bottom */}
                   <div
-                    className="absolute inset-0 opacity-60"
+                    className="absolute inset-0 opacity-70"
                     style={{
-                      background: `linear-gradient(to top, ${discipline.color}ee 0%, transparent 60%)`,
+                      background: `linear-gradient(to top, ${discipline.sectorColor}cc 0%, transparent 60%)`,
                     }}
                   />
                   {/* Content */}
                   <div className="absolute inset-0 flex flex-col justify-end p-6">
+                    {/* Sector badge */}
+                    <span
+                      className="self-start text-[10px] tracking-widest uppercase px-2 py-0.5 rounded mb-2 font-sans"
+                      style={{
+                        backgroundColor: `${discipline.sectorColor}40`,
+                        color: 'white',
+                        borderLeft: `3px solid ${discipline.sectorColor}`,
+                      }}
+                    >
+                      {discipline.sectorSlug.replace(/-/g, ' ')}
+                    </span>
                     <p className="font-sans text-xs tracking-widest uppercase text-white/50 mb-2">
                       0{idx + 1}
                     </p>

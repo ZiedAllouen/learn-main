@@ -25,4 +25,10 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Sector pill hover — uses CSS custom property --sc set inline */
+  .sector-pill:hover {
+    background-color: var(--sc);
+    color: white;
+  }
 }
