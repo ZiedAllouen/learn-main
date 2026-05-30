@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { disciplines } from '@/data/disciplines'
 import { Container } from '@/components/ui/Container'
+import { getAuthUser } from '@/lib/auth'
 
 // Vivid sector color per top-level section
 const SECTION_COLORS: Record<string, string> = {
@@ -57,6 +58,11 @@ export function Header() {
   useEffect(() => {
     setMobileOpen(false)
   }, [pathname])
+
+  const [isAdmin, setIsAdmin] = useState(false)
+  useEffect(() => {
+    setIsAdmin(getAuthUser()?.role === 'ADMIN')
+  }, [])
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
   const sectionColor = getSectionColor(pathname)
@@ -146,6 +152,15 @@ export function Header() {
 
           {/* Desktop actions */}
           <div className="hidden lg:flex items-center gap-5">
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="text-sm font-medium transition-colors tracking-wide"
+                style={{ color: '#C0392B' }}
+              >
+                Admin
+              </Link>
+            )}
             <Link
               href="/contact"
               className="text-sm font-medium text-bsmk-white/60 hover:text-bsmk-white transition-colors tracking-wide"
@@ -241,9 +256,18 @@ export function Header() {
                 </div>
               </div>
 
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="mt-4 block border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg"
+                  style={{ borderColor: '#C0392B', color: '#C0392B' }}
+                >
+                  Administration
+                </Link>
+              )}
               <Link
                 href="/login"
-                className="mt-4 block border border-white/20 text-white/70 text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:border-white/50 hover:text-white transition-colors rounded-lg"
+                className="mt-2 block border border-white/20 text-white/70 text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:border-white/50 hover:text-white transition-colors rounded-lg"
               >
                 Connexion
               </Link>

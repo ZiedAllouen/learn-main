@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import type { CreateSpaceDto } from './dto/create-space.dto';
+import type { UpdateSpaceDto } from './dto/update-space.dto';
 
 @Injectable()
 export class SpacesService {
@@ -20,5 +22,39 @@ export class SpacesService {
     });
     if (!space) throw new NotFoundException('Space not found');
     return space;
+  }
+
+  async create(dto: CreateSpaceDto) {
+    const { disciplineIds, ...rest } = dto;
+    return this.prisma.space.create({
+      data: {
+        ...rest,
+        disciplines: disciplineIds?.length
+          ? { create: disciplineIds.map(disciplineId => ({ disciplineId })) }
+          : undefined,
+      },
+    });
+  }
+
+  async update(slug: string, dto: UpdateSpaceDto) {
+    await this.findOne(slug);
+    const { disciplineIds, ...rest } = dto;
+    return this.prisma.space.update({
+      where: { slug },
+      data: {
+        ...rest,
+        ...(disciplineIds !== undefined && {
+          disciplines: {
+            deleteMany: {},
+            create: disciplineIds.map(disciplineId => ({ disciplineId })),
+          },
+        }),
+      },
+    });
+  }
+
+  async remove(slug: string) {
+    await this.findOne(slug);
+    await this.prisma.space.delete({ where: { slug } });
   }
 }

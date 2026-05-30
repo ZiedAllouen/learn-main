@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { ListProgramsDto } from './dto/list-programs.dto';
+import type { CreateProgramDto } from './dto/create-program.dto';
+import type { UpdateProgramDto } from './dto/update-program.dto';
 import type { PaginatedResult } from '@bsmk/types';
 
 @Injectable()
@@ -48,5 +50,49 @@ export class ProgramsService {
     });
     if (!program) throw new NotFoundException('Program not found');
     return program;
+  }
+
+  async create(dto: CreateProgramDto): Promise<unknown> {
+    const { disciplineIds, audienceTypeIds, ...rest } = dto;
+    return this.prisma.program.create({
+      data: {
+        ...rest,
+        body: rest.body ?? {},
+        disciplines: disciplineIds?.length
+          ? { create: disciplineIds.map(disciplineId => ({ disciplineId })) }
+          : undefined,
+        audiences: audienceTypeIds?.length
+          ? { create: audienceTypeIds.map(audienceTypeId => ({ audienceTypeId })) }
+          : undefined,
+      },
+    });
+  }
+
+  async update(slug: string, dto: UpdateProgramDto): Promise<unknown> {
+    await this.findOne(slug);
+    const { disciplineIds, audienceTypeIds, ...rest } = dto;
+    return this.prisma.program.update({
+      where: { slug },
+      data: {
+        ...rest,
+        ...(disciplineIds !== undefined && {
+          disciplines: {
+            deleteMany: {},
+            create: disciplineIds.map(disciplineId => ({ disciplineId })),
+          },
+        }),
+        ...(audienceTypeIds !== undefined && {
+          audiences: {
+            deleteMany: {},
+            create: audienceTypeIds.map(audienceTypeId => ({ audienceTypeId })),
+          },
+        }),
+      },
+    });
+  }
+
+  async remove(slug: string) {
+    await this.findOne(slug);
+    await this.prisma.program.delete({ where: { slug } });
   }
 }

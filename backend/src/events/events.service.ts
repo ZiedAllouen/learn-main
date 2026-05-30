@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { ListEventsDto } from './dto/list-events.dto';
+import type { CreateEventDto } from './dto/create-event.dto';
+import type { UpdateEventDto } from './dto/update-event.dto';
 import type { PaginatedResult } from '@bsmk/types';
 
 @Injectable()
@@ -46,5 +48,43 @@ export class EventsService {
     });
     if (!event) throw new NotFoundException('Event not found');
     return event;
+  }
+
+  async create(dto: CreateEventDto) {
+    const { disciplineIds, startDate, endDate, ...rest } = dto;
+    return this.prisma.event.create({
+      data: {
+        ...rest,
+        startDate: new Date(startDate),
+        endDate: endDate ? new Date(endDate) : undefined,
+        disciplines: disciplineIds?.length
+          ? { create: disciplineIds.map(disciplineId => ({ disciplineId })) }
+          : undefined,
+      },
+    });
+  }
+
+  async update(slug: string, dto: UpdateEventDto) {
+    await this.findOne(slug);
+    const { disciplineIds, startDate, endDate, ...rest } = dto;
+    return this.prisma.event.update({
+      where: { slug },
+      data: {
+        ...rest,
+        startDate: startDate ? new Date(startDate) : undefined,
+        endDate: endDate ? new Date(endDate) : undefined,
+        ...(disciplineIds !== undefined && {
+          disciplines: {
+            deleteMany: {},
+            create: disciplineIds.map(disciplineId => ({ disciplineId })),
+          },
+        }),
+      },
+    });
+  }
+
+  async remove(slug: string) {
+    await this.findOne(slug);
+    await this.prisma.event.delete({ where: { slug } });
   }
 }

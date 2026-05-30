@@ -19,13 +19,20 @@ export function LoginForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       })
+      const data = await res.json().catch(() => ({}))
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
         setError(data.message ?? 'Identifiants incorrects')
         return
       }
-      // On success redirect to dashboard (to be created)
-      window.location.href = '/'
+      if (data.accessToken) localStorage.setItem('accessToken', data.accessToken)
+      if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken)
+      // Redirect admin to dashboard, others to home
+      try {
+        const payload = JSON.parse(atob(data.accessToken.split('.')[1]))
+        window.location.href = payload.role === 'ADMIN' ? '/admin' : '/'
+      } catch {
+        window.location.href = '/'
+      }
     } catch {
       setError('Impossible de joindre le serveur. Réessayez.')
     } finally {
