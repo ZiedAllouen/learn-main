@@ -17,3 +17,5 @@ export type EventType =
   | 'CONFERENCE'
   | 'FESTIVAL'
   | 'OTHER';
+
+export type MediaType = 'VIDEO' | 'PHOTO' | 'EDITO' | 'MAGAZINE' | 'PUBLICATION';
