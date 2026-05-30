@@ -12,6 +12,9 @@ import { ProgramsModule } from './programs/programs.module';
 import { EventsModule } from './events/events.module';
 import { ContactModule } from './contact/contact.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
+import { SectorsModule } from './sectors/sectors.module';
+import { ArtistsModule } from './artists/artists.module';
+import { MediaModule } from './media/media.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 
@@ -29,6 +32,9 @@ import { RolesGuard } from './auth/guards/roles.guard';
     EventsModule,
     ContactModule,
     NewsletterModule,
+    SectorsModule,
+    ArtistsModule,
+    MediaModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
