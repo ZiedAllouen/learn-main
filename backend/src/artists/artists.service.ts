@@ -13,12 +13,18 @@ export class ArtistsService {
     const { page, pageSize, discipline, sector, city, status, featured } = dto;
     const skip = (page - 1) * pageSize;
 
+    const disciplineWhere =
+      discipline
+        ? { some: { discipline: { slug: discipline } } }
+        : sector
+        ? { some: { discipline: { sector: { slug: sector } } } }
+        : undefined;
+
     const where = {
       ...(status ? { status } : { status: 'PUBLISHED' as const }),
       ...(featured !== undefined && { featured }),
       ...(city && { city }),
-      ...(discipline && { disciplines: { some: { discipline: { slug: discipline } } } }),
-      ...(sector && { disciplines: { some: { discipline: { sector: { slug: sector } } } } }),
+      ...(disciplineWhere && { disciplines: disciplineWhere }),
     };
 
     const [data, total] = await this.prisma.$transaction([
@@ -73,7 +79,7 @@ export class ArtistsService {
     });
   }
 
-  async update(slug: string, dto: UpdateArtistDto) {
+  async update(slug: string, dto: UpdateArtistDto): Promise<unknown> {
     const { disciplineIds, works, ...rest } = dto;
     await this.findOne(slug);
     return this.prisma.artist.update({

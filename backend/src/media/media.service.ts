@@ -59,7 +59,7 @@ export class MediaService {
   }
 
   async update(slug: string, dto: UpdateMediaDto) {
-    const { disciplineIds, publishedAt, ...rest } = dto as CreateMediaDto;
+    const { disciplineIds, publishedAt, ...rest } = dto;
     await this.findOne(slug);
     return this.prisma.media.update({
       where: { slug },

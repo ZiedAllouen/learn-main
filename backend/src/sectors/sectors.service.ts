@@ -27,7 +27,7 @@ export class SectorsService {
     return this.prisma.sector.create({ data: dto });
   }
 
-  async update(slug: string, dto: UpdateSectorDto) {
+  async update(slug: string, dto: UpdateSectorDto): Promise<unknown> {
     await this.findOne(slug);
     return this.prisma.sector.update({ where: { slug }, data: dto });
   }

@@ -27,7 +27,7 @@ export class DisciplinesService {
     return this.prisma.discipline.create({ data: dto });
   }
 
-  async update(slug: string, dto: UpdateDisciplineDto) {
+  async update(slug: string, dto: UpdateDisciplineDto): Promise<unknown> {
     await this.findOne(slug);
     return this.prisma.discipline.update({ where: { slug }, data: dto });
   }
