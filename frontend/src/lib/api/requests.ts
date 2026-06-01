@@ -45,10 +45,8 @@ export async function listRequests(
   if (params.type) q.set('type', params.type)
   if (params.status) q.set('status', params.status)
   const qs = q.toString()
-  // apiFetch shallow-spreads `options`, so passing `headers` replaces the default
-  // ones entirely. No body here, but keep Content-Type for consistency.
   return apiFetch(`/requests${qs ? `?${qs}` : ''}`, {
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` },
     cache: 'no-store',
   })
 }
@@ -58,11 +56,9 @@ export async function updateRequest(
   id: string,
   patch: { status?: RequestStatus; adminNote?: string },
 ): Promise<RequestRecord> {
-  // apiFetch shallow-spreads `options`; passing `headers` overwrites the default
-  // `Content-Type: application/json`. Re-add it so Nest parses the JSON body.
   return apiFetch(`/requests/${id}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify(patch),
   })
 }
