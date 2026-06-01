@@ -52,6 +52,13 @@ export class RequestsService {
   async update(id: string, dto: UpdateRequestDto) {
     const existing = await this.prisma.request.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException('Request not found');
-    return this.prisma.request.update({ where: { id }, data: { ...dto } });
+    return this.prisma.request.update({
+      where: { id },
+      data: { ...dto },
+      include: {
+        program: { select: { id: true, slug: true, title: true } },
+        space: { select: { id: true, slug: true, name: true } },
+      },
+    });
   }
 }

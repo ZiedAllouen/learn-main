@@ -73,6 +73,10 @@ describe('RequestsService', () => {
     expect(prisma.request.update).toHaveBeenCalledWith({
       where: { id: 'r1' },
       data: { status: 'ACCEPTED', adminNote: 'ok' },
+      include: {
+        program: { select: { id: true, slug: true, title: true } },
+        space: { select: { id: true, slug: true, name: true } },
+      },
     });
     expect(result).toEqual({ id: 'r1', status: 'ACCEPTED' });
   });
