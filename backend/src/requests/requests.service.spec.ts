@@ -45,6 +45,15 @@ describe('RequestsService', () => {
     expect(result).toEqual({ id: 'r1', message: 'Request received' });
   });
 
+  it('creates a request without a userId (public submission)', async () => {
+    prisma.request.create.mockResolvedValue({ id: 'r2' });
+    const result = await service.create({ type: 'ENROLLMENT', name: 'Sami', email: 's@b.tn', programId: 'p1' });
+    expect(prisma.request.create).toHaveBeenCalledWith({
+      data: { type: 'ENROLLMENT', name: 'Sami', email: 's@b.tn', programId: 'p1', userId: undefined },
+    });
+    expect(result).toEqual({ id: 'r2', message: 'Request received' });
+  });
+
   it('lists requests paginated with optional filters', async () => {
     prisma.$transaction.mockResolvedValue([[{ id: 'r1' }], 1]);
     const result = await service.findAll({ page: 1, pageSize: 20, type: 'BOOKING' });
