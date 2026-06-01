@@ -54,7 +54,7 @@ export default async function EspacesPage({
       </section>
 
       {/* Stats bar */}
-      <section className="bg-bsmk-terracotta py-8">
+      <section className="bg-page-accent py-8">
         <Container>
           <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x lg:divide-white/20">
             <StaggerItem className="text-center lg:px-6">
@@ -121,7 +121,7 @@ export default async function EspacesPage({
                 <StaggerItem key={space.id}>
                 <Link
                   href={`/espaces/${space.slug}`}
-                  className="group block border border-bsmk-black/10 hover:border-bsmk-terracotta transition-colors rounded-xl overflow-hidden"
+                  className="group block border border-bsmk-black/10 hover:border-page-accent transition-colors rounded-xl overflow-hidden"
                 >
                   {/* Image */}
                   <div className="relative aspect-video overflow-hidden bg-bsmk-sand/20">
@@ -143,7 +143,7 @@ export default async function EspacesPage({
 
                   {/* Content */}
                   <div className="p-6">
-                    <h2 className="font-display text-xl lg:text-2xl text-bsmk-black group-hover:text-bsmk-terracotta transition-colors mb-3">
+                    <h2 className="font-display text-xl lg:text-2xl text-bsmk-black group-hover:text-page-accent transition-colors mb-3">
                       {space.name}
                     </h2>
 
@@ -207,7 +207,7 @@ export default async function EspacesPage({
             </div>
             <Link
               href="/contact?sujet=Réservation+espace"
-              className="shrink-0 inline-flex items-center justify-center h-11 px-6 text-sm font-medium tracking-wide bg-bsmk-terracotta text-white hover:bg-bsmk-terracotta/90 transition-colors rounded-lg"
+              className="shrink-0 inline-flex items-center justify-center h-11 px-6 text-sm font-medium tracking-wide bg-page-accent text-white hover:bg-page-accent/90 transition-colors rounded-lg"
             >
               Nous contacter →
             </Link>

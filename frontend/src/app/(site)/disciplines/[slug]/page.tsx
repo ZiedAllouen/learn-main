@@ -93,7 +93,7 @@ export default async function DisciplinePage({ params }: Props) {
           <FadeUp className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
             {/* Long description */}
             <div className="lg:col-span-2">
-              <p className="font-sans text-xs tracking-widest uppercase text-bsmk-terracotta mb-6 font-medium">
+              <p className="font-sans text-xs tracking-widest uppercase text-page-accent mb-6 font-medium">
                 La discipline
               </p>
               <p className="font-sans text-lg text-bsmk-black/80 leading-relaxed">
@@ -140,7 +140,7 @@ export default async function DisciplinePage({ params }: Props) {
               <h2 className="font-display text-3xl text-bsmk-black">Espaces liés</h2>
               <Link
                 href="/espaces"
-                className="font-sans text-sm text-bsmk-black/40 hover:text-bsmk-terracotta transition-colors"
+                className="font-sans text-sm text-bsmk-black/40 hover:text-page-accent transition-colors"
               >
                 Tous les espaces →
               </Link>
@@ -160,7 +160,7 @@ export default async function DisciplinePage({ params }: Props) {
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
-                    <h3 className="font-display text-lg text-bsmk-black group-hover:text-bsmk-terracotta transition-colors mb-1">
+                    <h3 className="font-display text-lg text-bsmk-black group-hover:text-page-accent transition-colors mb-1">
                       {space.name}
                     </h3>
                     <div className="flex items-center gap-3">
@@ -183,7 +183,7 @@ export default async function DisciplinePage({ params }: Props) {
               <h2 className="font-display text-3xl text-bsmk-black">Regards & Réflexions</h2>
               <Link
                 href="/magazine"
-                className="font-sans text-sm text-bsmk-black/40 hover:text-bsmk-terracotta transition-colors"
+                className="font-sans text-sm text-bsmk-black/40 hover:text-page-accent transition-colors"
               >
                 Tout le magazine →
               </Link>
@@ -205,7 +205,7 @@ export default async function DisciplinePage({ params }: Props) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <Badge variant="terracotta" className="mb-2">{article.category}</Badge>
-                      <h3 className="font-display text-lg lg:text-xl text-bsmk-black group-hover:text-bsmk-terracotta transition-colors leading-snug mb-2 line-clamp-2">
+                      <h3 className="font-display text-lg lg:text-xl text-bsmk-black group-hover:text-page-accent transition-colors leading-snug mb-2 line-clamp-2">
                         {article.title}
                       </h3>
                       <p className="font-sans text-sm text-bsmk-black/50 leading-relaxed line-clamp-2 mb-3">

@@ -18,7 +18,7 @@ export default function EquipePage() {
         <Container>
           <div className="max-w-2xl">
             <HeroText delay={0}>
-              <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-6">
+              <p className="text-page-accent text-xs tracking-widest uppercase mb-6">
                 Les personnes derrière le projet
               </p>
             </HeroText>
@@ -60,7 +60,7 @@ export default function EquipePage() {
                   <h2 className="text-xl font-display font-bold text-bsmk-black leading-tight">
                     {member.name}
                   </h2>
-                  <p className="text-xs tracking-widest uppercase text-bsmk-terracotta mt-1">
+                  <p className="text-xs tracking-widest uppercase text-page-accent mt-1">
                     {member.jobTitle}
                   </p>
                 </div>
@@ -86,7 +86,7 @@ export default function EquipePage() {
                     {member.instagramUrl && (
                       <Link
                         href={member.instagramUrl}
-                        className="text-xs tracking-widest uppercase text-bsmk-black/40 hover:text-bsmk-terracotta transition-colors"
+                        className="text-xs tracking-widest uppercase text-bsmk-black/40 hover:text-page-accent transition-colors"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -107,7 +107,7 @@ export default function EquipePage() {
         <Container narrow>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-4">
+              <p className="text-page-accent text-xs tracking-widest uppercase mb-4">
                 Rejoindre l'équipe
               </p>
               <h2 className="text-3xl font-display font-bold text-bsmk-black mb-4">
@@ -120,7 +120,7 @@ export default function EquipePage() {
             <div className="flex flex-col gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center h-14 px-8 text-base font-medium tracking-wide bg-bsmk-terracotta text-white hover:bg-bsmk-terracotta/90 transition-colors justify-center rounded-lg"
+                className="inline-flex items-center h-14 px-8 text-base font-medium tracking-wide bg-page-accent text-white hover:bg-page-accent/90 transition-colors justify-center rounded-lg"
               >
                 Nous contacter
               </Link>

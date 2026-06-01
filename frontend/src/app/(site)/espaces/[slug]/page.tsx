@@ -88,7 +88,7 @@ export default async function EspacePage({ params }: Props) {
         <Container>
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
             <div>
-              <p className="font-sans text-xs tracking-widest uppercase text-bsmk-terracotta mb-3 font-medium">
+              <p className="font-sans text-xs tracking-widest uppercase text-page-accent mb-3 font-medium">
                 BSMK — {space.floor}
               </p>
               <h1 className="font-display text-4xl lg:text-5xl text-bsmk-black leading-none mb-4">
@@ -159,7 +159,7 @@ export default async function EspacePage({ params }: Props) {
               <div
                 className="flex items-center gap-3 bg-bsmk-sand/20 px-4 py-3 rounded-lg"
               >
-                <span className="text-bsmk-terracotta font-bold text-sm shrink-0">✓</span>
+                <span className="text-page-accent font-bold text-sm shrink-0">✓</span>
                 <span className="font-sans text-sm text-bsmk-black">{item}</span>
               </div>
               </StaggerItem>
@@ -179,16 +179,16 @@ export default async function EspacePage({ params }: Props) {
                 <Link
                   key={d.slug}
                   href={`/disciplines/${d.slug}`}
-                  className="group flex items-center gap-3 border border-bsmk-black/15 px-5 py-3 hover:border-bsmk-terracotta transition-colors rounded-lg"
+                  className="group flex items-center gap-3 border border-bsmk-black/15 px-5 py-3 hover:border-page-accent transition-colors rounded-lg"
                 >
                   <span
                     className="w-3 h-3 shrink-0"
                     style={{ backgroundColor: d.color }}
                   />
-                  <span className="font-sans text-sm text-bsmk-black group-hover:text-bsmk-terracotta transition-colors">
+                  <span className="font-sans text-sm text-bsmk-black group-hover:text-page-accent transition-colors">
                     {d.name}
                   </span>
-                  <span className="text-bsmk-black/30 group-hover:text-bsmk-terracotta transition-colors">→</span>
+                  <span className="text-bsmk-black/30 group-hover:text-page-accent transition-colors">→</span>
                 </Link>
               ))}
             </div>

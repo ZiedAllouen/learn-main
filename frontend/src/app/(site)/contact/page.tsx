@@ -1,5 +1,6 @@
 import { Container } from '@/components/ui/Container'
 import { ContactForm } from './ContactForm'
+import { LocationMapClient } from './LocationMapClient'
 import { HeroText, StaggerContainer, StaggerItem, FadeUp } from '@/components/ui/Motion'
 
 export const metadata = {
@@ -48,7 +49,7 @@ export default function ContactPage() {
         <Container>
           <div className="max-w-2xl">
             <HeroText delay={0}>
-              <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-6">
+              <p className="text-page-accent text-xs tracking-widest uppercase mb-6">
                 Écrivez-nous
               </p>
             </HeroText>
@@ -74,14 +75,14 @@ export default function ContactPage() {
             <aside className="lg:col-span-4 space-y-12">
               {/* Contact details */}
               <div>
-                <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-6">
+                <p className="text-page-accent text-xs tracking-widest uppercase mb-6">
                   Nos coordonnées
                 </p>
                 <StaggerContainer className="space-y-8">
                   {contactDetails.map((detail) => (
                     <StaggerItem key={detail.label}>
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-bsmk-terracotta text-sm">{detail.icon}</span>
+                        <span className="text-page-accent text-sm">{detail.icon}</span>
                         <span className="text-xs tracking-widest uppercase text-bsmk-black/40">
                           {detail.label}
                         </span>
@@ -89,7 +90,7 @@ export default function ContactPage() {
                       {detail.link ? (
                         <a
                           href={detail.link}
-                          className="text-bsmk-black hover:text-bsmk-terracotta transition-colors"
+                          className="text-bsmk-black hover:text-page-accent transition-colors"
                         >
                           {detail.lines.map((line) => (
                             <div key={line} className="text-sm font-medium">
@@ -113,7 +114,7 @@ export default function ContactPage() {
 
               {/* Departments */}
               <div className="border-t border-bsmk-sand/40 pt-8">
-                <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-6">
+                <p className="text-page-accent text-xs tracking-widest uppercase mb-6">
                   Contacts directs
                 </p>
                 <div className="space-y-4">
@@ -122,7 +123,7 @@ export default function ContactPage() {
                       <p className="text-xs text-bsmk-black/40 mb-0.5">{dept.name}</p>
                       <a
                         href={`mailto:${dept.email}`}
-                        className="text-sm text-bsmk-black hover:text-bsmk-terracotta transition-colors"
+                        className="text-sm text-bsmk-black hover:text-page-accent transition-colors"
                       >
                         {dept.email}
                       </a>
@@ -133,7 +134,7 @@ export default function ContactPage() {
 
               {/* Social */}
               <div className="border-t border-bsmk-sand/40 pt-8">
-                <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-4">
+                <p className="text-page-accent text-xs tracking-widest uppercase mb-4">
                   Réseaux sociaux
                 </p>
                 <div className="flex gap-4">
@@ -141,7 +142,7 @@ export default function ContactPage() {
                     href="https://instagram.com/bsmk.tn"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs tracking-widest uppercase text-bsmk-black/40 hover:text-bsmk-terracotta transition-colors"
+                    className="text-xs tracking-widest uppercase text-bsmk-black/40 hover:text-page-accent transition-colors"
                   >
                     Instagram
                   </a>
@@ -167,7 +168,7 @@ export default function ContactPage() {
 
             {/* ── RIGHT: Form ── */}
             <FadeUp className="lg:col-span-8" delay={0.15}>
-              <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-6">
+              <p className="text-page-accent text-xs tracking-widest uppercase mb-6">
                 Formulaire de contact
               </p>
               <h2 className="text-3xl font-display font-bold text-bsmk-black mb-8">
@@ -179,23 +180,22 @@ export default function ContactPage() {
         </Container>
       </section>
 
-      {/* ── MAP PLACEHOLDER ── */}
+      {/* ── MAP ── */}
       <section className="bg-bsmk-sand/20 py-12 border-t border-bsmk-sand/40">
         <Container>
-          <div className="relative h-64 bg-bsmk-sand/40 flex items-center justify-center">
-            <div className="text-center">
-              <p className="text-bsmk-black/40 text-xs tracking-widest uppercase mb-2">Localisation</p>
-              <p className="font-display text-bsmk-black/60 text-lg">12, Rue de la Kasbah — Tunis</p>
-              <a
-                href="https://maps.google.com/?q=Tunis,Médina"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs tracking-widest uppercase text-bsmk-terracotta hover:underline mt-3 inline-block"
-              >
-                Ouvrir dans Google Maps →
-              </a>
-            </div>
+          <div className="flex flex-col items-center text-center mb-6">
+            <p className="text-bsmk-black/40 text-xs tracking-widest uppercase mb-2">Localisation</p>
+            <p className="font-display text-bsmk-black/60 text-lg">12, Rue de la Kasbah — Tunis</p>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=36.798,10.168"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs tracking-widest uppercase text-page-accent hover:underline mt-3 inline-block"
+            >
+              Ouvrir dans Google Maps →
+            </a>
           </div>
+          <LocationMapClient />
         </Container>
       </section>
     </main>

@@ -106,7 +106,7 @@ export default async function ArtistPage({ params }: Props) {
 
               {/* Statement */}
               <HeroText delay={0.4}>
-              <blockquote className="border-l-2 border-bsmk-terracotta pl-6 mt-2">
+              <blockquote className="border-l-2 border-page-accent pl-6 mt-2">
                 <p className="font-display text-xl lg:text-2xl text-bsmk-sand italic leading-snug">
                   « {artist.statement} »
                 </p>
@@ -140,7 +140,7 @@ export default async function ArtistPage({ params }: Props) {
 
             {/* Bio text */}
             <FadeUp className="lg:col-span-2">
-              <p className="font-sans text-xs tracking-widest uppercase text-bsmk-terracotta mb-6">
+              <p className="font-sans text-xs tracking-widest uppercase text-page-accent mb-6">
                 Biographie
               </p>
               <p className="font-sans text-lg text-bsmk-black/80 leading-relaxed">
@@ -176,7 +176,7 @@ export default async function ArtistPage({ params }: Props) {
                     href={artist.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-sans text-sm text-bsmk-black hover:text-bsmk-terracotta transition-colors flex items-center gap-2"
+                    className="font-sans text-sm text-bsmk-black hover:text-page-accent transition-colors flex items-center gap-2"
                   >
                     <span className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 w-20">
                       Site web
@@ -218,7 +218,7 @@ export default async function ArtistPage({ params }: Props) {
       {/* ── Portfolio gallery ── */}
       <section className="py-16 lg:py-20 border-b border-bsmk-black/10">
         <Container>
-          <p className="font-sans text-xs tracking-widest uppercase text-bsmk-terracotta mb-3">
+          <p className="font-sans text-xs tracking-widest uppercase text-page-accent mb-3">
             Travaux
           </p>
           <h2 className="font-display text-3xl lg:text-4xl text-bsmk-black mb-10">
@@ -244,7 +244,7 @@ export default async function ArtistPage({ params }: Props) {
       {/* ── Disciplines ── */}
       <section className="py-16 lg:py-20 border-b border-bsmk-black/10 bg-bsmk-black/3">
         <Container>
-          <p className="font-sans text-xs tracking-widest uppercase text-bsmk-terracotta mb-3">
+          <p className="font-sans text-xs tracking-widest uppercase text-page-accent mb-3">
             Pratiques
           </p>
           <h2 className="font-display text-3xl lg:text-4xl text-bsmk-black mb-10">
@@ -258,20 +258,20 @@ export default async function ArtistPage({ params }: Props) {
                 <StaggerItem key={ds}>
                 <Link
                   href={`/disciplines/${d.slug}`}
-                  className="group flex gap-0 border border-bsmk-black/10 hover:border-bsmk-terracotta transition-colors rounded-xl overflow-hidden"
+                  className="group flex gap-0 border border-bsmk-black/10 hover:border-page-accent transition-colors rounded-xl overflow-hidden"
                 >
                   <div
                     className="w-2 shrink-0"
                     style={{ backgroundColor: d.color }}
                   />
                   <div className="p-6">
-                    <h3 className="font-display text-xl text-bsmk-black group-hover:text-bsmk-terracotta transition-colors mb-2">
+                    <h3 className="font-display text-xl text-bsmk-black group-hover:text-page-accent transition-colors mb-2">
                       {d.name}
                     </h3>
                     <p className="font-sans text-sm text-bsmk-black/60 leading-relaxed">
                       {d.description}
                     </p>
-                    <p className="font-sans text-xs tracking-widest uppercase text-bsmk-black/30 mt-4 group-hover:text-bsmk-terracotta transition-colors">
+                    <p className="font-sans text-xs tracking-widest uppercase text-bsmk-black/30 mt-4 group-hover:text-page-accent transition-colors">
                       Explorer la discipline →
                     </p>
                   </div>
@@ -285,7 +285,7 @@ export default async function ArtistPage({ params }: Props) {
 
       {/* ── Collab CTA ── */}
       {artist.availableForCollaboration && (
-        <section className="bg-bsmk-terracotta py-16 lg:py-20">
+        <section className="bg-page-accent py-16 lg:py-20">
           <Container>
             <FadeUp>
             <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
@@ -321,7 +321,7 @@ export default async function ArtistPage({ params }: Props) {
           <Container>
             <div className="flex items-baseline justify-between mb-10">
               <div>
-                <p className="font-sans text-xs tracking-widest uppercase text-bsmk-terracotta mb-3">
+                <p className="font-sans text-xs tracking-widest uppercase text-page-accent mb-3">
                   {primaryDiscipline?.shortName ?? 'Même discipline'}
                 </p>
                 <h2 className="font-display text-3xl text-bsmk-black">
@@ -330,7 +330,7 @@ export default async function ArtistPage({ params }: Props) {
               </div>
               <Link
                 href="/vetrinart"
-                className="font-sans text-sm text-bsmk-black/40 hover:text-bsmk-terracotta transition-colors"
+                className="font-sans text-sm text-bsmk-black/40 hover:text-page-accent transition-colors"
               >
                 Tout l'annuaire →
               </Link>
@@ -354,7 +354,7 @@ export default async function ArtistPage({ params }: Props) {
                         className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
-                    <h3 className="font-display text-lg text-bsmk-black group-hover:text-bsmk-terracotta transition-colors mb-1">
+                    <h3 className="font-display text-lg text-bsmk-black group-hover:text-page-accent transition-colors mb-1">
                       {other.name}
                     </h3>
                     <p className="font-sans text-xs text-bsmk-black/50 mb-2">

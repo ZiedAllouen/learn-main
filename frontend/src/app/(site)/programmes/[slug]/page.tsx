@@ -227,7 +227,7 @@ export default async function ProgramDetailPage({
       )}
 
       {/* ── 5. Inscription CTA ───────────────────────────────── */}
-      <section className="bg-bsmk-terracotta py-20">
+      <section className="bg-page-accent py-20">
         <Container>
           <FadeUp>
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
@@ -262,7 +262,7 @@ export default async function ProgramDetailPage({
         <Container>
           <Link
             href="/programmes"
-            className="text-sm text-bsmk-black/50 hover:text-bsmk-terracotta transition-colors tracking-wide"
+            className="text-sm text-bsmk-black/50 hover:text-page-accent transition-colors tracking-wide"
           >
             ← Tous les programmes
           </Link>

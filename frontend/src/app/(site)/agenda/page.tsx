@@ -201,7 +201,7 @@ export default async function AgendaPage({
               <Link
                 key={evt.id}
                 href={`/agenda/${evt.slug}`}
-                className="group bg-bsmk-white border border-bsmk-black/10 hover:border-bsmk-terracotta transition-colors flex flex-col h-full rounded-xl overflow-hidden"
+                className="group bg-bsmk-white border border-bsmk-black/10 hover:border-page-accent transition-colors flex flex-col h-full rounded-xl overflow-hidden"
               >
                 <div className="relative aspect-video overflow-hidden">
                   <Image
@@ -224,7 +224,7 @@ export default async function AgendaPage({
                 </div>
 
                 <div className="p-5 flex flex-col flex-1">
-                  <h3 className="font-display text-lg font-bold leading-snug mb-2 group-hover:text-bsmk-terracotta transition-colors">
+                  <h3 className="font-display text-lg font-bold leading-snug mb-2 group-hover:text-page-accent transition-colors">
                     {evt.title}
                   </h3>
                   <p className="text-sm text-bsmk-black/50 mb-3">
@@ -234,7 +234,7 @@ export default async function AgendaPage({
                     <span className="text-sm font-medium">
                       {evt.free ? 'Gratuit' : evt.price}
                     </span>
-                    <span className="text-xs tracking-widest uppercase text-bsmk-terracotta opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-xs tracking-widest uppercase text-page-accent opacity-0 group-hover:opacity-100 transition-opacity">
                       Voir →
                     </span>
                   </div>
@@ -273,7 +273,7 @@ export default async function AgendaPage({
                       <div key={evt.id}>
                         <div className="flex gap-6 py-5 group">
                           {/* Date block */}
-                          <div className="w-16 h-16 shrink-0 bg-bsmk-terracotta text-white flex flex-col items-center justify-center rounded-md">
+                          <div className="w-16 h-16 shrink-0 bg-page-accent text-white flex flex-col items-center justify-center rounded-md">
                             <span className="font-display text-2xl font-bold leading-none">
                               {getDayNumber(evt.startDate)}
                             </span>
@@ -290,7 +290,7 @@ export default async function AgendaPage({
                               </Badge>
                               {evt.free && <Badge variant="olive">Entrée libre</Badge>}
                             </div>
-                            <h4 className="font-display text-xl font-bold leading-snug group-hover:text-bsmk-terracotta transition-colors mb-1">
+                            <h4 className="font-display text-xl font-bold leading-snug group-hover:text-page-accent transition-colors mb-1">
                               {evt.title}
                             </h4>
                             <p className="text-sm text-bsmk-black/50 mb-2">{evt.location}</p>
@@ -306,7 +306,7 @@ export default async function AgendaPage({
                             </span>
                             <Link
                               href={`/agenda/${evt.slug}`}
-                              className="text-xs tracking-widest uppercase text-bsmk-terracotta hover:underline"
+                              className="text-xs tracking-widest uppercase text-page-accent hover:underline"
                             >
                               Voir →
                             </Link>
@@ -339,7 +339,7 @@ export default async function AgendaPage({
             </div>
             <Link
               href="/contact?sujet=Proposition+événement"
-              className="shrink-0 inline-flex items-center h-14 px-8 bg-bsmk-terracotta text-white text-sm font-medium tracking-wide hover:bg-bsmk-terracotta/90 transition-colors rounded-lg"
+              className="shrink-0 inline-flex items-center h-14 px-8 bg-page-accent text-white text-sm font-medium tracking-wide hover:bg-page-accent/90 transition-colors rounded-lg"
             >
               Nous contacter
             </Link>

@@ -150,7 +150,7 @@ export default async function DisciplinesPage({
       </section>
 
       {/* CTA strip */}
-      <section className="bg-bsmk-terracotta py-12">
+      <section className="bg-page-accent py-12">
         <Container>
           <FadeUp className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <p className="font-display text-xl lg:text-2xl text-white text-center sm:text-left leading-snug">

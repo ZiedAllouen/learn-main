@@ -8,29 +8,7 @@ import { motion } from 'framer-motion'
 import { disciplines } from '@/data/disciplines'
 import { Container } from '@/components/ui/Container'
 import { getAuthUser, logout } from '@/lib/auth'
-
-const SECTION_COLORS: Record<string, string> = {
-  '/bsmk': '#2D5F99',
-  '/disciplines': '#2D5F99',
-  '/programmes': '#C0392B',
-  '/agenda': '#C0392B',
-  '/espaces': '#5C8A3A',
-  '/magazine': '#7A2E73',
-  '/vetrinart': '#C99A2E',
-  '/cartographie': '#C99A2E',
-  '/communaute': '#147070',
-  '/contact': '#147070',
-  '/participer': '#C0392B',
-}
-
-function getSectionColor(pathname: string): string | null {
-  for (const prefix of Object.keys(SECTION_COLORS)) {
-    if (pathname === prefix || pathname.startsWith(prefix + '/')) {
-      return SECTION_COLORS[prefix]
-    }
-  }
-  return null
-}
+import { getSectionColor } from '@/lib/sectionColors'
 
 const navLinks = [
   { label: 'Le Centre', href: '/bsmk' },
@@ -73,7 +51,7 @@ export function Header() {
   }
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
-  const sectionColor = getSectionColor(pathname)
+  const sectionColor = getSectionColor(pathname).base
 
   return (
     <motion.header
@@ -111,7 +89,7 @@ export function Header() {
                   <Link
                     href={item.href}
                     className="text-sm font-medium tracking-wide transition-colors text-bsmk-white/75 hover:text-bsmk-white"
-                    style={isActive(item.href) ? { color: sectionColor ?? '#E07B54' } : {}}
+                    style={isActive(item.href) ? { color: sectionColor } : {}}
                   >
                     {item.label}
                     <span className="ml-1 opacity-50">↓</span>
@@ -150,7 +128,7 @@ export function Header() {
                   key={item.label}
                   href={item.href}
                   className="text-sm font-medium tracking-wide transition-colors text-bsmk-white/75 hover:text-bsmk-white"
-                  style={isActive(item.href) ? { color: sectionColor ?? '#E07B54' } : {}}
+                  style={isActive(item.href) ? { color: sectionColor } : {}}
                 >
                   {item.label}
                 </Link>
@@ -186,7 +164,7 @@ export function Header() {
               <Link
                 href="/login"
                 className="text-sm font-medium text-bsmk-white/60 hover:text-bsmk-white transition-colors tracking-wide"
-                style={isActive('/login') ? { color: sectionColor ?? '#E07B54' } : {}}
+                style={isActive('/login') ? { color: sectionColor } : {}}
               >
                 Connexion
               </Link>
@@ -247,7 +225,7 @@ export function Header() {
                   key={item.label}
                   href={item.href}
                   className="py-3.5 text-sm font-medium tracking-wide border-b border-white/5 transition-colors text-bsmk-white/75 hover:text-bsmk-white"
-                  style={isActive(item.href) ? { color: sectionColor ?? '#E07B54' } : {}}
+                  style={isActive(item.href) ? { color: sectionColor } : {}}
                 >
                   {item.label}
                 </Link>

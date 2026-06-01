@@ -305,7 +305,7 @@ export default async function EventDetailPage({
               </h2>
               <Link
                 href="/agenda"
-                className="text-xs tracking-widest uppercase text-bsmk-terracotta hover:underline"
+                className="text-xs tracking-widest uppercase text-page-accent hover:underline"
               >
                 Tout l&apos;agenda →
               </Link>
@@ -316,7 +316,7 @@ export default async function EventDetailPage({
                 <StaggerItem key={rel.id}>
                 <Link
                   href={`/agenda/${rel.slug}`}
-                  className="group bg-bsmk-white border border-bsmk-black/10 hover:border-bsmk-terracotta transition-colors flex flex-col rounded-xl overflow-hidden"
+                  className="group bg-bsmk-white border border-bsmk-black/10 hover:border-page-accent transition-colors flex flex-col rounded-xl overflow-hidden"
                 >
                   <div className="relative aspect-video overflow-hidden">
                     <Image
@@ -333,7 +333,7 @@ export default async function EventDetailPage({
                     )}
                   </div>
                   <div className="p-4 flex flex-col flex-1">
-                    <h3 className="font-display text-base font-bold leading-snug mb-1 group-hover:text-bsmk-terracotta transition-colors line-clamp-2">
+                    <h3 className="font-display text-base font-bold leading-snug mb-1 group-hover:text-page-accent transition-colors line-clamp-2">
                       {rel.title}
                     </h3>
                     <p className="text-xs text-bsmk-black/50">
@@ -349,7 +349,7 @@ export default async function EventDetailPage({
       )}
 
       {/* ── 6. CTA ───────────────────────────────────────────── */}
-      <section className="bg-bsmk-terracotta py-20">
+      <section className="bg-page-accent py-20">
         <Container>
           <FadeUp>
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
@@ -388,7 +388,7 @@ export default async function EventDetailPage({
         <Container>
           <Link
             href="/agenda"
-            className="text-sm text-bsmk-black/50 hover:text-bsmk-terracotta transition-colors tracking-wide"
+            className="text-sm text-bsmk-black/50 hover:text-page-accent transition-colors tracking-wide"
           >
             ← Retour à l&apos;agenda
           </Link>

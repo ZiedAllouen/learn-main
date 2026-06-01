@@ -68,7 +68,7 @@ export default function LeLieuPage() {
           <Container className="pb-16">
             <div className="max-w-2xl">
               <HeroText delay={0}>
-                <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-4">
+                <p className="text-page-accent text-xs tracking-widest uppercase mb-4">
                   Tunis · Centre-ville
                 </p>
               </HeroText>
@@ -88,34 +88,34 @@ export default function LeLieuPage() {
           <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10">
             <StaggerItem key="surface">
               <div className="py-10 px-6 text-center">
-                <div className="text-4xl lg:text-5xl font-display font-bold text-bsmk-terracotta leading-none flex items-baseline justify-center gap-1">
+                <div className="text-4xl lg:text-5xl font-display font-bold text-page-accent leading-none flex items-baseline justify-center gap-1">
                   <CountUp value={2500} />
-                  <span className="text-2xl text-bsmk-terracotta/60">m²</span>
+                  <span className="text-2xl text-page-accent/60">m²</span>
                 </div>
                 <div className="text-xs tracking-widest uppercase text-bsmk-white/40 mt-2">de surface totale</div>
               </div>
             </StaggerItem>
             <StaggerItem key="etages">
               <div className="py-10 px-6 text-center">
-                <div className="text-4xl lg:text-5xl font-display font-bold text-bsmk-terracotta leading-none flex items-baseline justify-center gap-1">
+                <div className="text-4xl lg:text-5xl font-display font-bold text-page-accent leading-none flex items-baseline justify-center gap-1">
                   <CountUp value={3} />
-                  <span className="text-2xl text-bsmk-terracotta/60">étages</span>
+                  <span className="text-2xl text-page-accent/60">étages</span>
                 </div>
                 <div className="text-xs tracking-widest uppercase text-bsmk-white/40 mt-2">de création</div>
               </div>
             </StaggerItem>
             <StaggerItem key="espaces">
               <div className="py-10 px-6 text-center">
-                <div className="text-4xl lg:text-5xl font-display font-bold text-bsmk-terracotta leading-none flex items-baseline justify-center gap-1">
+                <div className="text-4xl lg:text-5xl font-display font-bold text-page-accent leading-none flex items-baseline justify-center gap-1">
                   <CountUp value={10} />
-                  <span className="text-2xl text-bsmk-terracotta/60">espaces</span>
+                  <span className="text-2xl text-page-accent/60">espaces</span>
                 </div>
                 <div className="text-xs tracking-widest uppercase text-bsmk-white/40 mt-2">professionnels</div>
               </div>
             </StaggerItem>
             <StaggerItem key="localisation">
               <div className="py-10 px-6 text-center">
-                <div className="text-4xl lg:text-5xl font-display font-bold text-bsmk-terracotta leading-none">
+                <div className="text-4xl lg:text-5xl font-display font-bold text-page-accent leading-none">
                   Centre-ville
                 </div>
                 <div className="text-xs tracking-widest uppercase text-bsmk-white/40 mt-2">de Tunis</div>
@@ -129,7 +129,7 @@ export default function LeLieuPage() {
       <section className="py-24 bg-bsmk-white">
         <Container narrow>
           <FadeUp>
-            <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-6">Le bâtiment</p>
+            <p className="text-page-accent text-xs tracking-widest uppercase mb-6">Le bâtiment</p>
             <h2 className="text-3xl lg:text-4xl font-display font-bold text-bsmk-black mb-8">
               Un bâtiment entièrement dédié à la création
             </h2>
@@ -148,7 +148,7 @@ export default function LeLieuPage() {
       {/* ── NIVEAUX ── */}
       <section className="py-12 bg-bsmk-white">
         <Container>
-          <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-10">Plan par niveau</p>
+          <p className="text-page-accent text-xs tracking-widest uppercase mb-10">Plan par niveau</p>
           <div className="space-y-px">
             {floorData.map((floor, idx) => (
               <div key={floor.floor} className="grid grid-cols-1 lg:grid-cols-12 border border-bsmk-sand/40">
@@ -178,7 +178,7 @@ export default function LeLieuPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             <FadeUp>
               <div>
-                <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-4">Accès & localisation</p>
+                <p className="text-page-accent text-xs tracking-widest uppercase mb-4">Accès & localisation</p>
                 <h2 className="text-3xl font-display font-bold text-bsmk-black mb-6">
                   Au cœur de Tunis
                 </h2>
@@ -188,15 +188,15 @@ export default function LeLieuPage() {
                   </p>
                   <div className="space-y-2 text-sm">
                     <div className="flex gap-3">
-                      <span className="text-bsmk-terracotta">◷</span>
+                      <span className="text-page-accent">◷</span>
                       <span>Lundi – Vendredi : 9h – 22h</span>
                     </div>
                     <div className="flex gap-3">
-                      <span className="text-bsmk-terracotta">◷</span>
+                      <span className="text-page-accent">◷</span>
                       <span>Samedi : 10h – 22h</span>
                     </div>
                     <div className="flex gap-3">
-                      <span className="text-bsmk-terracotta">◷</span>
+                      <span className="text-page-accent">◷</span>
                       <span>Dimanche : 14h – 20h (selon programmation)</span>
                     </div>
                   </div>

@@ -50,7 +50,7 @@ export function ContactForm() {
           htmlFor="name"
           className="block text-xs tracking-widest uppercase text-bsmk-black/60 mb-2"
         >
-          Nom complet <span aria-hidden="true" className="text-bsmk-terracotta">*</span>
+          Nom complet <span aria-hidden="true" className="text-page-accent">*</span>
         </label>
         <input
           id="name"
@@ -60,7 +60,7 @@ export function ContactForm() {
           autoComplete="name"
           aria-required="true"
           placeholder="Votre nom et prénom"
-          className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black placeholder:text-bsmk-black/30 focus:outline-none focus:border-bsmk-terracotta transition-colors text-sm rounded-md"
+          className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black placeholder:text-bsmk-black/30 focus:outline-none focus:border-page-accent transition-colors text-sm rounded-md"
         />
       </div>
 
@@ -70,7 +70,7 @@ export function ContactForm() {
           htmlFor="email"
           className="block text-xs tracking-widest uppercase text-bsmk-black/60 mb-2"
         >
-          Adresse email <span aria-hidden="true" className="text-bsmk-terracotta">*</span>
+          Adresse email <span aria-hidden="true" className="text-page-accent">*</span>
         </label>
         <input
           id="email"
@@ -80,7 +80,7 @@ export function ContactForm() {
           autoComplete="email"
           aria-required="true"
           placeholder="votre@email.com"
-          className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black placeholder:text-bsmk-black/30 focus:outline-none focus:border-bsmk-terracotta transition-colors text-sm rounded-md"
+          className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black placeholder:text-bsmk-black/30 focus:outline-none focus:border-page-accent transition-colors text-sm rounded-md"
         />
       </div>
 
@@ -90,14 +90,14 @@ export function ContactForm() {
           htmlFor="subject"
           className="block text-xs tracking-widest uppercase text-bsmk-black/60 mb-2"
         >
-          Sujet <span aria-hidden="true" className="text-bsmk-terracotta">*</span>
+          Sujet <span aria-hidden="true" className="text-page-accent">*</span>
         </label>
         <select
           id="subject"
           name="subject"
           required
           aria-required="true"
-          className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black focus:outline-none focus:border-bsmk-terracotta transition-colors text-sm appearance-none rounded-md"
+          className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black focus:outline-none focus:border-page-accent transition-colors text-sm appearance-none rounded-md"
         >
           {subjectOptions.map((opt) => (
             <option key={opt.value} value={opt.value} disabled={opt.value === ''}>
@@ -113,7 +113,7 @@ export function ContactForm() {
           htmlFor="message"
           className="block text-xs tracking-widest uppercase text-bsmk-black/60 mb-2"
         >
-          Message <span aria-hidden="true" className="text-bsmk-terracotta">*</span>
+          Message <span aria-hidden="true" className="text-page-accent">*</span>
         </label>
         <textarea
           id="message"
@@ -122,12 +122,12 @@ export function ContactForm() {
           aria-required="true"
           rows={6}
           placeholder="Décrivez votre demande…"
-          className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black placeholder:text-bsmk-black/30 focus:outline-none focus:border-bsmk-terracotta transition-colors text-sm resize-y rounded-md"
+          className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black placeholder:text-bsmk-black/30 focus:outline-none focus:border-page-accent transition-colors text-sm resize-y rounded-md"
         />
       </div>
 
       <p className="text-xs text-bsmk-black/40">
-        Les champs marqués <span className="text-bsmk-terracotta">*</span> sont obligatoires.
+        Les champs marqués <span className="text-page-accent">*</span> sont obligatoires.
       </p>
 
       <motion.div whileTap={{ scale: 0.97 }} className="inline-block w-full sm:w-auto">

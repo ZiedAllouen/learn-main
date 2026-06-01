@@ -110,7 +110,7 @@ export default async function ArticlePage({ params }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
             {/* Main content */}
             <FadeUp className="lg:col-span-2">
-              <p className="font-sans text-lg text-bsmk-black/80 leading-relaxed mb-8 italic border-l-4 border-bsmk-terracotta pl-6">
+              <p className="font-sans text-lg text-bsmk-black/80 leading-relaxed mb-8 italic border-l-4 border-page-accent pl-6">
                 {article.excerpt}
               </p>
               <div className="prose max-w-none font-sans text-bsmk-black/80 leading-relaxed space-y-4">
@@ -151,14 +151,14 @@ export default async function ArticlePage({ params }: Props) {
                       <Link
                         key={d.slug}
                         href={`/disciplines/${d.slug}`}
-                        className="font-sans text-sm text-bsmk-black hover:text-bsmk-terracotta transition-colors flex items-center gap-2 group"
+                        className="font-sans text-sm text-bsmk-black hover:text-page-accent transition-colors flex items-center gap-2 group"
                       >
                         <span
                           className="w-2 h-2 shrink-0"
                           style={{ backgroundColor: d.color }}
                         />
                         {d.name}
-                        <span className="ml-auto text-bsmk-black/30 group-hover:text-bsmk-terracotta">→</span>
+                        <span className="ml-auto text-bsmk-black/30 group-hover:text-page-accent">→</span>
                       </Link>
                     ))}
                   </div>
@@ -187,7 +187,7 @@ export default async function ArticlePage({ params }: Props) {
                             />
                           </div>
                           <Badge variant="terracotta" className="mb-1">{rel.category}</Badge>
-                          <h4 className="font-display text-sm text-bsmk-black leading-snug group-hover:text-bsmk-terracotta transition-colors line-clamp-2">
+                          <h4 className="font-display text-sm text-bsmk-black leading-snug group-hover:text-page-accent transition-colors line-clamp-2">
                             {rel.title}
                           </h4>
                           <p className="font-sans text-xs text-bsmk-black/40 mt-1">

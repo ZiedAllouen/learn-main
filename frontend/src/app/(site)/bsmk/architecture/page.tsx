@@ -57,7 +57,7 @@ export default function ArchitecturePage() {
         <Container className="relative z-10 py-40">
           <div className="max-w-2xl">
             <HeroText delay={0}>
-              <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-6">
+              <p className="text-page-accent text-xs tracking-widest uppercase mb-6">
                 Atelier Tunis · Réhabilitation 2019–2020
               </p>
             </HeroText>
@@ -79,7 +79,7 @@ export default function ArchitecturePage() {
       <section className="py-24 bg-bsmk-white">
         <Container narrow>
           <FadeUp>
-            <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-6">La démarche</p>
+            <p className="text-page-accent text-xs tracking-widest uppercase mb-6">La démarche</p>
             <h2 className="text-3xl lg:text-4xl font-display font-bold text-bsmk-black mb-8">
               Réhabiliter sans effacer
             </h2>
@@ -101,7 +101,7 @@ export default function ArchitecturePage() {
       {/* ── PRINCIPLES ── */}
       <section className="pb-24 bg-bsmk-white">
         <Container>
-          <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-12">
+          <p className="text-page-accent text-xs tracking-widest uppercase mb-12">
             Trois principes de conception
           </p>
           <div className="space-y-24">
@@ -142,7 +142,7 @@ export default function ArchitecturePage() {
         <Container narrow>
           <FadeUp>
             <div className="text-center">
-              <span className="text-bsmk-terracotta text-6xl font-display leading-none">"</span>
+              <span className="text-page-accent text-6xl font-display leading-none">"</span>
               <blockquote className="text-2xl lg:text-3xl font-display text-bsmk-white leading-relaxed mt-4 mb-8">
                 Notre objectif était de construire un bâtiment qui disparaît au profit de l'art. Un bâtiment qui ne s'impose pas, qui ne concurrence pas les œuvres qui y prennent place, mais qui les rend possibles. La plus grande réussite d'une architecture culturelle, c'est quand on l'oublie.
               </blockquote>
@@ -159,7 +159,7 @@ export default function ArchitecturePage() {
       <section className="py-24 bg-bsmk-sand/20">
         <Container>
           <FadeUp>
-            <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-8">Galerie photographique</p>
+            <p className="text-page-accent text-xs tracking-widest uppercase mb-8">Galerie photographique</p>
           </FadeUp>
           <StaggerContainer className="grid grid-cols-2 lg:grid-cols-3 gap-2">
             {['archi-detail-1', 'archi-detail-2', 'archi-detail-3', 'archi-detail-4', 'archi-detail-5', 'archi-detail-6'].map((seed) => (

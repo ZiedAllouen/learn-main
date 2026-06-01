@@ -34,7 +34,7 @@ export default function AboutPage() {
         <Container>
           <div className="max-w-3xl">
             <HeroText delay={0}>
-              <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-6">
+              <p className="text-page-accent text-xs tracking-widest uppercase mb-6">
                 À propos du BSMK
               </p>
             </HeroText>
@@ -71,7 +71,7 @@ export default function AboutPage() {
           <div className="space-y-12">
             <FadeUp>
               <div>
-                <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-4">Notre histoire</p>
+                <p className="text-page-accent text-xs tracking-widest uppercase mb-4">Notre histoire</p>
                 <h2 className="text-3xl font-display font-bold text-bsmk-black mb-6">
                   Un projet né de la conviction
                 </h2>
@@ -87,7 +87,7 @@ export default function AboutPage() {
             </FadeUp>
 
             <SlideRight>
-              <div className="border-l-4 border-bsmk-terracotta pl-8">
+              <div className="border-l-4 border-page-accent pl-8">
                 <p className="text-2xl font-display text-bsmk-black leading-relaxed italic">
                   "La Méditerranée n'est pas un décor pour notre projet — elle est notre méthode. Une façon de travailler qui accepte l'hybridation, qui cherche le commun sans effacer les différences."
                 </p>
@@ -97,7 +97,7 @@ export default function AboutPage() {
 
             <FadeUp>
               <div>
-                <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-4">Notre rôle</p>
+                <p className="text-page-accent text-xs tracking-widest uppercase mb-4">Notre rôle</p>
                 <h2 className="text-3xl font-display font-bold text-bsmk-black mb-6">
                   Un carrefour pour la création
                 </h2>
@@ -123,19 +123,19 @@ export default function AboutPage() {
         <Container>
           <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <StaggerItem>
-              <CountUp value={2018} className="text-5xl font-display font-bold text-bsmk-terracotta mb-2" />
+              <CountUp value={2018} className="text-5xl font-display font-bold text-page-accent mb-2" />
               <div className="text-xs tracking-widest uppercase text-bsmk-black/50">Fondation</div>
             </StaggerItem>
             <StaggerItem>
-              <CountUp value={team.length} className="text-5xl font-display font-bold text-bsmk-terracotta mb-2" />
+              <CountUp value={team.length} className="text-5xl font-display font-bold text-page-accent mb-2" />
               <div className="text-xs tracking-widest uppercase text-bsmk-black/50">Membres de l'équipe</div>
             </StaggerItem>
             <StaggerItem>
-              <CountUp value={7} className="text-5xl font-display font-bold text-bsmk-terracotta mb-2" />
+              <CountUp value={7} className="text-5xl font-display font-bold text-page-accent mb-2" />
               <div className="text-xs tracking-widest uppercase text-bsmk-black/50">Disciplines artistiques</div>
             </StaggerItem>
             <StaggerItem>
-              <CountUp value={2500} className="text-5xl font-display font-bold text-bsmk-terracotta mb-2" />
+              <CountUp value={2500} className="text-5xl font-display font-bold text-page-accent mb-2" />
               <div className="text-xs tracking-widest uppercase text-bsmk-black/50">m² d'espaces</div>
             </StaggerItem>
           </StaggerContainer>
@@ -146,7 +146,7 @@ export default function AboutPage() {
       <section className="py-24 bg-bsmk-white">
         <Container>
           <FadeUp>
-            <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-8">En savoir plus</p>
+            <p className="text-page-accent text-xs tracking-widest uppercase mb-8">En savoir plus</p>
           </FadeUp>
           <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {subPages.map((page) => (
@@ -156,14 +156,14 @@ export default function AboutPage() {
                   className="relative overflow-hidden border border-bsmk-sand/40 p-8 rounded-2xl group hover:bg-bsmk-black hover:border-transparent transition-all duration-300 flex flex-col h-full"
                 >
                   {/* terracotta slide-in accent */}
-                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-bsmk-terracotta origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-page-accent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
                   <h3 className="text-xl font-display font-bold text-bsmk-black group-hover:text-bsmk-white mb-3 transition-colors">
                     {page.label}
                   </h3>
                   <p className="text-sm text-bsmk-black/50 group-hover:text-bsmk-white/55 transition-colors mb-6 leading-relaxed flex-1">
                     {page.desc}
                   </p>
-                  <span className="text-bsmk-terracotta text-sm transition-colors mt-auto">
+                  <span className="text-page-accent text-sm transition-colors mt-auto">
                     Découvrir →
                   </span>
                 </Link>

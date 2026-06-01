@@ -55,7 +55,7 @@ export default function ParticiperPage() {
       <section className="bg-bsmk-black text-bsmk-white pt-32 pb-20">
         <Container>
           <HeroText delay={0}>
-            <p className="text-xs tracking-widest uppercase text-bsmk-terracotta mb-5">
+            <p className="text-xs tracking-widest uppercase text-page-accent mb-5">
               Créer · Se former · Diffuser · Se connecter
             </p>
           </HeroText>
@@ -80,15 +80,15 @@ export default function ParticiperPage() {
               <StaggerItem key={path.title}>
                 <Link
                   href={path.href}
-                  className="group block h-full border border-bsmk-black/10 bg-bsmk-white p-6 hover:border-bsmk-terracotta transition-colors rounded-xl"
+                  className="group block h-full border border-bsmk-black/10 bg-bsmk-white p-6 hover:border-page-accent transition-colors rounded-xl"
                 >
-                  <h2 className="font-display text-2xl font-bold mb-3 group-hover:text-bsmk-terracotta transition-colors">
+                  <h2 className="font-display text-2xl font-bold mb-3 group-hover:text-page-accent transition-colors">
                     {path.title}
                   </h2>
                   <p className="text-sm text-bsmk-black/60 leading-relaxed mb-8">
                     {path.text}
                   </p>
-                  <span className="text-xs tracking-widest uppercase text-bsmk-terracotta">
+                  <span className="text-xs tracking-widest uppercase text-page-accent">
                     {path.action} →
                   </span>
                 </Link>
@@ -102,7 +102,7 @@ export default function ParticiperPage() {
         <Container>
           <FadeUp className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7">
-              <p className="text-xs tracking-widest uppercase text-bsmk-terracotta mb-4">
+              <p className="text-xs tracking-widest uppercase text-page-accent mb-4">
                 MVP sans backend
               </p>
               <h2 className="font-display text-3xl lg:text-4xl font-bold mb-4">
