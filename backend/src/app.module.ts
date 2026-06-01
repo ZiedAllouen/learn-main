@@ -17,6 +17,7 @@ import { SectorsModule } from './sectors/sectors.module';
 import { ArtistsModule } from './artists/artists.module';
 import { MediaModule } from './media/media.module';
 import { UsersModule } from './users/users.module';
+import { RequestsModule } from './requests/requests.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 
@@ -41,6 +42,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
     ArtistsModule,
     MediaModule,
     UsersModule,
+    RequestsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
