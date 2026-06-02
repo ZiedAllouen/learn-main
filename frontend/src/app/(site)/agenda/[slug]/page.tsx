@@ -375,7 +375,7 @@ export default async function EventDetailPage({
               )}
             </div>
             <div className="bg-bsmk-white p-6 rounded-xl">
-              <RequestForm type="BOOKING" submitLabel="Réserver ma place" />
+              <RequestForm type="BOOKING" submitLabel="Réserver ma place" details={{ eventTitle: event.title, eventSlug: event.slug }} />
             </div>
           </div>
           </FadeUp>

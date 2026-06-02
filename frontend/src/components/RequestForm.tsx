@@ -8,6 +8,7 @@ interface RequestFormProps {
   programId?: string
   spaceId?: string
   submitLabel: string
+  details?: Record<string, unknown>
 }
 
 const inputClasses =
@@ -20,7 +21,7 @@ const labelClasses = 'block text-xs tracking-widest uppercase text-bsmk-black/60
 // render on the same page the ids would collide; acceptable for MVP.
 const idPrefix = 'rf'
 
-export function RequestForm({ type, programId, spaceId, submitLabel }: RequestFormProps) {
+export function RequestForm({ type, programId, spaceId, submitLabel, details }: RequestFormProps) {
   const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -39,6 +40,7 @@ export function RequestForm({ type, programId, spaceId, submitLabel }: RequestFo
         email,
         ...(phone.trim() ? { phone: phone.trim() } : {}),
         ...(message.trim() ? { message: message.trim() } : {}),
+        ...(details ? { details } : {}),
       })
       setState('done')
     } catch {
