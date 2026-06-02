@@ -5,10 +5,17 @@ import { apiFetch, ApiError } from '@/lib/api'
 import { getAccessToken } from '@/lib/auth'
 import { useToast, ToastView } from './Toast'
 
+export interface SelectOption {
+  value: string
+  label: string
+}
+
 export interface FieldDef {
   name: string
   label: string
-  type?: 'text' | 'textarea' | 'date'
+  type?: 'text' | 'textarea' | 'date' | 'select'
+  options?: SelectOption[]
+  default?: string // optional default value for new items
 }
 
 export interface ResourceConfig {
@@ -25,7 +32,17 @@ export const RESOURCES: Record<'articles' | 'events' | 'programmes', ResourceCon
       { name: 'slug', label: 'Slug' },
       { name: 'title', label: 'Titre' },
       { name: 'excerpt', label: 'Extrait', type: 'textarea' },
-      { name: 'status', label: 'Statut (DRAFT / PUBLISHED / ARCHIVED)' },
+      {
+        name: 'status',
+        label: 'Statut',
+        type: 'select',
+        default: 'DRAFT',
+        options: [
+          { value: 'DRAFT', label: 'Brouillon' },
+          { value: 'PUBLISHED', label: 'Publié' },
+          { value: 'ARCHIVED', label: 'Archivé' },
+        ],
+      },
     ],
   },
   events: {
@@ -35,10 +52,35 @@ export const RESOURCES: Record<'articles' | 'events' | 'programmes', ResourceCon
       { name: 'slug', label: 'Slug' },
       { name: 'title', label: 'Titre' },
       { name: 'description', label: 'Description', type: 'textarea' },
-      { name: 'eventType', label: 'Type (CONCERT / WORKSHOP / EXHIBITION…)' },
+      {
+        name: 'eventType',
+        label: 'Type',
+        type: 'select',
+        default: 'OTHER',
+        options: [
+          { value: 'CONCERT', label: 'Concert' },
+          { value: 'EXHIBITION', label: 'Exposition' },
+          { value: 'WORKSHOP', label: 'Atelier' },
+          { value: 'RESIDENCY', label: 'Résidence' },
+          { value: 'SCREENING', label: 'Projection' },
+          { value: 'CONFERENCE', label: 'Conférence' },
+          { value: 'FESTIVAL', label: 'Festival' },
+          { value: 'OTHER', label: 'Autre' },
+        ],
+      },
       { name: 'startDate', label: 'Date de début', type: 'date' },
       { name: 'location', label: 'Lieu' },
-      { name: 'status', label: 'Statut (DRAFT / PUBLISHED / ARCHIVED)' },
+      {
+        name: 'status',
+        label: 'Statut',
+        type: 'select',
+        default: 'DRAFT',
+        options: [
+          { value: 'DRAFT', label: 'Brouillon' },
+          { value: 'PUBLISHED', label: 'Publié' },
+          { value: 'ARCHIVED', label: 'Archivé' },
+        ],
+      },
     ],
   },
   programmes: {
@@ -50,7 +92,18 @@ export const RESOURCES: Record<'articles' | 'events' | 'programmes', ResourceCon
       { name: 'description', label: 'Description', type: 'textarea' },
       { name: 'duration', label: 'Durée' },
       { name: 'priceIndicative', label: 'Prix indicatif' },
-      { name: 'status', label: 'Statut (DRAFT / PUBLISHED / FULL / ARCHIVED)' },
+      {
+        name: 'status',
+        label: 'Statut',
+        type: 'select',
+        default: 'DRAFT',
+        options: [
+          { value: 'DRAFT', label: 'Brouillon' },
+          { value: 'PUBLISHED', label: 'Publié' },
+          { value: 'FULL', label: 'Complet' },
+          { value: 'ARCHIVED', label: 'Archivé' },
+        ],
+      },
     ],
   },
 }
@@ -118,7 +171,7 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
     setError(null)
     setEditing({})
     setEditingSlug(null)
-    setForm(Object.fromEntries(config.fields.map(f => [f.name, ''])))
+    setForm(Object.fromEntries(config.fields.map(f => [f.name, f.default ?? ''])))
   }
 
   function openEdit(row: Row) {
@@ -242,6 +295,19 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
                   className={inputClass}
                   style={{ colorScheme: 'dark' }}
                 />
+              ) : f.type === 'select' ? (
+                <select
+                  value={form[f.name] ?? ''}
+                  onChange={e => setForm(s => ({ ...s, [f.name]: e.target.value }))}
+                  className={inputClass}
+                  style={{ colorScheme: 'dark' }}
+                >
+                  {(f.options ?? []).map(o => (
+                    <option key={o.value} value={o.value} style={{ background: '#111' }}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
               ) : (
                 <input
                   type={f.type === 'date' ? 'datetime-local' : 'text'}
