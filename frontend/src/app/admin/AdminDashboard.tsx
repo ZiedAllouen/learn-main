@@ -7,6 +7,7 @@ import { getAuthUser, getAccessToken, logout } from '@/lib/auth'
 import { RequestsSection } from './sections/RequestsSection'
 import { ContentSection, RESOURCES } from './sections/ContentSection'
 import { ConfirmModal } from './sections/ConfirmModal'
+import { useToast, ToastView } from './sections/Toast'
 
 interface UserStats {
   total: number
@@ -121,6 +122,7 @@ export function AdminDashboard() {
   const [loadingUsers, setLoadingUsers] = useState(true)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
   const [pendingDeleteUser, setPendingDeleteUser] = useState<User | null>(null)
+  const { toast, showToast } = useToast()
 
   const user = getAuthUser()
   const token = getAccessToken()
@@ -161,30 +163,45 @@ export function AdminDashboard() {
   async function changeRole(id: string, role: string) {
     if (!token) return
     setUpdatingId(id)
-    setUsers(prev =>
-      prev
-        ? { ...prev, data: prev.data.map(u => (u.id === id ? { ...u, role } : u)) }
-        : prev,
+    const prev = users
+    setUsers(p =>
+      p ? { ...p, data: p.data.map(u => (u.id === id ? { ...u, role } : u)) } : p,
     )
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ role }),
-    })
-    setUpdatingId(null)
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ role }),
+      })
+      if (!res.ok) throw new Error(String(res.status))
+      showToast('Rôle mis à jour.', 'success')
+    } catch {
+      setUsers(prev) // roll back
+      showToast('Échec de la mise à jour du rôle.', 'error')
+    } finally {
+      setUpdatingId(null)
+    }
   }
 
   async function confirmDeleteUser() {
     if (!token || !pendingDeleteUser) return
     const id = pendingDeleteUser.id
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    setUsers(prev =>
-      prev ? { ...prev, data: prev.data.filter(u => u.id !== id), total: prev.total - 1 } : prev,
-    )
-    setPendingDeleteUser(null)
+    const email = pendingDeleteUser.email
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error(String(res.status))
+      setUsers(p =>
+        p ? { ...p, data: p.data.filter(u => u.id !== id), total: p.total - 1 } : p,
+      )
+      showToast(`Utilisateur ${email} supprimé.`, 'success')
+    } catch {
+      showToast('La suppression a échoué.', 'error')
+    } finally {
+      setPendingDeleteUser(null)
+    }
   }
 
   function handleLogout() {
@@ -422,6 +439,8 @@ export function AdminDashboard() {
         onConfirm={confirmDeleteUser}
         onCancel={() => setPendingDeleteUser(null)}
       />
+
+      <ToastView toast={toast} />
     </div>
   )
 }
