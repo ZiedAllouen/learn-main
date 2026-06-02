@@ -75,7 +75,7 @@ export default async function VetrinArtPage({
       <section className="bg-bsmk-black text-bsmk-white py-24 lg:py-36">
         <Container>
           <HeroText delay={0}>
-            <p className="font-sans text-xs tracking-widest uppercase text-bsmk-terracotta mb-6">
+            <p className="font-sans text-xs tracking-widest uppercase text-page-accent mb-6">
               BSMK · Réseau artistique
             </p>
           </HeroText>
@@ -100,7 +100,7 @@ export default async function VetrinArtPage({
       </section>
 
       {/* ── Stats bar ── */}
-      <section className="bg-bsmk-terracotta py-6">
+      <section className="bg-page-accent py-6">
         <Container>
           <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-white text-center">
             <StaggerItem>
@@ -129,7 +129,7 @@ export default async function VetrinArtPage({
           <Container>
             <div className="flex items-baseline justify-between mb-12">
               <div>
-                <p className="font-sans text-xs tracking-widest uppercase text-bsmk-terracotta mb-3">
+                <p className="font-sans text-xs tracking-widest uppercase text-page-accent mb-3">
                   Sélection
                 </p>
                 <h2 className="font-display text-4xl lg:text-5xl text-bsmk-black">
@@ -354,7 +354,7 @@ export default async function VetrinArtPage({
                       />
                       {artist.featured && (
                         <div className="absolute top-2 right-2">
-                          <span className="font-sans text-xs tracking-widest uppercase bg-bsmk-terracotta text-white px-2 py-0.5">
+                          <span className="font-sans text-xs tracking-widest uppercase bg-page-accent text-white px-2 py-0.5">
                             À la une
                           </span>
                         </div>
@@ -367,7 +367,7 @@ export default async function VetrinArtPage({
                       )}
                     </div>
 
-                    <h3 className="font-display text-base lg:text-lg text-bsmk-black group-hover:text-bsmk-terracotta transition-colors leading-tight mb-1">
+                    <h3 className="font-display text-base lg:text-lg text-bsmk-black group-hover:text-page-accent transition-colors leading-tight mb-1">
                       {artist.name}
                     </h3>
                     <p className="font-sans text-xs text-bsmk-black/50 mb-2">
@@ -391,7 +391,7 @@ export default async function VetrinArtPage({
               <Link
                 href="/vetrinart"
                 scroll={false}
-                className="inline-flex items-center h-11 px-6 bg-bsmk-terracotta text-white text-sm font-medium tracking-wide hover:bg-bsmk-terracotta/90 transition-colors rounded-lg"
+                className="inline-flex items-center h-11 px-6 bg-page-accent text-white text-sm font-medium tracking-wide hover:bg-page-accent/90 transition-colors rounded-lg"
               >
                 Réinitialiser les filtres
               </Link>
@@ -419,11 +419,11 @@ export default async function VetrinArtPage({
       </section>
 
       {/* ── Join CTA ── */}
-      <section className="bg-bsmk-blue py-20 lg:py-28">
+      <section className="bg-page-accent py-20 lg:py-28">
         <Container>
           <FadeUp>
             <div className="max-w-2xl mx-auto text-center">
-              <p className="font-sans text-xs tracking-widest uppercase text-bsmk-sand/50 mb-6">
+              <p className="font-sans text-xs tracking-widest uppercase text-bsmk-white/70 mb-6">
                 Rejoindre Vitrinart
               </p>
               <h2 className="font-display text-4xl lg:text-5xl text-bsmk-white mb-6 leading-tight">
@@ -434,7 +434,7 @@ export default async function VetrinArtPage({
                 Valorisez votre travail, trouvez des collaborateurs, accédez à des opportunités
                 de résidences et de diffusion dans toute la Méditerranée.
               </p>
-              <Button href="/contact?sujet=Inscription+Vitrinart" variant="primary" size="lg">
+              <Button href="/contact?sujet=Inscription+Vitrinart" variant="secondary" size="lg">
                 Soumettre mon profil →
               </Button>
             </div>

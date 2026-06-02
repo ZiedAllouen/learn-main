@@ -10,11 +10,46 @@ export class ArticlesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(dto: ListArticlesDto): Promise<PaginatedResult<unknown>> {
+    const { page, pageSize, category, tag, discipline, featured } = dto;
+    const skip = (page - 1) * pageSize;
+
+    // Public listing always and only returns PUBLISHED content; the client
+    // cannot override status (drafts/archived must never be publicly enumerable).
+    const where = {
+      status: 'PUBLISHED' as const,
+      ...(featured !== undefined && { featured }),
+      ...(category && { category: { slug: category } }),
+      ...(tag && { tags: { some: { tag: { slug: tag } } } }),
+      ...(discipline && { disciplines: { some: { discipline: { slug: discipline } } } }),
+    };
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.article.findMany({
+        where,
+        skip,
+        take: pageSize,
+        orderBy: [{ featured: 'desc' }, { publishedAt: 'desc' }, { createdAt: 'desc' }],
+        include: {
+          author: { select: { id: true, firstName: true, lastName: true, avatarUrl: true } },
+          category: { select: { id: true, slug: true, name: true } },
+          tags: { include: { tag: { select: { id: true, slug: true, name: true } } } },
+          disciplines: { include: { discipline: { select: { id: true, slug: true, name: true } } } },
+        },
+      }),
+      this.prisma.article.count({ where }),
+    ]);
+
+    return { data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+  }
+
+  /** Admin-only listing: returns ALL statuses by default, or filters to a
+   * specific status. Reachable only via the @Roles-guarded admin route. */
+  async findAllAdmin(dto: ListArticlesDto): Promise<PaginatedResult<unknown>> {
     const { page, pageSize, category, tag, discipline, status, featured } = dto;
     const skip = (page - 1) * pageSize;
 
     const where = {
-      ...(status ? { status } : { status: 'PUBLISHED' as const }),
+      ...(status === 'ALL' ? {} : status ? { status } : {}),
       ...(featured !== undefined && { featured }),
       ...(category && { category: { slug: category } }),
       ...(tag && { tags: { some: { tag: { slug: tag } } } }),

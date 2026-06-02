@@ -11,7 +11,7 @@ interface BadgeProps {
 
 const variantClasses: Record<BadgeVariant, string> = {
   default: 'bg-bsmk-sand/20 text-bsmk-black',
-  terracotta: 'bg-bsmk-terracotta/10 text-bsmk-terracotta',
+  terracotta: 'bg-page-accent/10 text-page-accent',
   olive: 'bg-bsmk-olive/10 text-bsmk-olive',
   blue: 'bg-bsmk-blue/10 text-bsmk-blue',
   outline: 'border border-current',

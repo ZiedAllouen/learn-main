@@ -12,12 +12,12 @@ export default function NotFound() {
     <main className="min-h-screen bg-bsmk-black flex items-center justify-center">
       <Container className="text-center py-32">
         <HeroText delay={0}>
-          <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-8">
+          <p className="text-page-accent text-xs tracking-widest uppercase mb-8">
             Erreur 404
           </p>
         </HeroText>
         <HeroText delay={0.1}>
-          <div className="text-[clamp(6rem,20vw,16rem)] font-display font-bold text-bsmk-terracotta leading-none mb-6 select-none">
+          <div className="text-[clamp(6rem,20vw,16rem)] font-display font-bold text-page-accent leading-none mb-6 select-none">
             404
           </div>
         </HeroText>

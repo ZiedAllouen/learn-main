@@ -39,7 +39,7 @@ export default function CommunautePage() {
       <section className="bg-bsmk-black text-bsmk-white pt-32 pb-20">
         <Container>
           <HeroText delay={0}>
-            <p className="text-xs tracking-widest uppercase text-bsmk-terracotta mb-5">
+            <p className="text-xs tracking-widest uppercase text-page-accent mb-5">
               Communauté · Réseau · Coopération
             </p>
           </HeroText>
@@ -57,12 +57,12 @@ export default function CommunautePage() {
         </Container>
       </section>
 
-      <section className="py-16 bg-bsmk-terracotta text-white">
+      <section className="py-16 bg-page-accent text-white">
         <Container>
           <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-px bg-white/20">
             {networkGroups.map((group) => (
               <StaggerItem key={group}>
-                <div className="bg-bsmk-terracotta p-5 min-h-28 flex items-end">
+                <div className="bg-page-accent p-5 min-h-28 flex items-end">
                   <p className="text-sm tracking-wide leading-snug">{group}</p>
                 </div>
               </StaggerItem>
@@ -75,14 +75,14 @@ export default function CommunautePage() {
         <Container>
           <div className="flex items-end justify-between gap-6 mb-10">
             <div>
-              <p className="text-xs tracking-widest uppercase text-bsmk-terracotta mb-3">
+              <p className="text-xs tracking-widest uppercase text-page-accent mb-3">
                 VetrinArt
               </p>
               <h2 className="font-display text-3xl lg:text-4xl font-bold">
                 Artistes à la une
               </h2>
             </div>
-            <Link href="/vetrinart" className="hidden sm:inline text-sm text-bsmk-terracotta hover:underline">
+            <Link href="/vetrinart" className="hidden sm:inline text-sm text-page-accent hover:underline">
               Voir le réseau →
             </Link>
           </div>
@@ -101,7 +101,7 @@ export default function CommunautePage() {
                         className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
-                    <h3 className="font-display text-xl font-bold group-hover:text-bsmk-terracotta transition-colors">
+                    <h3 className="font-display text-xl font-bold group-hover:text-page-accent transition-colors">
                       {artist.name}
                     </h3>
                     <p className="text-sm text-bsmk-black/50 mb-2">
@@ -119,7 +119,7 @@ export default function CommunautePage() {
       <section className="py-20 bg-bsmk-sand/20 border-y border-bsmk-black/10">
         <Container>
           <FadeUp>
-            <p className="text-xs tracking-widest uppercase text-bsmk-terracotta mb-3">
+            <p className="text-xs tracking-widest uppercase text-page-accent mb-3">
               Axes de coopération
             </p>
             <h2 className="font-display text-3xl lg:text-4xl font-bold mb-8">
@@ -138,7 +138,7 @@ export default function CommunautePage() {
           <div className="mt-10">
             <Link
               href="/participer"
-              className="inline-flex items-center h-12 px-6 bg-bsmk-terracotta text-white text-sm font-medium tracking-wide hover:bg-bsmk-terracotta/90 transition-colors rounded-lg"
+              className="inline-flex items-center h-12 px-6 bg-page-accent text-white text-sm font-medium tracking-wide hover:bg-page-accent/90 transition-colors rounded-lg"
             >
               Rejoindre le réseau
             </Link>

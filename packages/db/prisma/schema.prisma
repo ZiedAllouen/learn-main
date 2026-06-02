@@ -55,6 +55,21 @@ enum MediaType {
   PUBLICATION
 }
 
+enum RequestType {
+  ENROLLMENT
+  BOOKING
+  PROJECT
+  PARTNERSHIP
+  OPPORTUNITY
+}
+
+enum RequestStatus {
+  NEW
+  REVIEWING
+  ACCEPTED
+  DECLINED
+}
+
 // ── Users & Auth ──────────────────────────────────────────────────────────────
 
 model User {
@@ -73,6 +88,7 @@ model User {
   contactMessages ContactMessage[]
   refreshTokens   RefreshToken[]
   artist          Artist?
+  requests        Request[]
 
   @@map("users")
 }
@@ -326,6 +342,7 @@ model Space {
   sortOrder   Int           @default(0)
 
   disciplines SpaceDiscipline[]
+  requests    Request[]
 
   @@map("spaces")
 }
@@ -362,6 +379,7 @@ model Program {
   programType ProgramType?       @relation(fields: [programTypeId], references: [id])
   disciplines ProgramDiscipline[]
   audiences   ProgramAudience[]
+  requests    Request[]
 
   @@map("programs")
 }
@@ -489,4 +507,30 @@ model SiteStat {
   value String
 
   @@map("site_stats")
+}
+
+// ── Requests ──────────────────────────────────────────────────────────────────
+
+model Request {
+  id        String        @id @default(cuid())
+  type      RequestType
+  status    RequestStatus @default(NEW)
+  name      String
+  email     String
+  phone     String?
+  message   String?
+  details   Json?
+  adminNote String?
+  programId String?
+  spaceId   String?
+  userId    String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  program Program? @relation(fields: [programId], references: [id])
+  space   Space?   @relation(fields: [spaceId], references: [id])
+  user    User?    @relation(fields: [userId], references: [id])
+
+  @@index([type, status])
+  @@map("requests")
 }

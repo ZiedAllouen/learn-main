@@ -25,7 +25,8 @@ interface ButtonAsLink extends BaseProps {
 type ButtonProps = ButtonAsButton | ButtonAsLink
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-bsmk-terracotta text-white hover:bg-bsmk-terracotta/90',
+  // Primary CTA follows the current section's accent (see PageAccent / --page-accent).
+  primary: 'bg-page-accent text-white hover:bg-page-accent/90',
   secondary: 'bg-bsmk-white text-bsmk-black hover:bg-bsmk-sand',
   ghost: 'text-current hover:bg-white/10',
   outline: 'border border-current hover:bg-white/5',

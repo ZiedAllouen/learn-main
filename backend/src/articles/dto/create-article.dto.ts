@@ -6,6 +6,7 @@ import {
   IsInt,
   IsArray,
   IsDateString,
+  IsObject,
 } from 'class-validator';
 import type { ContentStatus } from '@bsmk/types';
 
@@ -20,6 +21,7 @@ export class CreateArticleDto {
   @IsString()
   excerpt?: string;
 
+  @IsObject()
   body: object;
 
   @IsOptional()

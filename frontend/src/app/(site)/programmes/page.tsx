@@ -3,8 +3,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
-import { programs, programTypes, audienceTypes, getFeaturedPrograms } from '@/data/programs'
+import { programTypes, audienceTypes } from '@/data/programs'
 import { disciplines } from '@/data/disciplines'
+import { getPrograms } from '@/lib/api/programs'
 import { HeroText, FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/Motion'
 
 export const dynamic = 'force-dynamic'
@@ -61,11 +62,15 @@ export default async function ProgrammesPage({
   searchParams: Promise<{ discipline?: string; public?: string; type?: string }>
 }) {
   const filters = await searchParams
-  const featured = getFeaturedPrograms(3)
+  const { data: programs } = await getPrograms({ pageSize: 100 })
+
+  const featured = programs.filter((p) => p.featured).slice(0, 3)
   const filteredPrograms = programs.filter((program) => {
-    if (filters.discipline && !program.disciplineSlugs.includes(filters.discipline)) return false
-    if (filters.public && !program.audienceSlugs.includes(filters.public)) return false
-    if (filters.type && program.programTypeSlug !== filters.type) return false
+    const disciplineSlugs = program.disciplines.map((d) => d.discipline.slug)
+    const audienceSlugs = program.audiences.map((a) => a.audienceType.slug)
+    if (filters.discipline && !disciplineSlugs.includes(filters.discipline)) return false
+    if (filters.public && !audienceSlugs.includes(filters.public)) return false
+    if (filters.type && program.programType?.slug !== filters.type) return false
     return true
   })
 
@@ -104,8 +109,8 @@ export default async function ProgrammesPage({
                 <Link
                   href="/programmes"
                   className={`px-3 py-1 text-xs tracking-widest uppercase border rounded-full transition-colors ${!filters.discipline && !filters.public && !filters.type
-                      ? 'bg-bsmk-terracotta text-white border-bsmk-terracotta'
-                      : 'border-bsmk-terracotta text-bsmk-terracotta hover:bg-bsmk-terracotta hover:text-white'
+                      ? 'bg-page-accent text-white border-page-accent'
+                      : 'border-page-accent text-page-accent hover:bg-page-accent hover:text-white'
                     }`}
                 >
                   Tous les programmes
@@ -215,25 +220,25 @@ export default async function ProgrammesPage({
               <StaggerItem key={program.id} className="h-full">
                 <Link
                   href={`/programmes/${program.slug}`}
-                  className="group bg-bsmk-white border border-bsmk-black/10 flex flex-col h-full hover:border-bsmk-terracotta transition-colors rounded-xl overflow-hidden"
+                  className="group bg-bsmk-white border border-bsmk-black/10 flex flex-col h-full hover:border-page-accent transition-colors rounded-xl overflow-hidden"
                 >
                   {/* Cover */}
                   <div className="relative aspect-video overflow-hidden">
                     <Image
-                      src={program.coverUrl}
+                      src={program.coverUrl ?? `https://picsum.photos/seed/prog-${program.slug}/800/450`}
                       alt={program.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-bsmk-black/40 to-transparent" />
                     <div className="absolute top-3 left-3">
-                      <Badge variant="dark">{program.programType}</Badge>
+                      <Badge variant="dark">{program.programType?.name}</Badge>
                     </div>
                   </div>
 
                   {/* Content */}
                   <div className="p-6 flex flex-col flex-1">
-                    <h3 className="font-display text-xl font-bold mb-3 group-hover:text-bsmk-terracotta transition-colors">
+                    <h3 className="font-display text-xl font-bold mb-3 group-hover:text-page-accent transition-colors">
                       {program.title}
                     </h3>
                     <p className="text-sm text-bsmk-black/60 leading-relaxed mb-4 line-clamp-2">
@@ -245,15 +250,18 @@ export default async function ProgrammesPage({
                         {modalityLabels[program.modality]}
                       </Badge>
                       <span className="text-sm font-medium text-bsmk-black/70">
-                        {program.priceIndicative.toLowerCase().startsWith('gratuit')
+                        {program.priceIndicative &&
+                        program.priceIndicative.toLowerCase().startsWith('gratuit')
                           ? 'Gratuit'
-                          : `À partir de ${program.priceIndicative.split(' ')[0]}`}
+                          : program.priceIndicative
+                            ? `À partir de ${program.priceIndicative.split(' ')[0]}`
+                            : ''}
                       </span>
                     </div>
 
                     <div className="mt-4 pt-4 border-t border-bsmk-black/10 flex items-center justify-between">
                       <span className="text-xs text-bsmk-black/40">{program.duration}</span>
-                      <span className="text-xs tracking-widest uppercase text-bsmk-terracotta group-hover:translate-x-1 transition-transform inline-block">
+                      <span className="text-xs tracking-widest uppercase text-page-accent group-hover:translate-x-1 transition-transform inline-block">
                         En savoir plus →
                       </span>
                     </div>
@@ -280,12 +288,12 @@ export default async function ProgrammesPage({
               <div key={program.id}>
                 <Link
                   href={`/programmes/${program.slug}`}
-                  className="group flex bg-bsmk-white border border-bsmk-black/10 hover:border-bsmk-terracotta transition-colors rounded-xl overflow-hidden"
+                  className="group flex bg-bsmk-white border border-bsmk-black/10 hover:border-page-accent transition-colors rounded-xl overflow-hidden"
                 >
                   {/* Thumbnail */}
                   <div className="relative w-40 shrink-0 overflow-hidden">
                     <Image
-                      src={program.coverUrl}
+                      src={program.coverUrl ?? `https://picsum.photos/seed/prog-${program.slug}/800/450`}
                       alt={program.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -294,10 +302,10 @@ export default async function ProgrammesPage({
 
                   {/* Content */}
                   <div className="p-5 flex flex-col flex-1 min-w-0">
-                    <p className="text-xs tracking-widest uppercase text-bsmk-terracotta mb-1">
-                      {program.programType}
+                    <p className="text-xs tracking-widest uppercase text-page-accent mb-1">
+                      {program.programType?.name}
                     </p>
-                    <h3 className="font-display text-lg font-bold leading-tight mb-2 group-hover:text-bsmk-terracotta transition-colors line-clamp-2">
+                    <h3 className="font-display text-lg font-bold leading-tight mb-2 group-hover:text-page-accent transition-colors line-clamp-2">
                       {program.title}
                     </h3>
                     <p className="text-xs text-bsmk-black/60 leading-relaxed mb-3 line-clamp-2">
@@ -315,7 +323,7 @@ export default async function ProgrammesPage({
                       <span className="text-xs font-semibold text-bsmk-black">
                         {program.priceIndicative}
                       </span>
-                      <span className="text-xs tracking-widest uppercase text-bsmk-terracotta opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-xs tracking-widest uppercase text-page-accent opacity-0 group-hover:opacity-100 transition-opacity">
                         Voir →
                       </span>
                     </div>
@@ -326,13 +334,17 @@ export default async function ProgrammesPage({
           </div>
           {filteredPrograms.length === 0 && (
             <div className="border border-bsmk-black/10 bg-bsmk-sand/20 p-8 text-center rounded-xl">
-              <h3 className="font-display text-2xl font-bold mb-2">Aucun programme pour ce filtre</h3>
+              <h3 className="font-display text-2xl font-bold mb-2">
+                {programs.length === 0
+                  ? 'Aucun programme pour le moment.'
+                  : 'Aucun programme pour ce filtre'}
+              </h3>
               <p className="text-sm text-bsmk-black/60 mb-6">
                 Essayez une autre discipline, un autre public ou proposez-nous un besoin spécifique.
               </p>
               <Link
                 href="/participer"
-                className="inline-flex items-center h-11 px-6 bg-bsmk-terracotta text-white text-sm font-medium tracking-wide hover:bg-bsmk-terracotta/90 transition-colors rounded-lg"
+                className="inline-flex items-center h-11 px-6 bg-page-accent text-white text-sm font-medium tracking-wide hover:bg-page-accent/90 transition-colors rounded-lg"
               >
                 Proposer un projet
               </Link>
@@ -342,11 +354,11 @@ export default async function ProgrammesPage({
       </section>
 
       {/* ── CTA band ─────────────────────────────────────────── */}
-      <section className="bg-bsmk-blue text-bsmk-white py-16">
+      <section className="bg-page-accent text-bsmk-white py-16">
         <Container>
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
-              <p className="text-xs tracking-widest uppercase text-bsmk-sand mb-2">
+              <p className="text-xs tracking-widest uppercase text-bsmk-white/70 mb-2">
                 Questions sur nos programmes ?
               </p>
               <h2 className="font-display text-3xl font-bold">
@@ -355,7 +367,7 @@ export default async function ProgrammesPage({
             </div>
             <Link
               href="/contact?sujet=Programmes"
-              className="shrink-0 inline-flex items-center h-14 px-8 bg-bsmk-terracotta text-white text-sm font-medium tracking-wide hover:bg-bsmk-terracotta/90 transition-colors rounded-lg"
+              className="shrink-0 inline-flex items-center h-14 px-8 bg-bsmk-white text-bsmk-black text-sm font-medium tracking-wide hover:bg-bsmk-sand transition-colors rounded-lg"
             >
               Nous écrire
             </Link>

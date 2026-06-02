@@ -16,6 +16,12 @@ export class ProgramsController {
     return this.programs.findAll(dto);
   }
 
+  @Roles('ADMIN', 'EDITOR')
+  @Get('admin/all')
+  findAllAdmin(@Query() dto: ListProgramsDto) {
+    return this.programs.findAllAdmin(dto);
+  }
+
   @Public()
   @Get(':slug')
   findOne(@Param('slug') slug: string): Promise<unknown> {

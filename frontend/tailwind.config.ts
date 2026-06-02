@@ -5,6 +5,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Per-section accent — value comes from the `--page-accent` CSS variable
+        // set by the (site) layout based on the current route. Supports opacity
+        // modifiers (e.g. `bg-page-accent/90`) via the RGB-channel + <alpha-value> form.
+        'page-accent': 'rgb(var(--page-accent) / <alpha-value>)',
+        'page-accent-hover': 'rgb(var(--page-accent-hover) / <alpha-value>)',
         bsmk: {
           black: '#0A0A0A',
           white: '#F5F5F0',

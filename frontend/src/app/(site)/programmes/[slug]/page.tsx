@@ -4,9 +4,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { programs, getProgramBySlug } from '@/data/programs'
 import { disciplines } from '@/data/disciplines'
+import { getProgram } from '@/lib/api/programs'
+import { RequestForm } from '@/components/RequestForm'
 import { HeroText, ScaleIn, StaggerContainer, StaggerItem, FadeUp } from '@/components/ui/Motion'
 
 const modalityLabels: Record<string, string> = {
@@ -21,23 +21,24 @@ const modalityVariant: Record<string, 'terracotta' | 'blue' | 'olive'> = {
   HYBRID: 'olive',
 }
 
-export function generateStaticParams() {
-  return programs.map((p) => ({ slug: p.slug }))
-}
-
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const program = getProgramBySlug(slug)
-  if (!program) return { title: 'Programme introuvable | BSMK' }
-  return {
-    title: `${program.title} | BSMK`,
-    description: program.description,
+  try {
+    const program = await getProgram(slug)
+    return {
+      title: `${program.title} | BSMK`,
+      description: program.description ?? undefined,
+    }
+  } catch {
+    return { title: 'Programme introuvable | BSMK' }
   }
 }
+
+export const dynamic = 'force-dynamic'
 
 export default async function ProgramDetailPage({
   params,
@@ -45,11 +46,19 @@ export default async function ProgramDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const program = getProgramBySlug(slug)
-  if (!program) notFound()
+
+  let program
+  try {
+    program = await getProgram(slug)
+  } catch {
+    notFound()
+  }
+
+  const disciplineSlugs = program.disciplines.map((d) => d.discipline.slug)
+  const audienceSlugs = program.audiences.map((a) => a.audienceType.slug)
 
   const relatedDisciplines = disciplines.filter((d) =>
-    program.disciplineSlugs.includes(d.slug),
+    disciplineSlugs.includes(d.slug),
   )
 
   const audienceLabels: Record<string, string> = {
@@ -59,7 +68,13 @@ export default async function ProgramDetailPage({
     'tout-public': 'Tout public',
   }
 
-  const isGratuit = program.priceIndicative.toLowerCase().startsWith('gratuit')
+  const isGratuit = program.priceIndicative?.toLowerCase().startsWith('gratuit') ?? false
+
+  // The detail prose comes from `body` (rich text stored as JSON). For Phase 1 we
+  // render plain-text bodies (paragraphs separated by blank lines), falling back to
+  // the short description when no body is set.
+  const longDescription =
+    typeof program.body === 'string' ? program.body : (program.description ?? '')
 
   return (
     <main className="bg-bsmk-white text-bsmk-black">
@@ -67,7 +82,7 @@ export default async function ProgramDetailPage({
       <section className="relative h-[60vh] bg-bsmk-black">
         <ScaleIn className="absolute inset-0">
         <Image
-          src={program.coverUrl}
+          src={program.coverUrl ?? `https://picsum.photos/seed/prog-${program.slug}/1200/600`}
           alt={program.title}
           fill
           className="object-cover opacity-60"
@@ -80,7 +95,7 @@ export default async function ProgramDetailPage({
           <Container className="pb-12">
             <HeroText delay={0}>
               <p className="text-xs tracking-widest uppercase text-bsmk-sand mb-3">
-                {program.programType}
+                {program.programType?.name}
               </p>
             </HeroText>
             <HeroText delay={0.1}>
@@ -113,7 +128,7 @@ export default async function ProgramDetailPage({
             </StaggerItem>
             <StaggerItem className="flex-1 min-w-[140px] px-6 py-6">
               <p className="text-xs tracking-widest uppercase text-bsmk-sand mb-1">Type</p>
-              <p className="font-display text-xl font-bold">{program.programType}</p>
+              <p className="font-display text-xl font-bold">{program.programType?.name}</p>
             </StaggerItem>
             <StaggerItem className="flex-1 min-w-[140px] px-6 py-6">
               <p className="text-xs tracking-widest uppercase text-bsmk-sand mb-1">Tarif</p>
@@ -133,7 +148,7 @@ export default async function ProgramDetailPage({
             <FadeUp className="lg:col-span-2">
               <h2 className="font-display text-3xl font-bold mb-6">À propos du programme</h2>
               <div className="space-y-5 text-bsmk-black/75 leading-relaxed text-base">
-                {program.longDescription.split('\n\n').map((paragraph, i) => (
+                {longDescription.split('\n\n').map((paragraph, i) => (
                   <p key={i}>{paragraph}</p>
                 ))}
               </div>
@@ -157,13 +172,13 @@ export default async function ProgramDetailPage({
                   </div>
                 )}
 
-                {program.audienceSlugs.length > 0 && (
+                {audienceSlugs.length > 0 && (
                   <div>
                     <p className="text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
                       Public visé
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {program.audienceSlugs.map((a) => (
+                      {audienceSlugs.map((a) => (
                         <Badge key={a} variant="blue">
                           {audienceLabels[a] ?? a}
                         </Badge>
@@ -176,7 +191,7 @@ export default async function ProgramDetailPage({
                   <p className="text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
                     Type de programme
                   </p>
-                  <Badge variant="terracotta">{program.programType}</Badge>
+                  <Badge variant="terracotta">{program.programType?.name}</Badge>
                 </div>
 
                 <div>
@@ -227,10 +242,10 @@ export default async function ProgramDetailPage({
       )}
 
       {/* ── 5. Inscription CTA ───────────────────────────────── */}
-      <section className="bg-bsmk-terracotta py-20">
+      <section className="bg-page-accent py-20">
         <Container>
           <FadeUp>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-8">
             <div className="text-white">
               <p className="text-xs tracking-widest uppercase text-white/60 mb-3">
                 Prêt à commencer ?
@@ -244,14 +259,13 @@ export default async function ProgramDetailPage({
                   : `Tarif indicatif : ${program.priceIndicative}. Des réductions et bourses peuvent être disponibles.`}
               </p>
             </div>
-            <Button
-              href={`/contact?sujet=Inscription+programme+${encodeURIComponent(program.title)}`}
-              variant="secondary"
-              size="lg"
-              className="shrink-0"
-            >
-              S&apos;inscrire
-            </Button>
+            <div className="bg-bsmk-white p-6 rounded-xl">
+              <RequestForm
+                type="ENROLLMENT"
+                programId={program.id}
+                submitLabel="S'inscrire à ce programme"
+              />
+            </div>
           </div>
           </FadeUp>
         </Container>
@@ -262,7 +276,7 @@ export default async function ProgramDetailPage({
         <Container>
           <Link
             href="/programmes"
-            className="text-sm text-bsmk-black/50 hover:text-bsmk-terracotta transition-colors tracking-wide"
+            className="text-sm text-bsmk-black/50 hover:text-page-accent transition-colors tracking-wide"
           >
             ← Tous les programmes
           </Link>

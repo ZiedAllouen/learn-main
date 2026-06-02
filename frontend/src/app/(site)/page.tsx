@@ -73,7 +73,7 @@ export default async function HomePage() {
         <Container className="relative z-10 py-32">
           <div className="max-w-4xl">
             <HeroText delay={0}>
-              <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-8">
+              <p className="text-page-accent text-xs tracking-widest uppercase mb-8">
                 Tunis · Méditerranée · Création
               </p>
             </HeroText>
@@ -108,7 +108,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── MARQUEE ── */}
-      <section className="bg-bsmk-terracotta py-3 overflow-hidden">
+      <section className="bg-page-accent py-3 overflow-hidden">
         <Marquee
           items={['Musique', 'Danse', 'Arts visuels', 'Cinéma & vidéo', 'Théâtre', 'Photographie', 'Arts numériques', 'Résidences', 'Formations', 'Méditerranée']}
           className="text-white/80 text-xs tracking-widest uppercase font-sans"
@@ -126,7 +126,7 @@ export default async function HomePage() {
                   href={action.href}
                   className="flex flex-col items-center gap-3 py-8 px-4 text-bsmk-white/60 hover:text-bsmk-white hover:bg-white/5 transition-colors group"
                 >
-                  <span className="text-2xl text-bsmk-terracotta">{action.icon}</span>
+                  <span className="text-2xl text-page-accent">{action.icon}</span>
                   <span className="text-xs tracking-widest uppercase text-center leading-snug">
                     {action.label}
                   </span>
@@ -180,7 +180,7 @@ export default async function HomePage() {
           <div className="flex items-end justify-between mb-12">
             <FadeUp>
               <div>
-                <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-3">Formation · Résidence · Mentorat</p>
+                <p className="text-page-accent text-xs tracking-widest uppercase mb-3">Formation · Résidence · Mentorat</p>
                 <h2 className="text-4xl lg:text-5xl font-display font-bold text-bsmk-black">
                   Programmes phares
                 </h2>
@@ -194,7 +194,7 @@ export default async function HomePage() {
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {featuredPrograms.map((program) => (
               <StaggerItem key={program.id} className="h-full">
-              <Link href={`/programmes/${program.slug}`} className="group block h-full border border-bsmk-sand/40 hover:border-bsmk-terracotta transition-colors rounded-xl overflow-hidden">
+              <Link href={`/programmes/${program.slug}`} className="group block h-full border border-bsmk-sand/40 hover:border-page-accent transition-colors rounded-xl overflow-hidden">
                 <div className="relative aspect-video overflow-hidden">
                   <Image
                     src={program.coverUrl}
@@ -208,7 +208,7 @@ export default async function HomePage() {
                     <Badge variant="terracotta">{program.programType}</Badge>
                     <Badge variant="default">{modalityLabels[program.modality]}</Badge>
                   </div>
-                  <h3 className="text-xl font-display font-bold mb-3 leading-snug group-hover:text-bsmk-terracotta transition-colors">
+                  <h3 className="text-xl font-display font-bold mb-3 leading-snug group-hover:text-page-accent transition-colors">
                     {program.title}
                   </h3>
                   <p className="text-sm text-bsmk-black/60 leading-relaxed mb-4 flex-1 line-clamp-3">
@@ -216,7 +216,7 @@ export default async function HomePage() {
                   </p>
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-bsmk-sand/40">
                     <span className="text-sm font-medium text-bsmk-olive">{program.priceIndicative}</span>
-                    <span className="text-xs tracking-widest uppercase text-bsmk-terracotta">
+                    <span className="text-xs tracking-widest uppercase text-page-accent">
                       En savoir plus →
                     </span>
                   </div>
@@ -248,7 +248,7 @@ export default async function HomePage() {
             </FadeUp>
             <Link
               href="/magazine"
-              className="text-sm text-bsmk-terracotta hover:underline tracking-wide hidden sm:inline"
+              className="text-sm text-page-accent hover:underline tracking-wide hidden sm:inline"
             >
               Voir tout →
             </Link>
@@ -270,7 +270,7 @@ export default async function HomePage() {
                 </Link>
                 <Badge variant="olive" className="self-start mb-3">{article.category}</Badge>
                 <Link href={`/magazine/${article.slug}`}>
-                  <h3 className="text-xl font-display font-bold mb-2 leading-snug hover:text-bsmk-terracotta transition-colors">
+                  <h3 className="text-xl font-display font-bold mb-2 leading-snug hover:text-page-accent transition-colors">
                     {article.title}
                   </h3>
                 </Link>
@@ -290,7 +290,7 @@ export default async function HomePage() {
           </StaggerContainer>
 
           <div className="mt-8 sm:hidden">
-            <Link href="/magazine" className="text-sm text-bsmk-terracotta hover:underline">
+            <Link href="/magazine" className="text-sm text-page-accent hover:underline">
               Voir tout →
             </Link>
           </div>
@@ -311,7 +311,7 @@ export default async function HomePage() {
             </FadeUp>
             <Link
               href="/agenda"
-              className="text-sm text-bsmk-terracotta hover:underline tracking-wide hidden sm:inline"
+              className="text-sm text-page-accent hover:underline tracking-wide hidden sm:inline"
             >
               Voir tout →
             </Link>
@@ -329,7 +329,7 @@ export default async function HomePage() {
                   className="flex items-center gap-6 py-6 group hover:bg-bsmk-sand/10 -mx-6 px-6 transition-colors"
                 >
                   <div className="flex-shrink-0 w-16 text-center">
-                    <div className="text-3xl font-display font-bold text-bsmk-terracotta leading-none">
+                    <div className="text-3xl font-display font-bold text-page-accent leading-none">
                       {day}
                     </div>
                     <div className="text-xs tracking-widest uppercase text-bsmk-black/40 mt-1">
@@ -346,13 +346,13 @@ export default async function HomePage() {
                         <Badge variant="terracotta">{event.price}</Badge>
                       )}
                     </div>
-                    <h3 className="font-display font-bold text-lg text-bsmk-black group-hover:text-bsmk-terracotta transition-colors truncate">
+                    <h3 className="font-display font-bold text-lg text-bsmk-black group-hover:text-page-accent transition-colors truncate">
                       {event.title}
                     </h3>
                     <p className="text-sm text-bsmk-black/50 mt-0.5">{event.location}</p>
                   </div>
 
-                  <div className="flex-shrink-0 text-bsmk-black/20 group-hover:text-bsmk-terracotta transition-colors">
+                  <div className="flex-shrink-0 text-bsmk-black/20 group-hover:text-page-accent transition-colors">
                     →
                   </div>
                 </Link>
@@ -362,7 +362,7 @@ export default async function HomePage() {
           </StaggerContainer>
 
           <div className="mt-8 sm:hidden">
-            <Link href="/agenda" className="text-sm text-bsmk-terracotta hover:underline">
+            <Link href="/agenda" className="text-sm text-page-accent hover:underline">
               Voir tout l'agenda →
             </Link>
           </div>
@@ -373,7 +373,7 @@ export default async function HomePage() {
       <section className="py-24 bg-bsmk-black text-bsmk-white">
         <Container>
           <FadeUp>
-            <p className="text-bsmk-terracotta text-xs tracking-widest uppercase mb-12 text-center">
+            <p className="text-page-accent text-xs tracking-widest uppercase mb-12 text-center">
               BSMK en chiffres
             </p>
           </FadeUp>
@@ -381,7 +381,7 @@ export default async function HomePage() {
             {stats.map((stat) => (
               <StaggerItem key={stat.label}>
                 <div className="bg-bsmk-black p-10 text-center">
-                  <CountUp value={stat.number} className="text-6xl lg:text-7xl font-display font-bold text-bsmk-terracotta mb-3" />
+                  <CountUp value={stat.number} className="text-6xl lg:text-7xl font-display font-bold text-page-accent mb-3" />
                   <div className="text-sm text-bsmk-white/60 tracking-wide uppercase">
                     {stat.label}
                   </div>
@@ -393,7 +393,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── CTA FINAL ── */}
-      <section className="py-24 bg-bsmk-terracotta">
+      <section className="py-24 bg-page-accent">
         <Container>
           <FadeUp>
             <div className="max-w-2xl mx-auto text-center">

@@ -165,7 +165,7 @@ git commit -m "feat(db): add Request model with type/status enums"
 - [ ] **Step 1: Create `create-request.dto.ts`**
 
 ```typescript
-import { IsString, IsOptional, IsEnum, IsEmail, IsObject } from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsEmail, IsObject, MaxLength } from 'class-validator';
 
 const REQUEST_TYPES = ['ENROLLMENT', 'BOOKING', 'PROJECT', 'PARTNERSHIP', 'OPPORTUNITY'] as const;
 type RequestType = (typeof REQUEST_TYPES)[number];
@@ -175,6 +175,7 @@ export class CreateRequestDto {
   type: RequestType;
 
   @IsString()
+  @MaxLength(100)
   name: string;
 
   @IsEmail()
@@ -182,10 +183,12 @@ export class CreateRequestDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(30)
   phone?: string;
 
   @IsOptional()
   @IsString()
+  @MaxLength(5000)
   message?: string;
 
   @IsOptional()
@@ -194,13 +197,17 @@ export class CreateRequestDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(30)
   programId?: string;
 
   @IsOptional()
   @IsString()
+  @MaxLength(30)
   spaceId?: string;
 }
 ```
+
+> **Security note (this is a PUBLIC unauthenticated endpoint):** the `@MaxLength` caps above match the existing `contact` DTO convention (`backend/src/contact/dto/create-contact.dto.ts`) and prevent oversized payloads. Do not omit them.
 
 - [ ] **Step 2: Create `list-requests.dto.ts`**
 

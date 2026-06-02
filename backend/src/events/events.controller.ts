@@ -16,6 +16,12 @@ export class EventsController {
     return this.events.findAll(dto);
   }
 
+  @Roles('ADMIN', 'EDITOR')
+  @Get('admin/all')
+  findAllAdmin(@Query() dto: ListEventsDto) {
+    return this.events.findAllAdmin(dto);
+  }
+
   @Public()
   @Get(':slug')
   findOne(@Param('slug') slug: string) {

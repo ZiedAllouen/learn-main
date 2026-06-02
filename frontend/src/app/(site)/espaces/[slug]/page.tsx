@@ -5,42 +5,47 @@ import { notFound } from 'next/navigation'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import { spaces, getSpaceBySlug } from '@/data/spaces'
+import { getSpace } from '@/lib/api/spaces'
 import { disciplines } from '@/data/disciplines'
+import { RequestForm } from '@/components/RequestForm'
 import { ScaleIn, StaggerContainer, StaggerItem, FadeUp } from '@/components/ui/Motion'
 
 interface Props {
   params: Promise<{ slug: string }>
 }
 
-export async function generateStaticParams() {
-  return spaces.map((s) => ({ slug: s.slug }))
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const space = getSpaceBySlug(slug)
-  if (!space) return { title: 'Espace introuvable | BSMK' }
-  return {
-    title: `${space.name} | Espaces BSMK`,
-    description: space.description,
+  try {
+    const space = await getSpace(slug)
+    return {
+      title: `${space.name} | Espaces BSMK`,
+      description: space.description ?? undefined,
+    }
+  } catch {
+    return { title: 'Espace introuvable | BSMK' }
   }
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function EspacePage({ params }: Props) {
   const { slug } = await params
-  const space = getSpaceBySlug(slug)
 
-  if (!space) notFound()
+  let space
+  try {
+    space = await getSpace(slug)
+  } catch {
+    notFound()
+  }
 
+  const spaceDisciplineSlugs = space.disciplines.map((d) => d.discipline.slug)
   const spaceDisciplines = disciplines.filter((d) =>
-    space.disciplineSlugs.includes(d.slug),
+    spaceDisciplineSlugs.includes(d.slug),
   )
 
-  const heroImage = space.imageUrls[0]
+  const heroImage = space.imageUrls[0] ?? `https://picsum.photos/seed/space-${space.slug}/1200/600`
   const thumbImages = space.imageUrls.slice(1, 3)
-
-  const contactUrl = `/contact?sujet=${encodeURIComponent(`Réservation espace ${space.name}`)}`
 
   return (
     <main className="bg-bsmk-white min-h-screen">
@@ -58,9 +63,11 @@ export default async function EspacePage({ params }: Props) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-bsmk-black/60 via-transparent to-transparent" />
           {/* Floor badge */}
-          <div className="absolute top-6 left-6">
-            <Badge variant="dark">{space.floor}</Badge>
-          </div>
+          {space.floor && (
+            <div className="absolute top-6 left-6">
+              <Badge variant="dark">{space.floor}</Badge>
+            </div>
+          )}
         </div>
         </ScaleIn>
 
@@ -88,20 +95,23 @@ export default async function EspacePage({ params }: Props) {
         <Container>
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
             <div>
-              <p className="font-sans text-xs tracking-widest uppercase text-bsmk-terracotta mb-3 font-medium">
-                BSMK — {space.floor}
+              <p className="font-sans text-xs tracking-widest uppercase text-page-accent mb-3 font-medium">
+                BSMK{space.floor ? ` — ${space.floor}` : ''}
               </p>
               <h1 className="font-display text-4xl lg:text-5xl text-bsmk-black leading-none mb-4">
                 {space.name}
               </h1>
               <div className="flex items-center gap-3 flex-wrap">
-                <Badge variant="blue">{space.capacity} personnes max.</Badge>
-                <Badge variant="olive">{space.surfaceSqm} m²</Badge>
-                {space.featured && <Badge variant="terracotta">Espace phare</Badge>}
+                {space.capacity != null && (
+                  <Badge variant="blue">{space.capacity} personnes max.</Badge>
+                )}
+                {space.surfaceSqm != null && (
+                  <Badge variant="olive">{space.surfaceSqm} m²</Badge>
+                )}
               </div>
             </div>
             <div className="shrink-0">
-              <Button href={contactUrl} variant="primary" size="lg">
+              <Button href="#reserver" variant="primary" size="lg">
                 Réserver cet espace
               </Button>
             </div>
@@ -127,18 +137,24 @@ export default async function EspacePage({ params }: Props) {
                 Informations pratiques
               </p>
               <dl className="space-y-4 font-sans text-sm">
-                <div className="flex justify-between border-b border-bsmk-black/10 pb-3">
-                  <dt className="text-bsmk-black/50">Niveau</dt>
-                  <dd className="text-bsmk-black font-medium">{space.floor}</dd>
-                </div>
-                <div className="flex justify-between border-b border-bsmk-black/10 pb-3">
-                  <dt className="text-bsmk-black/50">Surface</dt>
-                  <dd className="text-bsmk-black font-medium">{space.surfaceSqm} m²</dd>
-                </div>
-                <div className="flex justify-between border-b border-bsmk-black/10 pb-3">
-                  <dt className="text-bsmk-black/50">Capacité</dt>
-                  <dd className="text-bsmk-black font-medium">{space.capacity} personnes</dd>
-                </div>
+                {space.floor && (
+                  <div className="flex justify-between border-b border-bsmk-black/10 pb-3">
+                    <dt className="text-bsmk-black/50">Niveau</dt>
+                    <dd className="text-bsmk-black font-medium">{space.floor}</dd>
+                  </div>
+                )}
+                {space.surfaceSqm != null && (
+                  <div className="flex justify-between border-b border-bsmk-black/10 pb-3">
+                    <dt className="text-bsmk-black/50">Surface</dt>
+                    <dd className="text-bsmk-black font-medium">{space.surfaceSqm} m²</dd>
+                  </div>
+                )}
+                {space.capacity != null && (
+                  <div className="flex justify-between border-b border-bsmk-black/10 pb-3">
+                    <dt className="text-bsmk-black/50">Capacité</dt>
+                    <dd className="text-bsmk-black font-medium">{space.capacity} personnes</dd>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <dt className="text-bsmk-black/50">Disponibilité</dt>
                   <dd className="text-bsmk-black font-medium">Sur réservation</dd>
@@ -159,7 +175,7 @@ export default async function EspacePage({ params }: Props) {
               <div
                 className="flex items-center gap-3 bg-bsmk-sand/20 px-4 py-3 rounded-lg"
               >
-                <span className="text-bsmk-terracotta font-bold text-sm shrink-0">✓</span>
+                <span className="text-page-accent font-bold text-sm shrink-0">✓</span>
                 <span className="font-sans text-sm text-bsmk-black">{item}</span>
               </div>
               </StaggerItem>
@@ -179,16 +195,16 @@ export default async function EspacePage({ params }: Props) {
                 <Link
                   key={d.slug}
                   href={`/disciplines/${d.slug}`}
-                  className="group flex items-center gap-3 border border-bsmk-black/15 px-5 py-3 hover:border-bsmk-terracotta transition-colors rounded-lg"
+                  className="group flex items-center gap-3 border border-bsmk-black/15 px-5 py-3 hover:border-page-accent transition-colors rounded-lg"
                 >
                   <span
                     className="w-3 h-3 shrink-0"
                     style={{ backgroundColor: d.color }}
                   />
-                  <span className="font-sans text-sm text-bsmk-black group-hover:text-bsmk-terracotta transition-colors">
+                  <span className="font-sans text-sm text-bsmk-black group-hover:text-page-accent transition-colors">
                     {d.name}
                   </span>
-                  <span className="text-bsmk-black/30 group-hover:text-bsmk-terracotta transition-colors">→</span>
+                  <span className="text-bsmk-black/30 group-hover:text-page-accent transition-colors">→</span>
                 </Link>
               ))}
             </div>
@@ -198,10 +214,10 @@ export default async function EspacePage({ params }: Props) {
       )}
 
       {/* Reservation CTA */}
-      <section className="py-16 bg-bsmk-black">
+      <section id="reserver" className="py-16 bg-bsmk-black scroll-mt-24">
         <Container>
           <FadeUp>
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 items-start gap-8 lg:gap-12">
             <div>
               <p className="font-sans text-xs tracking-widest uppercase text-bsmk-sand/50 mb-3">
                 Réservation
@@ -209,17 +225,19 @@ export default async function EspacePage({ params }: Props) {
               <h2 className="font-display text-3xl lg:text-4xl text-white mb-3">
                 Réserver {space.name}
               </h2>
-              <p className="font-sans text-bsmk-white/60 max-w-md">
+              <p className="font-sans text-bsmk-white/60 max-w-md mb-6">
                 Disponible à la demi-journée ou à la journée. Notre équipe vous répondra dans les 48h pour confirmer votre réservation et discuter de vos besoins techniques.
               </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-              <Button href={contactUrl} variant="primary" size="lg">
-                Réserver cet espace
-              </Button>
               <Button href="/espaces" variant="outline" size="lg" className="text-white border-white/30">
                 Voir tous les espaces
               </Button>
+            </div>
+            <div className="bg-bsmk-white p-6 rounded-xl">
+              <RequestForm
+                type="BOOKING"
+                spaceId={space.id}
+                submitLabel={`Réserver ${space.name}`}
+              />
             </div>
           </div>
           </FadeUp>

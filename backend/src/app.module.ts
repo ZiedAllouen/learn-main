@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import * as path from 'path';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
@@ -17,6 +17,7 @@ import { SectorsModule } from './sectors/sectors.module';
 import { ArtistsModule } from './artists/artists.module';
 import { MediaModule } from './media/media.module';
 import { UsersModule } from './users/users.module';
+import { RequestsModule } from './requests/requests.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 
@@ -41,8 +42,10 @@ import { RolesGuard } from './auth/guards/roles.guard';
     ArtistsModule,
     MediaModule,
     UsersModule,
+    RequestsModule,
   ],
   providers: [
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],

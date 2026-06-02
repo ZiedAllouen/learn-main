@@ -28,8 +28,8 @@ export class ListArticlesDto {
   discipline?: string;
 
   @IsOptional()
-  @IsEnum(['DRAFT', 'PUBLISHED', 'ARCHIVED'] satisfies ContentStatus[])
-  status?: ContentStatus;
+  @IsEnum(['DRAFT', 'PUBLISHED', 'ARCHIVED', 'ALL'] satisfies (ContentStatus | 'ALL')[])
+  status?: ContentStatus | 'ALL';
 
   @IsOptional()
   @Transform(({ value }) => value === 'true')

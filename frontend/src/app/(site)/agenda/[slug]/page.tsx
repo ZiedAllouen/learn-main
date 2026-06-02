@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { events, getEventBySlug, eventTypeLabels, type EventType } from '@/data/events'
+import { getEvent, getEvents } from '@/lib/api/events'
+import { RequestForm } from '@/components/RequestForm'
 import { disciplines } from '@/data/disciplines'
+import { eventTypeLabels, type EventType } from '@/data/events'
 import { formatDate } from '@/lib/utils'
 import { ScaleIn, FadeUp, StaggerContainer, StaggerItem } from '@/components/ui/Motion'
 
@@ -37,23 +38,24 @@ function formatTime(dateStr: string): string {
   })
 }
 
-export function generateStaticParams() {
-  return events.map((e) => ({ slug: e.slug }))
-}
-
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const event = getEventBySlug(slug)
-  if (!event) return { title: 'Événement introuvable | BSMK' }
-  return {
-    title: `${event.title} | BSMK`,
-    description: event.description,
+  try {
+    const event = await getEvent(slug)
+    return {
+      title: `${event.title} | BSMK`,
+      description: event.description ?? undefined,
+    }
+  } catch {
+    return { title: 'Événement introuvable | BSMK' }
   }
 }
+
+export const dynamic = 'force-dynamic'
 
 export default async function EventDetailPage({
   params,
@@ -61,16 +63,23 @@ export default async function EventDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const event = getEventBySlug(slug)
-  if (!event) notFound()
 
+  let event
+  try {
+    event = await getEvent(slug)
+  } catch {
+    notFound()
+  }
+
+  const disciplineSlugs = event.disciplines.map((d) => d.discipline.slug)
   const relatedDisciplines = disciplines.filter((d) =>
-    event.disciplineSlugs.includes(d.slug),
+    disciplineSlugs.includes(d.slug),
   )
 
-  const relatedEvents = events
-    .filter((e) => e.eventType === event.eventType && e.slug !== event.slug)
-    .slice(0, 3)
+  const { data: sameTypeEvents } = await getEvents({ eventType: event.eventType, pageSize: 4 })
+  const relatedEvents = sameTypeEvents.filter((e) => e.slug !== event.slug).slice(0, 3)
+
+  const eventTypeLabel = eventTypeLabels[event.eventType as EventType] ?? event.eventType
 
   const longStartDate = formatLongDate(event.startDate)
   const startTime = formatTime(event.startDate)
@@ -87,7 +96,7 @@ export default async function EventDetailPage({
       <section className="relative h-[60vh] bg-bsmk-black">
         <ScaleIn className="absolute inset-0">
         <Image
-          src={event.coverUrl}
+          src={event.coverUrl ?? 'https://picsum.photos/seed/bsmk-event/800/450'}
           alt={event.title}
           fill
           className="object-cover opacity-55"
@@ -100,8 +109,8 @@ export default async function EventDetailPage({
         {/* Badge overlay top-left */}
         <div className="absolute top-8 left-0 right-0">
           <Container>
-            <Badge variant={eventTypeBadgeVariant[event.eventType]}>
-              {eventTypeLabels[event.eventType]}
+            <Badge variant={eventTypeBadgeVariant[event.eventType as EventType]}>
+              {eventTypeLabel}
             </Badge>
           </Container>
         </div>
@@ -142,17 +151,17 @@ export default async function EventDetailPage({
             )}
 
             {/* Location */}
-            <div className="flex-1 min-w-[180px] px-6 py-6">
-              <p className="text-xs tracking-widest uppercase text-bsmk-sand mb-1">Lieu</p>
-              <p className="font-display text-lg font-bold">{event.location}</p>
-            </div>
+            {event.location && (
+              <div className="flex-1 min-w-[180px] px-6 py-6">
+                <p className="text-xs tracking-widest uppercase text-bsmk-sand mb-1">Lieu</p>
+                <p className="font-display text-lg font-bold">{event.location}</p>
+              </div>
+            )}
 
-            {/* Price */}
+            {/* Type */}
             <div className="flex-1 min-w-[140px] px-6 py-6">
-              <p className="text-xs tracking-widest uppercase text-bsmk-sand mb-1">Entrée</p>
-              <p className="font-display text-lg font-bold">
-                {event.free ? 'Gratuite' : event.price}
-              </p>
+              <p className="text-xs tracking-widest uppercase text-bsmk-sand mb-1">Type</p>
+              <p className="font-display text-lg font-bold">{eventTypeLabel}</p>
             </div>
           </div>
           </FadeUp>
@@ -167,7 +176,7 @@ export default async function EventDetailPage({
             <FadeUp className="lg:col-span-2">
               <h2 className="font-display text-3xl font-bold mb-6">À propos</h2>
               <div className="space-y-5 text-bsmk-black/75 leading-relaxed text-base">
-                {event.description.split('\n\n').map((paragraph, i) => (
+                {(event.description ?? '').split('\n\n').map((paragraph, i) => (
                   <p key={i}>{paragraph}</p>
                 ))}
               </div>
@@ -191,26 +200,20 @@ export default async function EventDetailPage({
                       )}
                     </dd>
                   </div>
-                  <div className="flex gap-6">
-                    <dt className="text-xs tracking-widest uppercase text-bsmk-black/40 w-28 shrink-0 pt-0.5">
-                      Lieu
-                    </dt>
-                    <dd className="text-bsmk-black/80">{event.location}</dd>
-                  </div>
-                  <div className="flex gap-6">
-                    <dt className="text-xs tracking-widest uppercase text-bsmk-black/40 w-28 shrink-0 pt-0.5">
-                      Tarif
-                    </dt>
-                    <dd className="text-bsmk-black/80">
-                      {event.free ? 'Entrée libre et gratuite' : event.price}
-                    </dd>
-                  </div>
+                  {event.location && (
+                    <div className="flex gap-6">
+                      <dt className="text-xs tracking-widest uppercase text-bsmk-black/40 w-28 shrink-0 pt-0.5">
+                        Lieu
+                      </dt>
+                      <dd className="text-bsmk-black/80">{event.location}</dd>
+                    </div>
+                  )}
                   <div className="flex gap-6">
                     <dt className="text-xs tracking-widest uppercase text-bsmk-black/40 w-28 shrink-0 pt-0.5">
                       Type
                     </dt>
                     <dd className="text-bsmk-black/80">
-                      {eventTypeLabels[event.eventType]}
+                      {eventTypeLabel}
                     </dd>
                   </div>
                 </dl>
@@ -224,8 +227,8 @@ export default async function EventDetailPage({
                   <p className="text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
                     Type d&apos;événement
                   </p>
-                  <Badge variant={eventTypeBadgeVariant[event.eventType]}>
-                    {eventTypeLabels[event.eventType]}
+                  <Badge variant={eventTypeBadgeVariant[event.eventType as EventType]}>
+                    {eventTypeLabel}
                   </Badge>
                 </div>
 
@@ -262,18 +265,16 @@ export default async function EventDetailPage({
                   </div>
                 )}
 
-                {!event.free && event.price && (
+                {event.ticketUrl && (
                   <div>
-                    <p className="text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
-                      Tarif
-                    </p>
-                    <p className="font-semibold text-bsmk-black">{event.price}</p>
-                  </div>
-                )}
-
-                {event.free && (
-                  <div>
-                    <Badge variant="olive">Entrée libre et gratuite</Badge>
+                    <a
+                      href={event.ticketUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium text-page-accent hover:underline"
+                    >
+                      Billetterie →
+                    </a>
                   </div>
                 )}
               </div>
@@ -283,17 +284,19 @@ export default async function EventDetailPage({
       </section>
 
       {/* ── 4. Map placeholder ───────────────────────────────── */}
-      <section className="py-4 pb-16">
-        <Container>
-          <ScaleIn>
-          <div className="bg-bsmk-sand flex items-center justify-center h-40 border border-bsmk-black/10 rounded-xl">
-            <p className="text-bsmk-black/50 text-sm tracking-widest uppercase">
-              Voir sur la carte · {event.location}
-            </p>
-          </div>
-          </ScaleIn>
-        </Container>
-      </section>
+      {event.location && (
+        <section className="py-4 pb-16">
+          <Container>
+            <ScaleIn>
+            <div className="bg-bsmk-sand flex items-center justify-center h-40 border border-bsmk-black/10 rounded-xl">
+              <p className="text-bsmk-black/50 text-sm tracking-widest uppercase">
+                Voir sur la carte · {event.location}
+              </p>
+            </div>
+            </ScaleIn>
+          </Container>
+        </section>
+      )}
 
       {/* ── 5. Related events ────────────────────────────────── */}
       {relatedEvents.length > 0 && (
@@ -301,11 +304,11 @@ export default async function EventDetailPage({
           <Container>
             <div className="flex items-baseline justify-between mb-10">
               <h2 className="font-display text-2xl font-bold">
-                Autres {eventTypeLabels[event.eventType].toLowerCase()}s
+                Autres {eventTypeLabel.toLowerCase()}s
               </h2>
               <Link
                 href="/agenda"
-                className="text-xs tracking-widest uppercase text-bsmk-terracotta hover:underline"
+                className="text-xs tracking-widest uppercase text-page-accent hover:underline"
               >
                 Tout l&apos;agenda →
               </Link>
@@ -316,28 +319,24 @@ export default async function EventDetailPage({
                 <StaggerItem key={rel.id}>
                 <Link
                   href={`/agenda/${rel.slug}`}
-                  className="group bg-bsmk-white border border-bsmk-black/10 hover:border-bsmk-terracotta transition-colors flex flex-col rounded-xl overflow-hidden"
+                  className="group bg-bsmk-white border border-bsmk-black/10 hover:border-page-accent transition-colors flex flex-col rounded-xl overflow-hidden"
                 >
                   <div className="relative aspect-video overflow-hidden">
                     <Image
-                      src={rel.coverUrl}
+                      src={rel.coverUrl ?? 'https://picsum.photos/seed/bsmk-event/800/450'}
                       alt={rel.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-bsmk-black/40 to-transparent" />
-                    {rel.free && (
-                      <div className="absolute top-3 right-3">
-                        <Badge variant="olive">Gratuit</Badge>
-                      </div>
-                    )}
                   </div>
                   <div className="p-4 flex flex-col flex-1">
-                    <h3 className="font-display text-base font-bold leading-snug mb-1 group-hover:text-bsmk-terracotta transition-colors line-clamp-2">
+                    <h3 className="font-display text-base font-bold leading-snug mb-1 group-hover:text-page-accent transition-colors line-clamp-2">
                       {rel.title}
                     </h3>
                     <p className="text-xs text-bsmk-black/50">
-                      {formatDate(rel.startDate)} · {rel.location}
+                      {formatDate(rel.startDate)}
+                      {rel.location ? ` · ${rel.location}` : ''}
                     </p>
                   </div>
                 </Link>
@@ -348,36 +347,36 @@ export default async function EventDetailPage({
         </section>
       )}
 
-      {/* ── 6. CTA ───────────────────────────────────────────── */}
-      <section className="bg-bsmk-terracotta py-20">
+      {/* ── 6. Réservation CTA ───────────────────────────────── */}
+      <section className="bg-page-accent py-20">
         <Container>
           <FadeUp>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-8">
             <div className="text-white">
               <p className="text-xs tracking-widest uppercase text-white/60 mb-3">
-                {event.free ? 'Accès libre' : `Tarif : ${event.price}`}
+                Places limitées
               </p>
               <h2 className="font-display text-4xl lg:text-5xl font-bold leading-tight">
-                {event.free ? 'Participer gratuitement' : 'Réserver ma place'}
+                Réserver ma place
               </h2>
               <p className="mt-4 text-white/80 max-w-lg leading-relaxed">
-                {event.free
-                  ? "Cet événement est gratuit et ouvert à tous. Pensez à confirmer votre présence pour que nous puissions vous accueillir au mieux."
-                  : "Réservez votre place dès maintenant. Les places étant limitées, nous vous conseillons de vous inscrire rapidement."}
+                Réservez votre place dès maintenant. Les places étant limitées, nous vous
+                conseillons de vous inscrire rapidement.
               </p>
+              {event.ticketUrl && (
+                <a
+                  href={event.ticketUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center text-sm font-medium tracking-wide text-white hover:underline"
+                >
+                  Billetterie →
+                </a>
+              )}
             </div>
-            <Button
-              href={`/contact?sujet=${encodeURIComponent(
-                event.free
-                  ? `Participation gratuite — ${event.title}`
-                  : `Réservation — ${event.title}`,
-              )}`}
-              variant="secondary"
-              size="lg"
-              className="shrink-0"
-            >
-              {event.free ? 'Participer gratuitement' : 'Réserver ma place'}
-            </Button>
+            <div className="bg-bsmk-white p-6 rounded-xl">
+              <RequestForm type="BOOKING" submitLabel="Réserver ma place" details={{ eventTitle: event.title, eventSlug: event.slug }} />
+            </div>
           </div>
           </FadeUp>
         </Container>
@@ -388,7 +387,7 @@ export default async function EventDetailPage({
         <Container>
           <Link
             href="/agenda"
-            className="text-sm text-bsmk-black/50 hover:text-bsmk-terracotta transition-colors tracking-wide"
+            className="text-sm text-bsmk-black/50 hover:text-page-accent transition-colors tracking-wide"
           >
             ← Retour à l&apos;agenda
           </Link>

@@ -3,7 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
-import { events, getUpcomingEvents, eventTypeLabels, type EventType } from '@/data/events'
+import { getEvents, type ApiEvent } from '@/lib/api/events'
+import { eventTypeLabels, type EventType } from '@/data/events'
 import { formatDate } from '@/lib/utils'
 import { HeroText, FadeIn, FadeUp, StaggerContainer, StaggerItem } from '@/components/ui/Motion'
 
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
   description:
     'Concerts, expositions, ateliers et résidences au BSMK — le calendrier complet des événements du centre des arts de Tunis.',
 }
+
+export const dynamic = 'force-dynamic'
 
 const eventTypeBadgeVariant: Record<EventType, 'terracotta' | 'olive' | 'blue' | 'default'> = {
   CONCERT: 'terracotta',
@@ -48,8 +51,8 @@ function getMonthKey(dateStr: string): string {
   return `${d.getFullYear()}-${String(d.getMonth()).padStart(2, '0')}`
 }
 
-function groupByMonth(evts: typeof events): Map<string, typeof events> {
-  const map = new Map<string, typeof events>()
+function groupByMonth(evts: ApiEvent[]): Map<string, ApiEvent[]> {
+  const map = new Map<string, ApiEvent[]>()
   const sorted = [...evts].sort(
     (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
   )
@@ -62,14 +65,13 @@ function groupByMonth(evts: typeof events): Map<string, typeof events> {
 }
 
 function buildHref(
-  current: { type?: string; month?: string; free?: string },
-  update: Partial<{ type: string | undefined; month: string | undefined; free: string | undefined }>,
+  current: { type?: string; month?: string },
+  update: Partial<{ type: string | undefined; month: string | undefined }>,
 ) {
   const merged = { ...current, ...update }
   const p = new URLSearchParams()
   if (merged.type) p.set('type', merged.type)
   if (merged.month) p.set('month', merged.month)
-  if (merged.free) p.set('free', merged.free)
   const s = p.toString()
   return s ? `/agenda?${s}` : '/agenda'
 }
@@ -77,9 +79,11 @@ function buildHref(
 export default async function AgendaPage({
   searchParams,
 }: {
-  searchParams: Promise<{ type?: string; month?: string; free?: string }>
+  searchParams: Promise<{ type?: string; month?: string }>
 }) {
-  const { type, month, free } = await searchParams
+  const { type, month } = await searchParams
+
+  const { data: events } = await getEvents({ pageSize: 100 })
 
   let filteredEvents = [...events]
   if (type) filteredEvents = filteredEvents.filter((e) => e.eventType === type)
@@ -90,7 +94,6 @@ export default async function AgendaPage({
       return d.getFullYear() === y && d.getMonth() === m
     })
   }
-  if (free === '1') filteredEvents = filteredEvents.filter((e) => e.free)
 
   const upcoming = filteredEvents.slice(0, 3)
   const grouped = groupByMonth(filteredEvents)
@@ -132,7 +135,7 @@ export default async function AgendaPage({
                 return (
                   <Link
                     key={key}
-                    href={buildHref({ type, month, free }, { type: isActive ? undefined : key })}
+                    href={buildHref({ type, month }, { type: isActive ? undefined : key })}
                     className={`px-3 py-1 text-xs tracking-widest uppercase rounded-full transition-colors ${
                       isActive
                         ? 'bg-bsmk-black text-white border border-bsmk-black'
@@ -154,7 +157,7 @@ export default async function AgendaPage({
                 return (
                   <Link
                     key={mo.label}
-                    href={buildHref({ type, month, free }, { month: isActive ? undefined : key })}
+                    href={buildHref({ type, month }, { month: isActive ? undefined : key })}
                     className={`px-3 py-1 text-xs tracking-widest uppercase rounded-full transition-colors ${
                       isActive
                         ? 'bg-bsmk-black text-white border border-bsmk-black'
@@ -166,25 +169,22 @@ export default async function AgendaPage({
                 )
               })}
             </div>
-
-            {/* Free only */}
-            <div className="flex items-center">
-              <Link
-                href={buildHref({ type, month, free }, { free: free === '1' ? undefined : '1' })}
-                className={`px-3 py-1 text-xs tracking-widest uppercase rounded-full transition-colors ${
-                  free === '1'
-                    ? 'bg-bsmk-olive text-white border border-bsmk-olive'
-                    : 'border border-bsmk-olive text-bsmk-olive hover:bg-bsmk-olive hover:text-white'
-                }`}
-              >
-                Entrée libre
-              </Link>
-            </div>
           </div>
           </FadeIn>
         </Container>
       </section>
 
+      {filteredEvents.length === 0 ? (
+        /* ── Empty state ─────────────────────────────────────── */
+        <section className="py-24">
+          <Container>
+            <p className="text-center text-bsmk-black/50 text-lg">
+              Aucun événement à venir.
+            </p>
+          </Container>
+        </section>
+      ) : (
+        <>
       {/* ── À venir ──────────────────────────────────────────── */}
       <section className="py-16 bg-bsmk-sand/20">
         <Container>
@@ -195,46 +195,42 @@ export default async function AgendaPage({
             </span>
           </div>
 
-          <StaggerContainer key={`upcoming-${type ?? ''}-${month ?? ''}-${free ?? ''}`} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <StaggerContainer key={`upcoming-${type ?? ''}-${month ?? ''}`} className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {upcoming.map((evt) => (
               <StaggerItem key={evt.id} className="h-full">
               <Link
                 key={evt.id}
                 href={`/agenda/${evt.slug}`}
-                className="group bg-bsmk-white border border-bsmk-black/10 hover:border-bsmk-terracotta transition-colors flex flex-col h-full rounded-xl overflow-hidden"
+                className="group bg-bsmk-white border border-bsmk-black/10 hover:border-page-accent transition-colors flex flex-col h-full rounded-xl overflow-hidden"
               >
                 <div className="relative aspect-video overflow-hidden">
                   <Image
-                    src={evt.coverUrl}
+                    src={evt.coverUrl ?? 'https://picsum.photos/seed/bsmk-event/800/450'}
                     alt={evt.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-bsmk-black/50 to-transparent" />
                   <div className="absolute bottom-3 left-3">
-                    <Badge variant={eventTypeBadgeVariant[evt.eventType]}>
-                      {eventTypeLabels[evt.eventType]}
+                    <Badge variant={eventTypeBadgeVariant[evt.eventType as EventType]}>
+                      {eventTypeLabels[evt.eventType as EventType]}
                     </Badge>
                   </div>
-                  {evt.free && (
-                    <div className="absolute top-3 right-3">
-                      <Badge variant="olive">Entrée libre</Badge>
-                    </div>
-                  )}
                 </div>
 
                 <div className="p-5 flex flex-col flex-1">
-                  <h3 className="font-display text-lg font-bold leading-snug mb-2 group-hover:text-bsmk-terracotta transition-colors">
+                  <h3 className="font-display text-lg font-bold leading-snug mb-2 group-hover:text-page-accent transition-colors">
                     {evt.title}
                   </h3>
                   <p className="text-sm text-bsmk-black/50 mb-3">
-                    {formatDate(evt.startDate)} · {evt.location}
+                    {formatDate(evt.startDate)}
+                    {evt.location ? ` · ${evt.location}` : ''}
                   </p>
                   <div className="mt-auto flex items-center justify-between">
                     <span className="text-sm font-medium">
-                      {evt.free ? 'Gratuit' : evt.price}
+                      {eventTypeLabels[evt.eventType as EventType]}
                     </span>
-                    <span className="text-xs tracking-widest uppercase text-bsmk-terracotta opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-xs tracking-widest uppercase text-page-accent opacity-0 group-hover:opacity-100 transition-opacity">
                       Voir →
                     </span>
                   </div>
@@ -255,7 +251,7 @@ export default async function AgendaPage({
             {Array.from(grouped.entries()).map(([, monthEvents]) => {
               const firstDate = monthEvents[0].startDate
               return (
-                <FadeUp key={`${getMonthKey(firstDate)}-${type ?? ''}-${month ?? ''}-${free ?? ''}`}>
+                <FadeUp key={`${getMonthKey(firstDate)}-${type ?? ''}-${month ?? ''}`}>
                   {/* Month divider */}
                   <div className="flex items-center gap-4 mb-6">
                     <h3 className="font-display text-2xl font-bold capitalize">
@@ -273,7 +269,7 @@ export default async function AgendaPage({
                       <div key={evt.id}>
                         <div className="flex gap-6 py-5 group">
                           {/* Date block */}
-                          <div className="w-16 h-16 shrink-0 bg-bsmk-terracotta text-white flex flex-col items-center justify-center rounded-md">
+                          <div className="w-16 h-16 shrink-0 bg-page-accent text-white flex flex-col items-center justify-center rounded-md">
                             <span className="font-display text-2xl font-bold leading-none">
                               {getDayNumber(evt.startDate)}
                             </span>
@@ -285,28 +281,31 @@ export default async function AgendaPage({
                           {/* Main content */}
                           <div className="flex-1 min-w-0">
                             <div className="flex flex-wrap gap-2 mb-2">
-                              <Badge variant={eventTypeBadgeVariant[evt.eventType]}>
-                                {eventTypeLabels[evt.eventType]}
+                              <Badge variant={eventTypeBadgeVariant[evt.eventType as EventType]}>
+                                {eventTypeLabels[evt.eventType as EventType]}
                               </Badge>
-                              {evt.free && <Badge variant="olive">Entrée libre</Badge>}
                             </div>
-                            <h4 className="font-display text-xl font-bold leading-snug group-hover:text-bsmk-terracotta transition-colors mb-1">
+                            <h4 className="font-display text-xl font-bold leading-snug group-hover:text-page-accent transition-colors mb-1">
                               {evt.title}
                             </h4>
-                            <p className="text-sm text-bsmk-black/50 mb-2">{evt.location}</p>
-                            <p className="text-sm text-bsmk-black/65 leading-relaxed line-clamp-2">
-                              {evt.description}
-                            </p>
+                            {evt.location && (
+                              <p className="text-sm text-bsmk-black/50 mb-2">{evt.location}</p>
+                            )}
+                            {evt.description && (
+                              <p className="text-sm text-bsmk-black/65 leading-relaxed line-clamp-2">
+                                {evt.description}
+                              </p>
+                            )}
                           </div>
 
-                          {/* Right: price + link */}
+                          {/* Right: type + link */}
                           <div className="shrink-0 flex flex-col items-end justify-between py-1">
                             <span className="text-sm font-semibold text-bsmk-black">
-                              {evt.free ? 'Gratuit' : evt.price}
+                              {eventTypeLabels[evt.eventType as EventType]}
                             </span>
                             <Link
                               href={`/agenda/${evt.slug}`}
-                              className="text-xs tracking-widest uppercase text-bsmk-terracotta hover:underline"
+                              className="text-xs tracking-widest uppercase text-page-accent hover:underline"
                             >
                               Voir →
                             </Link>
@@ -324,6 +323,8 @@ export default async function AgendaPage({
           </div>
         </Container>
       </section>
+        </>
+      )}
 
       {/* ── CTA band ─────────────────────────────────────────── */}
       <section className="bg-bsmk-olive text-bsmk-white py-16">
@@ -339,7 +340,7 @@ export default async function AgendaPage({
             </div>
             <Link
               href="/contact?sujet=Proposition+événement"
-              className="shrink-0 inline-flex items-center h-14 px-8 bg-bsmk-terracotta text-white text-sm font-medium tracking-wide hover:bg-bsmk-terracotta/90 transition-colors rounded-lg"
+              className="shrink-0 inline-flex items-center h-14 px-8 bg-page-accent text-white text-sm font-medium tracking-wide hover:bg-page-accent/90 transition-colors rounded-lg"
             >
               Nous contacter
             </Link>

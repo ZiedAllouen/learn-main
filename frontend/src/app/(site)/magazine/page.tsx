@@ -304,7 +304,7 @@ export default async function MagazinePage({
                     <div className="mb-3">
                       <Badge variant="terracotta">{article.category}</Badge>
                     </div>
-                    <h3 className="font-display text-lg text-bsmk-black leading-snug line-clamp-2 mb-2 group-hover:text-bsmk-terracotta transition-colors">
+                    <h3 className="font-display text-lg text-bsmk-black leading-snug line-clamp-2 mb-2 group-hover:text-page-accent transition-colors">
                       {article.title}
                     </h3>
                     <p className="font-sans text-sm text-bsmk-black/60 leading-relaxed line-clamp-3 mb-4 flex-1">

@@ -37,7 +37,7 @@ export default function CartographiePage() {
       <section className="bg-bsmk-black text-bsmk-white pt-32 pb-20">
         <Container>
           <HeroText delay={0}>
-            <p className="text-xs tracking-widest uppercase text-bsmk-terracotta mb-5">
+            <p className="text-xs tracking-widest uppercase text-page-accent mb-5">
               Phase 2 · Connexion culturelle
             </p>
           </HeroText>
@@ -60,7 +60,7 @@ export default function CartographiePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             <div className="lg:col-span-8 min-h-[520px] bg-bsmk-sand/20 border border-bsmk-black/10 rounded-xl p-6 relative overflow-hidden">
               <div className="absolute inset-6 border border-bsmk-black/10 rounded-full" />
-              <div className="absolute left-[18%] top-[25%] h-3 w-3 rounded-full bg-bsmk-terracotta" />
+              <div className="absolute left-[18%] top-[25%] h-3 w-3 rounded-full bg-page-accent" />
               <div className="absolute left-[48%] top-[36%] h-3 w-3 rounded-full bg-bsmk-olive" />
               <div className="absolute left-[62%] top-[58%] h-3 w-3 rounded-full bg-bsmk-blue" />
               <div className="absolute left-[34%] top-[68%] h-3 w-3 rounded-full bg-bsmk-black" />
@@ -95,7 +95,7 @@ export default function CartographiePage() {
       <section className="py-16 bg-bsmk-black text-bsmk-white">
         <Container>
           <FadeUp>
-            <p className="text-xs tracking-widest uppercase text-bsmk-terracotta mb-3">
+            <p className="text-xs tracking-widest uppercase text-page-accent mb-3">
               Zones et réseaux
             </p>
             <h2 className="font-display text-3xl lg:text-4xl font-bold mb-8">
@@ -112,7 +112,7 @@ export default function CartographiePage() {
             ))}
           </StaggerContainer>
           <div className="mt-10">
-            <Link href="/communaute" className="text-sm text-bsmk-terracotta hover:underline">
+            <Link href="/communaute" className="text-sm text-page-accent hover:underline">
               Voir la communauté →
             </Link>
           </div>

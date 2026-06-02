@@ -12,8 +12,8 @@ export async function apiFetch<T>(
   options?: RequestInit & { next?: { revalidate?: number; tags?: string[] } },
 ): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
     ...options,
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
   })
   if (!res.ok) {
     throw new ApiError(res.status, `API ${path} → ${res.status}`)
