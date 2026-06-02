@@ -36,38 +36,6 @@ export const DEFAULT_SECTION_COLOR: SectionColor = {
 
 // Routes whose hero/top section is dark — the header sits on dark and uses light text.
 // All other routes are light-topped and get a light header.
-// Content sections whose LISTING page has a dark hero (bg-bsmk-black at the top),
-// but whose DETAIL page (`/<section>/<slug>`) is light-topped (bg-bsmk-white).
-// The header is dark/transparent over the dark hero, and light over the detail pages.
-const LIGHT_DETAIL_SECTIONS = [
-  '/programmes',
-  '/espaces',
-  '/agenda',
-  '/vetrinart',
-  '/magazine',
-  '/disciplines',
-]
-
-/**
- * True when the page at `pathname` has a DARK hero at the top, so the header
- * should be light-on-dark (transparent → dark when scrolled).
- *
- * Reality of this site: every top-level/listing page (home, /bsmk, the content
- * listings, /contact, /login, /register, …) opens with a `bg-bsmk-black` hero.
- * The ONLY light-topped pages are the content DETAIL pages — `/<section>/<slug>`
- * — which start with `bg-bsmk-white`. So a page is light-topped iff it is a
- * detail page under one of the content sections; everything else is dark-hero.
- */
-export function hasDarkHero(pathname: string): boolean {
-  // A light-topped detail page looks like `/<section>/<slug>` (exactly one extra segment).
-  const isLightDetail = LIGHT_DETAIL_SECTIONS.some(section => {
-    if (!pathname.startsWith(section + '/')) return false
-    const rest = pathname.slice(section.length + 1)
-    return rest.length > 0 && !rest.includes('/') // exactly one segment after the section
-  })
-  return !isLightDetail
-}
-
 /** Resolve a pathname to its section accent, falling back to terracotta. */
 export function getSectionColor(pathname: string): SectionColor {
   let match: { prefix: string; color: SectionColor } | null = null

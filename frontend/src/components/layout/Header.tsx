@@ -8,7 +8,7 @@ import { motion } from 'framer-motion'
 import { disciplines } from '@/data/disciplines'
 import { Container } from '@/components/ui/Container'
 import { getAuthUser, logout } from '@/lib/auth'
-import { getSectionColor, hasDarkHero } from '@/lib/sectionColors'
+import { getSectionColor } from '@/lib/sectionColors'
 
 const navLinks = [
   { label: 'Le Centre', href: '/bsmk' },
@@ -53,37 +53,22 @@ export function Header() {
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
   const sectionColor = getSectionColor(pathname).base
 
-  // Theme-aware classes. Dark-hero pages keep the original transparent->black
-  // behaviour; light-topped pages get a readable light header.
-  const darkHero = hasDarkHero(pathname)
-  const headerBg = darkHero
-    ? scrolled || mobileOpen
-      ? 'bg-bsmk-black/98 backdrop-blur-sm'
-      : 'bg-transparent'
-    : scrolled || mobileOpen
-      ? 'bg-bsmk-white/98 backdrop-blur-sm border-b border-bsmk-black/10'
-      : 'bg-bsmk-white/80 backdrop-blur-sm border-b border-bsmk-black/5'
-  const navText = darkHero
-    ? 'text-bsmk-white/75 hover:text-bsmk-white'
-    : 'text-bsmk-black/70 hover:text-bsmk-black'
-  const actionText = darkHero
-    ? 'text-bsmk-white/60 hover:text-bsmk-white'
-    : 'text-bsmk-black/60 hover:text-bsmk-black'
-  const hamburger = darkHero ? 'text-bsmk-white' : 'text-bsmk-black'
-  const panelBg = darkHero ? 'bg-bsmk-black border-white/10' : 'bg-bsmk-white border-bsmk-black/10'
-  const panelItem = darkHero
-    ? 'text-bsmk-white/65 hover:text-bsmk-white hover:bg-white/5'
-    : 'text-bsmk-black/70 hover:text-bsmk-black hover:bg-black/[0.04]'
-  const panelDivider = darkHero ? 'border-white/10' : 'border-bsmk-black/10'
-  const mobileBg = darkHero ? 'bg-bsmk-black border-white/10' : 'bg-bsmk-white border-bsmk-black/10'
-  const mobileItemBorder = darkHero ? 'border-white/5' : 'border-bsmk-black/5'
-  const mobileDiscLabel = darkHero ? 'text-bsmk-sand/40' : 'text-bsmk-black/40'
-  const mobileDiscItem = darkHero
-    ? 'text-bsmk-white/50 hover:text-bsmk-white'
-    : 'text-bsmk-black/50 hover:text-bsmk-black'
-  const mobileOutlineBtn = darkHero
-    ? 'border-white/20 text-white/70 hover:border-white/50 hover:text-white'
-    : 'border-bsmk-black/20 text-bsmk-black/70 hover:border-bsmk-black/40 hover:text-bsmk-black'
+  // Always a solid dark bar — on every page, scrolled or not. Fully opaque so
+  // the white nav is always readable and the header never reveals the page
+  // background beneath it (e.g. split-panel pages). Scrolling only adds a subtle
+  // shadow to lift it off the content.
+  const headerBg = `bg-bsmk-black ${scrolled ? 'shadow-lg shadow-black/20' : ''}`
+  const navText = 'text-bsmk-white/75 hover:text-bsmk-white'
+  const actionText = 'text-bsmk-white/60 hover:text-bsmk-white'
+  const hamburger = 'text-bsmk-white'
+  const panelBg = 'bg-bsmk-black border-white/10'
+  const panelItem = 'text-bsmk-white/65 hover:text-bsmk-white hover:bg-white/5'
+  const panelDivider = 'border-white/10'
+  const mobileBg = 'bg-bsmk-black border-white/10'
+  const mobileItemBorder = 'border-white/5'
+  const mobileDiscLabel = 'text-bsmk-sand/40'
+  const mobileDiscItem = 'text-bsmk-white/50 hover:text-bsmk-white'
+  const mobileOutlineBtn = 'border-white/20 text-white/70 hover:border-white/50 hover:text-white'
 
   return (
     <motion.header
