@@ -85,12 +85,19 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
   const token = getAccessToken()
 
   const load = useCallback(() => {
+    if (!token) {
+      setRows([])
+      setLoading(false)
+      return
+    }
     setLoading(true)
-    apiFetch<{ data: Row[] }>(`${config.path}?status=ALL&pageSize=100`)
+    apiFetch<{ data: Row[] }>(`${config.path}/admin/all?pageSize=100`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then(res => setRows(Array.isArray(res?.data) ? res.data : []))
       .catch(() => setRows([]))
       .finally(() => setLoading(false))
-  }, [config.path])
+  }, [config.path, token])
 
   useEffect(() => {
     load()

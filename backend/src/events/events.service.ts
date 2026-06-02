@@ -10,11 +10,47 @@ export class EventsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(dto: ListEventsDto): Promise<PaginatedResult<unknown>> {
+    const { page, pageSize, discipline, eventType, from, to } = dto;
+    const skip = (page - 1) * pageSize;
+
+    // Public listing always and only returns PUBLISHED content; the client
+    // cannot override status (drafts/archived must never be publicly enumerable).
+    const where = {
+      status: 'PUBLISHED' as const,
+      ...(eventType && { eventType }),
+      ...(discipline && { disciplines: { some: { discipline: { slug: discipline } } } }),
+      ...((from || to) && {
+        startDate: {
+          ...(from && { gte: new Date(from) }),
+          ...(to && { lte: new Date(to) }),
+        },
+      }),
+    };
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.event.findMany({
+        where,
+        skip,
+        take: pageSize,
+        orderBy: { startDate: 'asc' },
+        include: {
+          disciplines: { include: { discipline: { select: { id: true, slug: true, name: true } } } },
+        },
+      }),
+      this.prisma.event.count({ where }),
+    ]);
+
+    return { data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+  }
+
+  /** Admin-only listing: returns ALL statuses by default, or filters to a
+   * specific status. Reachable only via the @Roles-guarded admin route. */
+  async findAllAdmin(dto: ListEventsDto): Promise<PaginatedResult<unknown>> {
     const { page, pageSize, discipline, eventType, status, from, to } = dto;
     const skip = (page - 1) * pageSize;
 
     const where = {
-      ...(status === 'ALL' ? {} : status ? { status } : { status: 'PUBLISHED' as const }),
+      ...(status === 'ALL' ? {} : status ? { status } : {}),
       ...(eventType && { eventType }),
       ...(discipline && { disciplines: { some: { discipline: { slug: discipline } } } }),
       ...((from || to) && {

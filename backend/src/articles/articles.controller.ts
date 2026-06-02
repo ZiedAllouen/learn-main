@@ -19,6 +19,12 @@ export class ArticlesController {
     return this.articles.findAll(dto);
   }
 
+  @Roles('ADMIN', 'EDITOR')
+  @Get('admin/all')
+  findAllAdmin(@Query() dto: ListArticlesDto) {
+    return this.articles.findAllAdmin(dto);
+  }
+
   @Public()
   @Get(':slug')
   findOne(@Param('slug') slug: string): Promise<unknown> {
