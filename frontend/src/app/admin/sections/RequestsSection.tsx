@@ -85,18 +85,17 @@ export function RequestsSection() {
   }
 
   return (
-    <div className="border border-white/10 rounded-2xl overflow-hidden">
-      <div className="px-6 py-5 border-b border-white/10 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <h2 className="font-medium text-bsmk-white">Demandes</h2>
+    <div className="border border-bsmk-black/10 rounded-2xl overflow-hidden">
+      <div className="px-6 py-5 border-b border-bsmk-black/10 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <h2 className="font-medium text-bsmk-black">Demandes</h2>
         <select
           value={statusFilter}
           onChange={e => setStatusFilter(e.target.value as '' | RequestStatus)}
-          className="bg-[#111] border border-white/10 text-white/70 rounded-lg px-3 py-1.5 text-sm focus:outline-none appearance-none cursor-pointer"
-          style={{ colorScheme: 'dark' }}
+          className="bg-white border border-bsmk-black/15 text-bsmk-black/70 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-page-accent appearance-none cursor-pointer"
         >
-          <option value="" style={{ background: '#111' }}>Tous les statuts</option>
+          <option value="">Tous les statuts</option>
           {STATUS_OPTIONS.map(s => (
-            <option key={s} value={s} style={{ background: '#111' }}>
+            <option key={s} value={s}>
               {STATUS_LABELS[s]}
             </option>
           ))}
@@ -104,37 +103,37 @@ export function RequestsSection() {
       </div>
 
       {loading ? (
-        <div className="px-6 py-16 text-center text-bsmk-white/30 text-sm">Chargement…</div>
+        <div className="px-6 py-16 text-center text-bsmk-black/40 text-sm">Chargement…</div>
       ) : !requests.length ? (
-        <div className="px-6 py-16 text-center text-bsmk-white/30 text-sm">Aucune demande.</div>
+        <div className="px-6 py-16 text-center text-bsmk-black/40 text-sm">Aucune demande.</div>
       ) : (
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/5">
-              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal">Type</th>
-              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal">Nom</th>
-              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal hidden md:table-cell">Email</th>
-              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal hidden lg:table-cell">Objet</th>
-              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal hidden lg:table-cell">Date</th>
-              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal">Statut</th>
+            <tr className="border-b border-bsmk-black/5">
+              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal">Type</th>
+              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal">Nom</th>
+              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden md:table-cell">Email</th>
+              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden lg:table-cell">Objet</th>
+              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden lg:table-cell">Date</th>
+              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal">Statut</th>
             </tr>
           </thead>
           <tbody>
             {requests.map(r => (
-              <tr key={r.id} className="border-b border-white/5 hover:bg-white/3 transition-colors">
-                <td className="px-6 py-4 text-white/55">{TYPE_LABELS[r.type] ?? r.type}</td>
+              <tr key={r.id} className="border-b border-bsmk-black/5 hover:bg-black/[0.03] transition-colors">
+                <td className="px-6 py-4 text-bsmk-black/60">{TYPE_LABELS[r.type] ?? r.type}</td>
                 <td className="px-6 py-4">
-                  <div className="font-medium text-bsmk-white">{r.name}</div>
-                  <div className="text-xs text-white/35 md:hidden mt-0.5">{r.email}</div>
+                  <div className="font-medium text-bsmk-black">{r.name}</div>
+                  <div className="text-xs text-bsmk-black/50 md:hidden mt-0.5">{r.email}</div>
                   {r.message && (
-                    <div className="text-xs text-white/30 mt-1 max-w-xs truncate" title={r.message}>
+                    <div className="text-xs text-bsmk-black/40 mt-1 max-w-xs truncate" title={r.message}>
                       {r.message}
                     </div>
                   )}
                 </td>
-                <td className="px-6 py-4 text-white/55 hidden md:table-cell">{r.email}</td>
-                <td className="px-6 py-4 text-white/55 hidden lg:table-cell">{objet(r)}</td>
-                <td className="px-6 py-4 text-white/30 text-xs hidden lg:table-cell">
+                <td className="px-6 py-4 text-bsmk-black/60 hidden md:table-cell">{r.email}</td>
+                <td className="px-6 py-4 text-bsmk-black/60 hidden lg:table-cell">{objet(r)}</td>
+                <td className="px-6 py-4 text-bsmk-black/40 text-xs hidden lg:table-cell">
                   {new Date(r.createdAt).toLocaleDateString('fr-FR')}
                 </td>
                 <td className="px-6 py-4">
@@ -142,11 +141,10 @@ export function RequestsSection() {
                     value={r.status}
                     disabled={updatingId === r.id}
                     onChange={e => changeStatus(r.id, e.target.value as RequestStatus)}
-                    className="bg-[#111] border border-white/10 text-white/70 rounded-lg px-3 py-1.5 text-sm focus:outline-none appearance-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                    style={{ colorScheme: 'dark' }}
+                    className="bg-white border border-bsmk-black/15 text-bsmk-black/70 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-page-accent appearance-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {STATUS_OPTIONS.map(s => (
-                      <option key={s} value={s} style={{ background: '#111' }}>
+                      <option key={s} value={s}>
                         {STATUS_LABELS[s]}
                       </option>
                     ))}

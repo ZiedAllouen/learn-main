@@ -263,17 +263,17 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
   }
 
   const inputClass =
-    'w-full bg-[#111] border border-white/10 text-white placeholder-white/25 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30'
+    'w-full bg-white border border-bsmk-black/15 text-bsmk-black placeholder-bsmk-black/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-page-accent'
 
   return (
-    <div className="border border-white/10 rounded-2xl overflow-hidden">
-      <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between gap-4">
-        <h2 className="font-medium text-bsmk-white">Contenu</h2>
+    <div className="border border-bsmk-black/10 rounded-2xl overflow-hidden">
+      <div className="px-6 py-5 border-b border-bsmk-black/10 flex items-center justify-between gap-4">
+        <h2 className="font-medium text-bsmk-black">Contenu</h2>
         {!editing && (
           <button
             type="button"
             onClick={openNew}
-            className="text-xs tracking-wide uppercase text-bsmk-sand/70 hover:text-bsmk-sand border border-white/10 hover:border-white/25 rounded-lg px-3 py-1.5 transition-colors"
+            className="text-xs tracking-wide uppercase text-page-accent hover:text-bsmk-black border border-bsmk-black/15 hover:border-bsmk-black/30 rounded-lg px-3 py-1.5 transition-colors"
           >
             + Nouveau
           </button>
@@ -284,7 +284,7 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
         <div className="px-6 py-6 space-y-4">
           {config.fields.map(f => (
             <div key={f.name}>
-              <label className="block text-xs tracking-widest uppercase text-white/25 mb-1.5">
+              <label className="block text-xs tracking-widest uppercase text-bsmk-black/40 mb-1.5">
                 {f.label}
               </label>
               {f.type === 'textarea' ? (
@@ -293,17 +293,15 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
                   value={form[f.name] ?? ''}
                   onChange={e => setForm(s => ({ ...s, [f.name]: e.target.value }))}
                   className={inputClass}
-                  style={{ colorScheme: 'dark' }}
                 />
               ) : f.type === 'select' ? (
                 <select
                   value={form[f.name] ?? ''}
                   onChange={e => setForm(s => ({ ...s, [f.name]: e.target.value }))}
                   className={inputClass}
-                  style={{ colorScheme: 'dark' }}
                 >
                   {(f.options ?? []).map(o => (
-                    <option key={o.value} value={o.value} style={{ background: '#111' }}>
+                    <option key={o.value} value={o.value}>
                       {o.label}
                     </option>
                   ))}
@@ -314,65 +312,64 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
                   value={form[f.name] ?? ''}
                   onChange={e => setForm(s => ({ ...s, [f.name]: e.target.value }))}
                   className={inputClass}
-                  style={{ colorScheme: 'dark' }}
                 />
               )}
             </div>
           ))}
 
-          {error && <p className="text-xs text-red-400">{error}</p>}
+          {error && <p className="text-xs text-red-600">{error}</p>}
 
           <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={save}
               disabled={saving || !form.slug?.trim() || !form[config.titleField]?.trim()}
-              className="text-xs tracking-wide uppercase bg-white/10 hover:bg-white/15 disabled:opacity-30 disabled:cursor-not-allowed text-bsmk-white rounded-lg px-4 py-2 transition-colors"
+              className="text-xs tracking-wide uppercase bg-page-accent hover:bg-page-accent/90 disabled:opacity-30 disabled:cursor-not-allowed text-white rounded-lg px-4 py-2 transition-colors"
             >
               {saving ? 'Enregistrement…' : 'Enregistrer'}
             </button>
             <button
               type="button"
               onClick={closeForm}
-              className="text-xs tracking-wide uppercase text-white/40 hover:text-white rounded-lg px-4 py-2 transition-colors"
+              className="text-xs tracking-wide uppercase text-bsmk-black/50 hover:text-bsmk-black rounded-lg px-4 py-2 transition-colors"
             >
               Annuler
             </button>
           </div>
         </div>
       ) : loading ? (
-        <div className="px-6 py-16 text-center text-bsmk-white/30 text-sm">Chargement…</div>
+        <div className="px-6 py-16 text-center text-bsmk-black/40 text-sm">Chargement…</div>
       ) : !rows.length ? (
-        <div className="px-6 py-16 text-center text-bsmk-white/30 text-sm">Aucun élément.</div>
+        <div className="px-6 py-16 text-center text-bsmk-black/40 text-sm">Aucun élément.</div>
       ) : (
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/5">
-              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal">Titre</th>
-              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal hidden md:table-cell">Slug</th>
-              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal hidden lg:table-cell">Statut</th>
+            <tr className="border-b border-bsmk-black/5">
+              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal">Titre</th>
+              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden md:table-cell">Slug</th>
+              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden lg:table-cell">Statut</th>
               <th className="px-6 py-3" />
             </tr>
           </thead>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={str(row.id) || str(row.slug) || i} className="border-b border-white/5 hover:bg-white/3 transition-colors">
+              <tr key={str(row.id) || str(row.slug) || i} className="border-b border-bsmk-black/5 hover:bg-black/[0.03] transition-colors">
                 <td className="px-6 py-4">
-                  <div className="font-medium text-bsmk-white">{str(row[config.titleField]) || '—'}</div>
-                  <div className="text-xs text-white/35 md:hidden mt-0.5">{str(row.slug)}</div>
+                  <div className="font-medium text-bsmk-black">{str(row[config.titleField]) || '—'}</div>
+                  <div className="text-xs text-bsmk-black/50 md:hidden mt-0.5">{str(row.slug)}</div>
                 </td>
-                <td className="px-6 py-4 text-white/55 hidden md:table-cell">{str(row.slug)}</td>
-                <td className="px-6 py-4 text-white/30 text-xs hidden lg:table-cell">{str(row.status) || '—'}</td>
+                <td className="px-6 py-4 text-bsmk-black/60 hidden md:table-cell">{str(row.slug)}</td>
+                <td className="px-6 py-4 text-bsmk-black/40 text-xs hidden lg:table-cell">{str(row.status) || '—'}</td>
                 <td className="px-6 py-4 text-right whitespace-nowrap">
                   <button
                     onClick={() => openEdit(row)}
-                    className="text-xs text-white/40 hover:text-white transition-colors mr-4"
+                    className="text-xs text-bsmk-black/50 hover:text-bsmk-black transition-colors mr-4"
                   >
                     Éditer
                   </button>
                   <button
                     onClick={() => remove(row)}
-                    className="text-xs text-white/20 hover:text-red-400 transition-colors"
+                    className="text-xs text-bsmk-black/40 hover:text-red-600 transition-colors"
                   >
                     Supprimer
                   </button>

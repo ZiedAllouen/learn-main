@@ -61,11 +61,11 @@ export default function LoginPage() {
       </div>
 
       {/* Right panel — form */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 lg:px-20 py-16">
+      <div className="w-full lg:w-1/2 bg-bsmk-white text-bsmk-black flex flex-col justify-center px-8 sm:px-16 lg:px-20 py-16">
         {/* Mobile logo */}
         <div className="lg:hidden mb-12">
           <Link href="/">
-            <Image src="/logo.png" alt="BSMK" width={80} height={80} className="h-10 w-auto object-contain brightness-0 invert" />
+            <Image src="/logo.png" alt="BSMK" width={80} height={80} className="h-10 w-auto object-contain" />
           </Link>
         </div>
 
@@ -76,10 +76,10 @@ export default function LoginPage() {
                 <div key={i} className="w-6 h-1 rounded-full" style={{ backgroundColor: color }} />
               ))}
             </div>
-            <h1 className="font-display text-3xl text-bsmk-white mb-2">Connexion</h1>
-            <p className="font-sans text-sm text-bsmk-white/40">
+            <h1 className="font-display text-3xl text-bsmk-black mb-2">Connexion</h1>
+            <p className="font-sans text-sm text-bsmk-black/50">
               Pas encore membre ?{' '}
-              <Link href="/register" className="text-bsmk-sand hover:text-bsmk-white transition-colors underline underline-offset-4">
+              <Link href="/register" className="text-page-accent hover:text-bsmk-black transition-colors underline underline-offset-4">
                 Créer un compte
               </Link>
             </p>
@@ -87,10 +87,10 @@ export default function LoginPage() {
 
           <LoginForm />
 
-          <div className="mt-8 pt-8 border-t border-white/10">
-            <p className="text-xs text-bsmk-white/25 text-center font-sans">
+          <div className="mt-8 pt-8 border-t border-bsmk-black/10">
+            <p className="text-xs text-bsmk-black/40 text-center font-sans">
               En vous connectant, vous acceptez nos{' '}
-              <Link href="/mentions-legales" className="text-bsmk-white/40 hover:text-bsmk-white transition-colors">
+              <Link href="/mentions-legales" className="text-bsmk-black/60 hover:text-bsmk-black transition-colors">
                 conditions d&apos;utilisation
               </Link>
             </p>

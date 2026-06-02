@@ -49,19 +49,19 @@ export function RegisterForm() {
   }
 
   const inputClass =
-    'bg-white/5 border border-white/10 text-bsmk-white placeholder-white/20 rounded-lg px-4 py-3 text-sm font-sans focus:outline-none focus:border-bsmk-sand/60 focus:bg-white/8 transition-colors'
+    'bg-white border border-bsmk-black/15 text-bsmk-black placeholder-bsmk-black/30 rounded-lg px-4 py-3 text-sm font-sans focus:outline-none focus:border-page-accent transition-colors'
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       {error && (
-        <div className="px-4 py-3 bg-red-900/30 border border-red-500/40 rounded-lg">
-          <p className="text-sm text-red-400 font-sans">{error}</p>
+        <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-sm text-red-600 font-sans">{error}</p>
         </div>
       )}
 
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
-          <label htmlFor="firstName" className="text-xs tracking-widest uppercase text-bsmk-white/40 font-sans">
+          <label htmlFor="firstName" className="text-xs tracking-widest uppercase text-bsmk-black/50 font-sans">
             Prénom
           </label>
           <input
@@ -76,7 +76,7 @@ export function RegisterForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label htmlFor="lastName" className="text-xs tracking-widest uppercase text-bsmk-white/40 font-sans">
+          <label htmlFor="lastName" className="text-xs tracking-widest uppercase text-bsmk-black/50 font-sans">
             Nom
           </label>
           <input
@@ -93,7 +93,7 @@ export function RegisterForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="email" className="text-xs tracking-widest uppercase text-bsmk-white/40 font-sans">
+        <label htmlFor="email" className="text-xs tracking-widest uppercase text-bsmk-black/50 font-sans">
           Adresse email
         </label>
         <input
@@ -109,7 +109,7 @@ export function RegisterForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="password" className="text-xs tracking-widest uppercase text-bsmk-white/40 font-sans">
+        <label htmlFor="password" className="text-xs tracking-widest uppercase text-bsmk-black/50 font-sans">
           Mot de passe
         </label>
         <input
@@ -125,7 +125,7 @@ export function RegisterForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="confirm" className="text-xs tracking-widest uppercase text-bsmk-white/40 font-sans">
+        <label htmlFor="confirm" className="text-xs tracking-widest uppercase text-bsmk-black/50 font-sans">
           Confirmer le mot de passe
         </label>
         <input
@@ -143,14 +143,14 @@ export function RegisterForm() {
       <button
         type="submit"
         disabled={loading}
-        className="mt-2 bg-bsmk-white text-bsmk-black text-sm font-medium tracking-wide py-3.5 rounded-lg hover:bg-bsmk-sand transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-sans"
+        className="mt-2 bg-page-accent text-white text-sm font-medium tracking-wide py-3.5 rounded-lg hover:bg-page-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-sans"
       >
         {loading ? 'Création…' : 'Créer le compte'}
       </button>
 
-      <p className="text-xs text-center text-bsmk-white/30 font-sans">
+      <p className="text-xs text-center text-bsmk-black/40 font-sans">
         Déjà membre ?{' '}
-        <Link href="/login" className="text-bsmk-sand hover:text-bsmk-white transition-colors underline underline-offset-4">
+        <Link href="/login" className="text-page-accent hover:text-bsmk-black transition-colors underline underline-offset-4">
           Se connecter
         </Link>
       </p>

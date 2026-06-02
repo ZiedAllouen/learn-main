@@ -48,13 +48,13 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       {error && (
-        <div className="px-4 py-3 bg-red-900/30 border border-red-500/40 rounded-lg">
-          <p className="text-sm text-red-400 font-sans">{error}</p>
+        <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-sm text-red-600 font-sans">{error}</p>
         </div>
       )}
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="email" className="text-xs tracking-widest uppercase text-bsmk-white/40 font-sans">
+        <label htmlFor="email" className="text-xs tracking-widest uppercase text-bsmk-black/50 font-sans">
           Adresse email
         </label>
         <input
@@ -65,18 +65,18 @@ export function LoginForm() {
           required
           autoComplete="email"
           placeholder="vous@exemple.tn"
-          className="bg-white/5 border border-white/10 text-bsmk-white placeholder-white/20 rounded-lg px-4 py-3 text-sm font-sans focus:outline-none focus:border-bsmk-sand/60 focus:bg-white/8 transition-colors"
+          className="bg-white border border-bsmk-black/15 text-bsmk-black placeholder-bsmk-black/30 rounded-lg px-4 py-3 text-sm font-sans focus:outline-none focus:border-page-accent transition-colors"
         />
       </div>
 
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <label htmlFor="password" className="text-xs tracking-widest uppercase text-bsmk-white/40 font-sans">
+          <label htmlFor="password" className="text-xs tracking-widest uppercase text-bsmk-black/50 font-sans">
             Mot de passe
           </label>
           <Link
             href="/login/reset"
-            className="text-xs text-bsmk-white/30 hover:text-bsmk-sand transition-colors font-sans"
+            className="text-xs text-bsmk-black/40 hover:text-page-accent transition-colors font-sans"
           >
             Oublié ?
           </Link>
@@ -89,14 +89,14 @@ export function LoginForm() {
           required
           autoComplete="current-password"
           placeholder="••••••••"
-          className="bg-white/5 border border-white/10 text-bsmk-white placeholder-white/20 rounded-lg px-4 py-3 text-sm font-sans focus:outline-none focus:border-bsmk-sand/60 focus:bg-white/8 transition-colors"
+          className="bg-white border border-bsmk-black/15 text-bsmk-black placeholder-bsmk-black/30 rounded-lg px-4 py-3 text-sm font-sans focus:outline-none focus:border-page-accent transition-colors"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="mt-2 bg-bsmk-white text-bsmk-black text-sm font-medium tracking-wide py-3.5 rounded-lg hover:bg-bsmk-sand transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-sans"
+        className="mt-2 bg-page-accent text-white text-sm font-medium tracking-wide py-3.5 rounded-lg hover:bg-page-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-sans"
       >
         {loading ? 'Connexion…' : 'Se connecter'}
       </button>

@@ -69,21 +69,21 @@ function RoleSelect({
         type="button"
         disabled={disabled}
         onClick={() => setOpen(o => !o)}
-        className="flex items-center gap-1.5 border border-white/10 rounded-lg px-2.5 py-1 text-xs bg-transparent disabled:opacity-40 disabled:cursor-not-allowed hover:border-white/25 transition-colors"
-        style={{ color: ROLE_COLORS[value] ?? '#fff' }}
+        className="flex items-center gap-1.5 border border-bsmk-black/15 rounded-lg px-2.5 py-1 text-xs bg-transparent disabled:opacity-40 disabled:cursor-not-allowed hover:border-bsmk-black/30 transition-colors"
+        style={{ color: ROLE_COLORS[value] ?? '#0A0A0A' }}
       >
         {ROLE_LABELS[value] ?? value}
         {!disabled && <span className="opacity-40 text-[10px]">▾</span>}
       </button>
       {open && !disabled && (
-        <div className="absolute left-0 top-full mt-1 z-50 bg-[#111] border border-white/15 rounded-xl shadow-2xl overflow-hidden min-w-[110px]">
+        <div className="absolute left-0 top-full mt-1 z-50 bg-white border border-bsmk-black/15 rounded-xl shadow-xl overflow-hidden min-w-[110px]">
           {Object.entries(ROLE_LABELS).map(([val, label]) => (
             <button
               key={val}
               type="button"
               onClick={() => { onChange(val); setOpen(false) }}
-              className="w-full text-left px-3 py-2 text-xs hover:bg-white/8 transition-colors flex items-center gap-2"
-              style={{ color: ROLE_COLORS[val] ?? '#fff' }}
+              className="w-full text-left px-3 py-2 text-xs hover:bg-black/[0.04] transition-colors flex items-center gap-2"
+              style={{ color: ROLE_COLORS[val] ?? '#0A0A0A' }}
             >
               <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: ROLE_COLORS[val] }} />
               {label}
@@ -98,6 +98,17 @@ function RoleSelect({
 
 export function AdminDashboard() {
   const router = useRouter()
+
+  // Centralised 401 handler for raw fetch calls in this component.
+  // apiFetch already handles 401 for itself; this covers the two direct fetches below.
+  function handleAdminFetch(r: Response): Promise<unknown> | null {
+    if (r.status === 401) {
+      logout()
+      router.replace('/login')
+      return null
+    }
+    return r.ok ? r.json() : null
+  }
   const [section, setSection] = useState<'users' | 'requests' | 'articles' | 'events' | 'programmes'>('users')
   const [stats, setStats] = useState<UserStats | null>(null)
   const [users, setUsers] = useState<PaginatedUsers | null>(null)
@@ -124,8 +135,9 @@ export function AdminDashboard() {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/stats`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then(r => r.json())
-      .then(setStats)
+      .then(r => handleAdminFetch(r))
+      .then(data => setStats(data && Array.isArray((data as UserStats).byRole) ? (data as UserStats) : null))
+      .catch(() => setStats(null))
       .finally(() => setLoadingStats(false))
   }, [token])
 
@@ -138,8 +150,9 @@ export function AdminDashboard() {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/users?${params}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then(r => r.json())
-      .then(setUsers)
+      .then(r => handleAdminFetch(r))
+      .then(data => setUsers(data && Array.isArray((data as PaginatedUsers).data) ? (data as PaginatedUsers) : null))
+      .catch(() => setUsers(null))
       .finally(() => setLoadingUsers(false))
   }, [token, page, roleFilter, search])
 
@@ -180,27 +193,27 @@ export function AdminDashboard() {
   const statCards = [
     { label: 'Utilisateurs total', value: stats?.total ?? '—' },
     { label: 'Inscrits (30j)', value: stats?.recent ?? '—' },
-    { label: 'Admins', value: stats?.byRole.find(r => r.role === 'ADMIN')?._count._all ?? 0 },
-    { label: 'Artistes', value: stats?.byRole.find(r => r.role === 'ARTIST')?._count._all ?? 0 },
+    { label: 'Admins', value: (stats?.byRole ?? []).find(r => r.role === 'ADMIN')?._count._all ?? 0 },
+    { label: 'Artistes', value: (stats?.byRole ?? []).find(r => r.role === 'ARTIST')?._count._all ?? 0 },
   ]
 
   return (
-    <div className="min-h-screen bg-bsmk-black text-bsmk-white">
+    <div className="min-h-screen bg-bsmk-white text-bsmk-black">
       {/* Top bar */}
-      <div className="border-b border-white/10 bg-bsmk-black/95 sticky top-0 z-40">
+      <div className="border-b border-bsmk-black/10 bg-bsmk-white/95 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-xs tracking-widest uppercase text-bsmk-sand/60 hover:text-bsmk-sand transition-colors">
+            <Link href="/" className="text-xs tracking-widest uppercase text-page-accent hover:text-bsmk-black transition-colors">
               ← Site public
             </Link>
-            <span className="text-white/20">|</span>
-            <span className="text-sm font-medium text-bsmk-white">Dashboard Admin</span>
+            <span className="text-bsmk-black/20">|</span>
+            <span className="text-sm font-medium text-bsmk-black">Dashboard Admin</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-xs text-bsmk-white/40">{user.email}</span>
+            <span className="text-xs text-bsmk-black/50">{user.email}</span>
             <button
               onClick={handleLogout}
-              className="text-xs text-bsmk-white/40 hover:text-bsmk-white transition-colors tracking-wide uppercase"
+              className="text-xs text-bsmk-black/50 hover:text-bsmk-black transition-colors tracking-wide uppercase"
             >
               Déconnexion
             </button>
@@ -217,10 +230,10 @@ export function AdminDashboard() {
         </div>
 
         <h1 className="font-display text-3xl font-bold mb-2">Administration</h1>
-        <p className="text-sm text-bsmk-white/40 mb-8">Gestion des utilisateurs et accès plateforme BSMK</p>
+        <p className="text-sm text-bsmk-black/50 mb-8">Gestion des utilisateurs et accès plateforme BSMK</p>
 
         {/* Section nav */}
-        <div className="flex gap-2 mb-10 border-b border-white/10">
+        <div className="flex gap-2 mb-10 border-b border-bsmk-black/10">
           {([
             { key: 'users', label: 'Utilisateurs' },
             { key: 'requests', label: 'Demandes' },
@@ -234,13 +247,13 @@ export function AdminDashboard() {
               onClick={() => setSection(tab.key)}
               className={`relative px-4 py-2.5 text-sm tracking-wide transition-colors ${
                 section === tab.key
-                  ? 'text-bsmk-white'
-                  : 'text-bsmk-white/40 hover:text-bsmk-white/70'
+                  ? 'text-bsmk-black'
+                  : 'text-bsmk-black/40 hover:text-bsmk-black'
               }`}
             >
               {tab.label}
               {section === tab.key && (
-                <span className="absolute left-0 right-0 -bottom-px h-0.5 bg-bsmk-sand rounded-full" />
+                <span className="absolute left-0 right-0 -bottom-px h-0.5 bg-page-accent rounded-full" />
               )}
             </button>
           ))}
@@ -259,9 +272,9 @@ export function AdminDashboard() {
         {/* Stats cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           {statCards.map(card => (
-            <div key={card.label} className="border border-white/10 rounded-xl p-5 bg-white/3">
-              <p className="text-xs tracking-widest uppercase text-bsmk-white/30 mb-2">{card.label}</p>
-              <p className="font-display text-3xl font-bold text-bsmk-white">
+            <div key={card.label} className="border border-bsmk-black/10 rounded-xl p-5 bg-black/[0.02]">
+              <p className="text-xs tracking-widest uppercase text-bsmk-black/40 mb-2">{card.label}</p>
+              <p className="font-display text-3xl font-bold text-bsmk-black">
                 {loadingStats ? <span className="opacity-30">…</span> : card.value}
               </p>
             </div>
@@ -279,18 +292,18 @@ export function AdminDashboard() {
             <Link
               key={item.label}
               href={item.href}
-              className="border border-white/10 rounded-xl p-4 hover:border-white/30 transition-colors group flex items-center gap-3"
+              className="border border-bsmk-black/10 rounded-xl p-4 hover:border-bsmk-black/30 transition-colors group flex items-center gap-3"
             >
               <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-              <span className="text-sm text-bsmk-white/60 group-hover:text-bsmk-white transition-colors">{item.label}</span>
+              <span className="text-sm text-bsmk-black/60 group-hover:text-bsmk-black transition-colors">{item.label}</span>
             </Link>
           ))}
         </div>
 
-        {/* Users table */}
-        <div className="border border-white/10 rounded-2xl overflow-hidden">
-          <div className="px-6 py-5 border-b border-white/10 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <h2 className="font-medium text-bsmk-white">Utilisateurs</h2>
+        {/* Users table — no overflow-hidden so the RoleSelect dropdown can escape the card */}
+        <div className="border border-bsmk-black/10 rounded-2xl">
+          <div className="px-6 py-5 border-b border-bsmk-black/10 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <h2 className="font-medium text-bsmk-black">Utilisateurs</h2>
             <div className="flex gap-3 flex-wrap">
               {/* Search */}
               <form onSubmit={e => { e.preventDefault(); setSearch(searchInput); setPage(1) }} className="flex gap-2">
@@ -298,51 +311,50 @@ export function AdminDashboard() {
                   value={searchInput}
                   onChange={e => setSearchInput(e.target.value)}
                   placeholder="Rechercher…"
-                  className="bg-white/5 border border-white/10 text-white placeholder-white/25 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-white/30 w-44"
+                  className="bg-white border border-bsmk-black/15 text-bsmk-black placeholder-bsmk-black/30 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-page-accent w-44"
                 />
-                <button type="submit" className="text-xs text-bsmk-white/50 hover:text-white transition-colors px-2">→</button>
+                <button type="submit" className="text-xs text-bsmk-black/50 hover:text-bsmk-black transition-colors px-2">→</button>
               </form>
               {/* Role filter */}
               <select
                 value={roleFilter}
                 onChange={e => { setRoleFilter(e.target.value); setPage(1) }}
-                className="bg-[#111] border border-white/10 text-white/70 rounded-lg px-3 py-1.5 text-sm focus:outline-none appearance-none cursor-pointer"
-                style={{ colorScheme: 'dark' }}
+                className="bg-white border border-bsmk-black/15 text-bsmk-black/70 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-page-accent appearance-none cursor-pointer"
               >
-                <option value="" style={{ background: '#111' }}>Tous les rôles</option>
-                <option value="ADMIN" style={{ background: '#111' }}>Admin</option>
-                <option value="EDITOR" style={{ background: '#111' }}>Éditeur</option>
-                <option value="ARTIST" style={{ background: '#111' }}>Artiste</option>
-                <option value="USER" style={{ background: '#111' }}>Membre</option>
+                <option value="">Tous les rôles</option>
+                <option value="ADMIN">Admin</option>
+                <option value="EDITOR">Éditeur</option>
+                <option value="ARTIST">Artiste</option>
+                <option value="USER">Membre</option>
               </select>
             </div>
           </div>
 
           {loadingUsers ? (
-            <div className="px-6 py-16 text-center text-bsmk-white/30 text-sm">Chargement…</div>
-          ) : !users?.data.length ? (
-            <div className="px-6 py-16 text-center text-bsmk-white/30 text-sm">Aucun utilisateur trouvé</div>
+            <div className="px-6 py-16 text-center text-bsmk-black/40 text-sm">Chargement…</div>
+          ) : !users?.data?.length ? (
+            <div className="px-6 py-16 text-center text-bsmk-black/40 text-sm">Aucun utilisateur trouvé</div>
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/5">
-                  <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal">Nom</th>
-                  <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal hidden md:table-cell">Email</th>
-                  <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal">Rôle</th>
-                  <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-white/25 font-normal hidden lg:table-cell">Inscrit</th>
+                <tr className="border-b border-bsmk-black/5">
+                  <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal">Nom</th>
+                  <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden md:table-cell">Email</th>
+                  <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal">Rôle</th>
+                  <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden lg:table-cell">Inscrit</th>
                   <th className="px-6 py-3" />
                 </tr>
               </thead>
               <tbody>
                 {users.data.map(u => (
-                  <tr key={u.id} className="border-b border-white/5 hover:bg-white/3 transition-colors">
+                  <tr key={u.id} className="border-b border-bsmk-black/5 hover:bg-black/[0.03] transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-medium text-bsmk-white">
+                      <div className="font-medium text-bsmk-black">
                         {u.firstName || u.lastName ? `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim() : '—'}
                       </div>
-                      <div className="text-xs text-white/35 md:hidden mt-0.5">{u.email}</div>
+                      <div className="text-xs text-bsmk-black/50 md:hidden mt-0.5">{u.email}</div>
                     </td>
-                    <td className="px-6 py-4 text-white/55 hidden md:table-cell">{u.email}</td>
+                    <td className="px-6 py-4 text-bsmk-black/60 hidden md:table-cell">{u.email}</td>
                     <td className="px-6 py-4">
                       <RoleSelect
                         value={u.role}
@@ -350,14 +362,14 @@ export function AdminDashboard() {
                         onChange={role => changeRole(u.id, role)}
                       />
                     </td>
-                    <td className="px-6 py-4 text-white/30 text-xs hidden lg:table-cell">
+                    <td className="px-6 py-4 text-bsmk-black/40 text-xs hidden lg:table-cell">
                       {new Date(u.createdAt).toLocaleDateString('fr-FR')}
                     </td>
                     <td className="px-6 py-4 text-right">
                       {u.id !== user.id && (
                         <button
                           onClick={() => deleteUser(u.id)}
-                          className="text-xs text-white/20 hover:text-red-400 transition-colors"
+                          className="text-xs text-bsmk-black/40 hover:text-red-600 transition-colors"
                         >
                           Supprimer
                         </button>
@@ -371,21 +383,21 @@ export function AdminDashboard() {
 
           {/* Pagination */}
           {users && users.totalPages > 1 && (
-            <div className="px-6 py-4 border-t border-white/5 flex items-center justify-between">
-              <span className="text-xs text-white/30">{users.total} utilisateurs</span>
+            <div className="px-6 py-4 border-t border-bsmk-black/5 flex items-center justify-between">
+              <span className="text-xs text-bsmk-black/40">{users.total} utilisateurs</span>
               <div className="flex gap-2">
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="text-xs text-white/40 hover:text-white disabled:opacity-20 transition-colors px-2 py-1"
+                  className="text-xs text-bsmk-black/50 hover:text-bsmk-black disabled:opacity-20 transition-colors px-2 py-1"
                 >
                   ← Précédent
                 </button>
-                <span className="text-xs text-white/25 px-2 py-1">{page} / {users.totalPages}</span>
+                <span className="text-xs text-bsmk-black/40 px-2 py-1">{page} / {users.totalPages}</span>
                 <button
                   onClick={() => setPage(p => Math.min(users.totalPages, p + 1))}
                   disabled={page === users.totalPages}
-                  className="text-xs text-white/40 hover:text-white disabled:opacity-20 transition-colors px-2 py-1"
+                  className="text-xs text-bsmk-black/50 hover:text-bsmk-black disabled:opacity-20 transition-colors px-2 py-1"
                 >
                   Suivant →
                 </button>
