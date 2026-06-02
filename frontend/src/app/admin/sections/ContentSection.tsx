@@ -49,7 +49,7 @@ export const RESOURCES: Record<'articles' | 'events' | 'programmes', ResourceCon
       { name: 'description', label: 'Description', type: 'textarea' },
       { name: 'duration', label: 'Durée' },
       { name: 'priceIndicative', label: 'Prix indicatif' },
-      { name: 'status', label: 'Statut (DRAFT / PUBLISHED / ARCHIVED)' },
+      { name: 'status', label: 'Statut (DRAFT / PUBLISHED / FULL / ARCHIVED)' },
     ],
   },
 }
@@ -77,6 +77,7 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
   const [rows, setRows] = useState<Row[]>([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<Row | null>(null) // open form (blank or pre-filled)
+  const [editingSlug, setEditingSlug] = useState<string | null>(null) // original slug when editing (null = create)
   const [form, setForm] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -85,7 +86,7 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
 
   const load = useCallback(() => {
     setLoading(true)
-    apiFetch<{ data: Row[] }>(`${config.path}?pageSize=100`)
+    apiFetch<{ data: Row[] }>(`${config.path}?status=ALL&pageSize=100`)
       .then(res => setRows(Array.isArray(res?.data) ? res.data : []))
       .catch(() => setRows([]))
       .finally(() => setLoading(false))
@@ -98,12 +99,14 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
   function openNew() {
     setError(null)
     setEditing({})
+    setEditingSlug(null)
     setForm(Object.fromEntries(config.fields.map(f => [f.name, ''])))
   }
 
   function openEdit(row: Row) {
     setError(null)
     setEditing(row)
+    setEditingSlug(str(row.slug))
     setForm(
       Object.fromEntries(
         config.fields.map(f => [
@@ -116,6 +119,7 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
 
   function closeForm() {
     setEditing(null)
+    setEditingSlug(null)
     setForm({})
     setError(null)
   }
@@ -125,8 +129,7 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
     setSaving(true)
     setError(null)
 
-    const slug = form.slug?.trim()
-    const exists = !!slug && rows.some(r => str(r.slug) === slug)
+    const isUpdate = editingSlug !== null
 
     // Build payload from the form's text fields.
     const payload: Record<string, unknown> = {}
@@ -140,14 +143,15 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
       }
     }
 
-    // Articles require a `body` object on create.
-    if (!exists && config.path === '/articles') {
+    // Articles carry a `body` object — set it on both create and update so
+    // editing the excerpt also updates the body.
+    if (config.path === '/articles') {
       payload.body = { html: form.excerpt?.trim() ?? '' }
     }
 
     try {
-      if (exists) {
-        await apiFetch(`${config.path}/${slug}`, {
+      if (isUpdate) {
+        await apiFetch(`${config.path}/${editingSlug}`, {
           method: 'PATCH',
           headers: { Authorization: `Bearer ${token}` },
           body: JSON.stringify(payload),
@@ -179,7 +183,7 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
       })
       load()
     } catch {
-      // swallow; list reload would reflect reality, but keep silent for MVP
+      setError('La suppression a échoué.')
     }
   }
 
