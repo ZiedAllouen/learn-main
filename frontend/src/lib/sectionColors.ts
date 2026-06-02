@@ -34,6 +34,16 @@ export const DEFAULT_SECTION_COLOR: SectionColor = {
   hover: '#E07B54',
 }
 
+// Routes whose hero/top section is dark — the header sits on dark and uses light text.
+// All other routes are light-topped and get a light header.
+const DARK_HERO_PREFIXES = ['/bsmk', '/contact', '/login', '/register']
+
+/** True when the page at `pathname` has a dark hero at the top (header should be light-on-dark). */
+export function hasDarkHero(pathname: string): boolean {
+  if (pathname === '/') return true // home has a dark hero
+  return DARK_HERO_PREFIXES.some(p => pathname === p || pathname.startsWith(p + '/'))
+}
+
 /** Resolve a pathname to its section accent, falling back to terracotta. */
 export function getSectionColor(pathname: string): SectionColor {
   let match: { prefix: string; color: SectionColor } | null = null

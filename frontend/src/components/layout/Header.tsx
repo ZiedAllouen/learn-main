@@ -8,7 +8,7 @@ import { motion } from 'framer-motion'
 import { disciplines } from '@/data/disciplines'
 import { Container } from '@/components/ui/Container'
 import { getAuthUser, logout } from '@/lib/auth'
-import { getSectionColor } from '@/lib/sectionColors'
+import { getSectionColor, hasDarkHero } from '@/lib/sectionColors'
 
 const navLinks = [
   { label: 'Le Centre', href: '/bsmk' },
@@ -53,14 +53,44 @@ export function Header() {
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
   const sectionColor = getSectionColor(pathname).base
 
+  // Theme-aware classes. Dark-hero pages keep the original transparent->black
+  // behaviour; light-topped pages get a readable light header.
+  const darkHero = hasDarkHero(pathname)
+  const headerBg = darkHero
+    ? scrolled || mobileOpen
+      ? 'bg-bsmk-black/98 backdrop-blur-sm'
+      : 'bg-transparent'
+    : scrolled || mobileOpen
+      ? 'bg-bsmk-white/98 backdrop-blur-sm border-b border-bsmk-black/10'
+      : 'bg-bsmk-white/80 backdrop-blur-sm border-b border-bsmk-black/5'
+  const navText = darkHero
+    ? 'text-bsmk-white/75 hover:text-bsmk-white'
+    : 'text-bsmk-black/70 hover:text-bsmk-black'
+  const actionText = darkHero
+    ? 'text-bsmk-white/60 hover:text-bsmk-white'
+    : 'text-bsmk-black/60 hover:text-bsmk-black'
+  const hamburger = darkHero ? 'text-bsmk-white' : 'text-bsmk-black'
+  const panelBg = darkHero ? 'bg-bsmk-black border-white/10' : 'bg-bsmk-white border-bsmk-black/10'
+  const panelItem = darkHero
+    ? 'text-bsmk-white/65 hover:text-bsmk-white hover:bg-white/5'
+    : 'text-bsmk-black/70 hover:text-bsmk-black hover:bg-black/[0.04]'
+  const panelDivider = darkHero ? 'border-white/10' : 'border-bsmk-black/10'
+  const mobileBg = darkHero ? 'bg-bsmk-black border-white/10' : 'bg-bsmk-white border-bsmk-black/10'
+  const mobileItemBorder = darkHero ? 'border-white/5' : 'border-bsmk-black/5'
+  const mobileDiscLabel = darkHero ? 'text-bsmk-sand/40' : 'text-bsmk-black/40'
+  const mobileDiscItem = darkHero
+    ? 'text-bsmk-white/50 hover:text-bsmk-white'
+    : 'text-bsmk-black/50 hover:text-bsmk-black'
+  const mobileOutlineBtn = darkHero
+    ? 'border-white/20 text-white/70 hover:border-white/50 hover:text-white'
+    : 'border-bsmk-black/20 text-bsmk-black/70 hover:border-bsmk-black/40 hover:text-bsmk-black'
+
   return (
     <motion.header
       initial={{ y: -64, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled || mobileOpen ? 'bg-bsmk-black/98 backdrop-blur-sm' : 'bg-transparent'
-      }`}
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${headerBg}`}
     >
       <Container>
         <div className="flex h-16 items-center justify-between lg:h-20">
@@ -88,7 +118,7 @@ export function Header() {
                 >
                   <Link
                     href={item.href}
-                    className="text-sm font-medium tracking-wide transition-colors text-bsmk-white/75 hover:text-bsmk-white"
+                    className={`text-sm font-medium tracking-wide transition-colors ${navText}`}
                     style={isActive(item.href) ? { color: sectionColor } : {}}
                   >
                     {item.label}
@@ -97,12 +127,12 @@ export function Header() {
 
                   {disciplinesOpen && (
                     <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2">
-                      <div className="w-72 bg-bsmk-black border border-white/10 py-2 shadow-2xl rounded-xl overflow-hidden">
+                      <div className={`w-72 border py-2 shadow-2xl rounded-xl overflow-hidden ${panelBg}`}>
                         {disciplines.map(d => (
                           <Link
                             key={d.slug}
                             href={`/disciplines/${d.slug}`}
-                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-bsmk-white/65 hover:text-bsmk-white hover:bg-white/5 transition-colors group"
+                            className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors group ${panelItem}`}
                           >
                             <span
                               className="w-2 h-2 rounded-full shrink-0 opacity-70 group-hover:opacity-100"
@@ -111,7 +141,7 @@ export function Header() {
                             {d.name}
                           </Link>
                         ))}
-                        <div className="border-t border-white/10 mt-2 pt-2">
+                        <div className={`border-t mt-2 pt-2 ${panelDivider}`}>
                           <Link
                             href="/disciplines"
                             className="block px-4 py-2 text-xs text-bsmk-terracotta hover:text-bsmk-terracotta/80 transition-colors tracking-wide uppercase"
@@ -127,7 +157,7 @@ export function Header() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="text-sm font-medium tracking-wide transition-colors text-bsmk-white/75 hover:text-bsmk-white"
+                  className={`text-sm font-medium tracking-wide transition-colors ${navText}`}
                   style={isActive(item.href) ? { color: sectionColor } : {}}
                 >
                   {item.label}
@@ -149,21 +179,21 @@ export function Header() {
             )}
             <Link
               href="/contact"
-              className="text-sm font-medium text-bsmk-white/60 hover:text-bsmk-white transition-colors tracking-wide"
+              className={`text-sm font-medium transition-colors tracking-wide ${actionText}`}
             >
               Contact
             </Link>
             {isLoggedIn ? (
               <button
                 onClick={handleLogout}
-                className="text-sm font-medium text-bsmk-white/60 hover:text-bsmk-white transition-colors tracking-wide"
+                className={`text-sm font-medium transition-colors tracking-wide ${actionText}`}
               >
                 Déconnexion
               </button>
             ) : (
               <Link
                 href="/login"
-                className="text-sm font-medium text-bsmk-white/60 hover:text-bsmk-white transition-colors tracking-wide"
+                className={`text-sm font-medium transition-colors tracking-wide ${actionText}`}
                 style={isActive('/login') ? { color: sectionColor } : {}}
               >
                 Connexion
@@ -179,7 +209,7 @@ export function Header() {
 
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden text-bsmk-white p-2 -mr-2"
+            className={`lg:hidden p-2 -mr-2 ${hamburger}`}
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
             aria-expanded={mobileOpen}
@@ -216,7 +246,7 @@ export function Header() {
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className="lg:hidden border-t border-white/10 bg-bsmk-black overflow-hidden"
+          className={`lg:hidden border-t overflow-hidden ${mobileBg}`}
         >
           <Container>
             <nav className="py-6 flex flex-col gap-0" aria-label="Navigation mobile">
@@ -224,7 +254,7 @@ export function Header() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="py-3.5 text-sm font-medium tracking-wide border-b border-white/5 transition-colors text-bsmk-white/75 hover:text-bsmk-white"
+                  className={`py-3.5 text-sm font-medium tracking-wide border-b transition-colors ${mobileItemBorder} ${navText}`}
                   style={isActive(item.href) ? { color: sectionColor } : {}}
                 >
                   {item.label}
@@ -233,13 +263,13 @@ export function Header() {
 
               {/* Disciplines quick links */}
               <div className="pt-5 pb-2">
-                <p className="text-xs text-bsmk-sand/40 tracking-widest uppercase mb-3">Disciplines</p>
+                <p className={`text-xs tracking-widest uppercase mb-3 ${mobileDiscLabel}`}>Disciplines</p>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                   {disciplines.map(d => (
                     <Link
                       key={d.slug}
                       href={`/disciplines/${d.slug}`}
-                      className="flex items-center gap-2 text-sm text-bsmk-white/50 hover:text-bsmk-white transition-colors py-1"
+                      className={`flex items-center gap-2 text-sm transition-colors py-1 ${mobileDiscItem}`}
                     >
                       <span
                         className="w-1.5 h-1.5 rounded-full shrink-0"
@@ -263,14 +293,14 @@ export function Header() {
               {isLoggedIn ? (
                 <button
                   onClick={handleLogout}
-                  className="mt-2 block w-full border border-white/20 text-white/70 text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:border-white/50 hover:text-white transition-colors rounded-lg"
+                  className={`mt-2 block w-full border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg ${mobileOutlineBtn}`}
                 >
                   Déconnexion
                 </button>
               ) : (
                 <Link
                   href="/login"
-                  className="mt-2 block border border-white/20 text-white/70 text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:border-white/50 hover:text-white transition-colors rounded-lg"
+                  className={`mt-2 block border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg ${mobileOutlineBtn}`}
                 >
                   Connexion
                 </Link>
