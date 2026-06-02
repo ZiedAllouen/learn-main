@@ -66,9 +66,12 @@ export function RequestsSection() {
   async function changeStatus(id: string, status: RequestStatus) {
     if (!token) return
     setUpdatingId(id)
-    setRequests(prev => prev.map(r => (r.id === id ? { ...r, status } : r)))
+    const prev = requests
+    setRequests(rs => rs.map(r => (r.id === id ? { ...r, status } : r)))
     try {
       await updateRequest(token, id, { status })
+    } catch {
+      setRequests(prev) // roll back on failure
     } finally {
       setUpdatingId(null)
     }
