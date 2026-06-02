@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { getAuthUser, getAccessToken, logout } from '@/lib/auth'
 import { RequestsSection } from './sections/RequestsSection'
 import { ContentSection, RESOURCES } from './sections/ContentSection'
+import { ConfirmModal } from './sections/ConfirmModal'
 
 interface UserStats {
   total: number
@@ -119,6 +120,7 @@ export function AdminDashboard() {
   const [loadingStats, setLoadingStats] = useState(true)
   const [loadingUsers, setLoadingUsers] = useState(true)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [pendingDeleteUser, setPendingDeleteUser] = useState<User | null>(null)
 
   const user = getAuthUser()
   const token = getAccessToken()
@@ -172,8 +174,9 @@ export function AdminDashboard() {
     setUpdatingId(null)
   }
 
-  async function deleteUser(id: string) {
-    if (!token || !confirm('Supprimer cet utilisateur ?')) return
+  async function confirmDeleteUser() {
+    if (!token || !pendingDeleteUser) return
+    const id = pendingDeleteUser.id
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
@@ -181,6 +184,7 @@ export function AdminDashboard() {
     setUsers(prev =>
       prev ? { ...prev, data: prev.data.filter(u => u.id !== id), total: prev.total - 1 } : prev,
     )
+    setPendingDeleteUser(null)
   }
 
   function handleLogout() {
@@ -368,7 +372,7 @@ export function AdminDashboard() {
                     <td className="px-6 py-4 text-right">
                       {u.id !== user.id && (
                         <button
-                          onClick={() => deleteUser(u.id)}
+                          onClick={() => setPendingDeleteUser(u)}
                           className="text-xs text-bsmk-black/40 hover:text-red-600 transition-colors"
                         >
                           Supprimer
@@ -408,6 +412,16 @@ export function AdminDashboard() {
           </>
         )}
       </div>
+
+      <ConfirmModal
+        open={!!pendingDeleteUser}
+        destructive
+        title="Supprimer cet utilisateur ?"
+        message={pendingDeleteUser ? `${pendingDeleteUser.email} sera supprimé définitivement.` : ''}
+        confirmLabel="Supprimer"
+        onConfirm={confirmDeleteUser}
+        onCancel={() => setPendingDeleteUser(null)}
+      />
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { apiFetch, ApiError } from '@/lib/api'
 import { getAccessToken } from '@/lib/auth'
 import { useToast, ToastView } from './Toast'
+import { ConfirmModal } from './ConfirmModal'
 
 export interface SelectOption {
   value: string
@@ -135,6 +136,7 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
   const [form, setForm] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [pendingDelete, setPendingDelete] = useState<Row | null>(null)
   const { toast, showToast } = useToast()
 
   const token = getAccessToken()
@@ -246,18 +248,23 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
     }
   }
 
-  async function remove(row: Row) {
-    if (!token) return
-    const slug = str(row.slug)
-    if (!slug || !confirm(`Supprimer « ${str(row[config.titleField]) || slug} » ?`)) return
+  async function confirmDelete() {
+    if (!token || !pendingDelete) return
+    const slug = str(pendingDelete.slug)
+    if (!slug) {
+      setPendingDelete(null)
+      return
+    }
     try {
       await apiFetch(`${config.path}/${slug}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
+      setPendingDelete(null)
       load()
       showToast('Élément supprimé.', 'success')
     } catch {
+      setPendingDelete(null)
       showToast('La suppression a échoué.', 'error')
     }
   }
@@ -368,7 +375,7 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
                     Éditer
                   </button>
                   <button
-                    onClick={() => remove(row)}
+                    onClick={() => setPendingDelete(row)}
                     className="text-xs text-bsmk-black/40 hover:text-red-600 transition-colors"
                   >
                     Supprimer
@@ -381,6 +388,20 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
       )}
 
       <ToastView toast={toast} />
+
+      <ConfirmModal
+        open={!!pendingDelete}
+        destructive
+        title="Supprimer cet élément ?"
+        message={
+          pendingDelete
+            ? `« ${str(pendingDelete[config.titleField]) || str(pendingDelete.slug)} » sera définitivement supprimé.`
+            : ''
+        }
+        confirmLabel="Supprimer"
+        onConfirm={confirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
     </div>
   )
 }
