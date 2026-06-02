@@ -3,20 +3,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
-import { spaces } from '@/data/spaces'
+import { getSpaces } from '@/lib/api/spaces'
 import { disciplines } from '@/data/disciplines'
 import { HeroText, StaggerContainer, StaggerItem, FadeIn, CountUp } from '@/components/ui/Motion'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Espaces | BSMK',
   description: 'Dix espaces polyvalents dédiés à la création artistique au cœur de Tunis.',
-}
-
-// Collect all unique discipline slugs referenced by spaces
-function getUniqueDisciplineSlugs(): string[] {
-  const slugSet = new Set<string>()
-  spaces.forEach((s) => s.disciplineSlugs.forEach((d) => slugSet.add(d)))
-  return Array.from(slugSet)
 }
 
 export default async function EspacesPage({
@@ -25,10 +20,17 @@ export default async function EspacesPage({
   searchParams: Promise<{ discipline?: string }>
 }) {
   const { discipline } = await searchParams
-  const totalSurface = spaces.reduce((acc, s) => acc + s.surfaceSqm, 0)
-  const uniqueDisciplineSlugs = getUniqueDisciplineSlugs()
+  const spaces = await getSpaces()
+
+  const totalSurface = spaces.reduce((acc, s) => acc + (s.surfaceSqm ?? 0), 0)
+  // Collect all unique discipline slugs referenced by spaces (from API shape)
+  const uniqueDisciplineSlugs = Array.from(
+    new Set(spaces.flatMap((s) => s.disciplines.map((d) => d.discipline.slug))),
+  )
   const disciplineFilters = disciplines.filter((d) => uniqueDisciplineSlugs.includes(d.slug))
-  const filteredSpaces = discipline ? spaces.filter((s) => s.disciplineSlugs.includes(discipline)) : spaces
+  const filteredSpaces = discipline
+    ? spaces.filter((s) => s.disciplines.some((d) => d.discipline.slug === discipline))
+    : spaces
 
   return (
     <main className="bg-bsmk-white min-h-screen">
@@ -111,8 +113,9 @@ export default async function EspacesPage({
         <Container>
           <StaggerContainer key={discipline ?? 'all'} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {filteredSpaces.map((space) => {
+              const spaceDisciplineSlugs = space.disciplines.map((d) => d.discipline.slug)
               const spaceDisciplines = disciplines.filter((d) =>
-                space.disciplineSlugs.includes(d.slug),
+                spaceDisciplineSlugs.includes(d.slug),
               )
               const visibleEquipment = space.equipment.slice(0, 3)
               const extraEquipment = space.equipment.length - 3
@@ -126,19 +129,16 @@ export default async function EspacesPage({
                   {/* Image */}
                   <div className="relative aspect-video overflow-hidden bg-bsmk-sand/20">
                     <Image
-                      src={space.imageUrls[0]}
+                      src={space.imageUrls[0] ?? `https://picsum.photos/seed/space-${space.slug}/800/500`}
                       alt={space.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    {space.featured && (
-                      <div className="absolute top-3 left-3">
-                        <Badge variant="terracotta">Espace phare</Badge>
+                    {space.floor && (
+                      <div className="absolute top-3 right-3">
+                        <Badge variant="dark">{space.floor}</Badge>
                       </div>
                     )}
-                    <div className="absolute top-3 right-3">
-                      <Badge variant="dark">{space.floor}</Badge>
-                    </div>
                   </div>
 
                   {/* Content */}
@@ -149,8 +149,12 @@ export default async function EspacesPage({
 
                     {/* Capacity + Surface badges */}
                     <div className="flex items-center gap-2 mb-4 flex-wrap">
-                      <Badge variant="blue">{space.capacity} personnes max.</Badge>
-                      <Badge variant="olive">{space.surfaceSqm} m²</Badge>
+                      {space.capacity != null && (
+                        <Badge variant="blue">{space.capacity} personnes max.</Badge>
+                      )}
+                      {space.surfaceSqm != null && (
+                        <Badge variant="olive">{space.surfaceSqm} m²</Badge>
+                      )}
                     </div>
 
                     <p className="font-sans text-sm text-bsmk-black/60 leading-relaxed line-clamp-2 mb-4">
@@ -190,6 +194,16 @@ export default async function EspacesPage({
               )
             })}
           </StaggerContainer>
+          {filteredSpaces.length === 0 && (
+            <div className="border border-bsmk-black/10 bg-bsmk-sand/20 p-8 text-center rounded-xl">
+              <h2 className="font-display text-2xl text-bsmk-black mb-2">
+                Aucun espace pour le moment.
+              </h2>
+              <p className="font-sans text-sm text-bsmk-black/60">
+                Revenez bientôt ou contactez-nous pour en savoir plus sur nos espaces.
+              </p>
+            </div>
+          )}
         </Container>
       </section>
 
