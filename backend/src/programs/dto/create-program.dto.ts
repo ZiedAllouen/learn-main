@@ -1,4 +1,11 @@
-import { IsString, IsOptional, IsEnum, IsBoolean, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsBoolean,
+  IsArray,
+  IsObject,
+} from 'class-validator';
 import type { ProgramModality, ProgramStatus } from '@bsmk/types';
 
 export class CreateProgramDto {
@@ -12,6 +19,8 @@ export class CreateProgramDto {
   @IsString()
   description?: string;
 
+  @IsOptional()
+  @IsObject()
   body?: object;
 
   @IsOptional()
