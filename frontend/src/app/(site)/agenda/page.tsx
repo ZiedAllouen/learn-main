@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
 import { getEvents, type ApiEvent } from '@/lib/api/events'
+import { ApiError } from '@/lib/api'
+import { UnavailableNotice } from '@/components/ui/UnavailableNotice'
 import { eventTypeLabels, type EventType } from '@/data/events'
 import { formatDate } from '@/lib/utils'
 import { HeroText, FadeIn, FadeUp, StaggerContainer, StaggerItem } from '@/components/ui/Motion'
@@ -83,7 +85,18 @@ export default async function AgendaPage({
 }) {
   const { type, month } = await searchParams
 
-  const { data: events } = await getEvents({ pageSize: 100 })
+  let events: ApiEvent[] = []
+  let unavailable = false
+  try {
+    const result = await getEvents({ pageSize: 100 })
+    events = result.data
+  } catch (err) {
+    if (err instanceof ApiError) {
+      unavailable = true
+    } else {
+      throw err
+    }
+  }
 
   let filteredEvents = [...events]
   if (type) filteredEvents = filteredEvents.filter((e) => e.eventType === type)
@@ -178,9 +191,13 @@ export default async function AgendaPage({
         /* ── Empty state ─────────────────────────────────────── */
         <section className="py-24">
           <Container>
-            <p className="text-center text-bsmk-black/50 text-lg">
-              Aucun événement à venir.
-            </p>
+            {unavailable ? (
+              <UnavailableNotice label="Les événements" />
+            ) : (
+              <p className="text-center text-bsmk-black/50 text-lg">
+                Aucun événement à venir.
+              </p>
+            )}
           </Container>
         </section>
       ) : (

@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
 import { getEvent, getEvents } from '@/lib/api/events'
+import { isNotFound } from '@/lib/api'
 import { RequestForm } from '@/components/RequestForm'
 import { disciplines } from '@/data/disciplines'
 import { eventTypeLabels, type EventType } from '@/data/events'
@@ -67,8 +68,9 @@ export default async function EventDetailPage({
   let event
   try {
     event = await getEvent(slug)
-  } catch {
-    notFound()
+  } catch (err) {
+    if (isNotFound(err)) notFound()
+    throw err
   }
 
   const disciplineSlugs = event.disciplines.map((d) => d.discipline.slug)
@@ -76,7 +78,14 @@ export default async function EventDetailPage({
     disciplineSlugs.includes(d.slug),
   )
 
-  const { data: sameTypeEvents } = await getEvents({ eventType: event.eventType, pageSize: 4 })
+  // Related events are non-essential — never let their failure break the page.
+  let sameTypeEvents: typeof event[] = []
+  try {
+    const result = await getEvents({ eventType: event.eventType, pageSize: 4 })
+    sameTypeEvents = result.data
+  } catch {
+    sameTypeEvents = []
+  }
   const relatedEvents = sameTypeEvents.filter((e) => e.slug !== event.slug).slice(0, 3)
 
   const eventTypeLabel = eventTypeLabels[event.eventType as EventType] ?? event.eventType

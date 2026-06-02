@@ -6,6 +6,7 @@ import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { getSpace } from '@/lib/api/spaces'
+import { isNotFound } from '@/lib/api'
 import { disciplines } from '@/data/disciplines'
 import { RequestForm } from '@/components/RequestForm'
 import { ScaleIn, StaggerContainer, StaggerItem, FadeUp } from '@/components/ui/Motion'
@@ -35,8 +36,9 @@ export default async function EspacePage({ params }: Props) {
   let space
   try {
     space = await getSpace(slug)
-  } catch {
-    notFound()
+  } catch (err) {
+    if (isNotFound(err)) notFound()
+    throw err
   }
 
   const spaceDisciplineSlugs = space.disciplines.map((d) => d.discipline.slug)

@@ -3,7 +3,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
-import { getSpaces } from '@/lib/api/spaces'
+import { getSpaces, type Space } from '@/lib/api/spaces'
+import { ApiError } from '@/lib/api'
+import { UnavailableNotice } from '@/components/ui/UnavailableNotice'
 import { disciplines } from '@/data/disciplines'
 import { HeroText, StaggerContainer, StaggerItem, FadeIn, CountUp } from '@/components/ui/Motion'
 
@@ -20,7 +22,18 @@ export default async function EspacesPage({
   searchParams: Promise<{ discipline?: string }>
 }) {
   const { discipline } = await searchParams
-  const spaces = await getSpaces()
+
+  let spaces: Space[] = []
+  let unavailable = false
+  try {
+    spaces = await getSpaces()
+  } catch (err) {
+    if (err instanceof ApiError) {
+      unavailable = true
+    } else {
+      throw err
+    }
+  }
 
   const totalSurface = spaces.reduce((acc, s) => acc + (s.surfaceSqm ?? 0), 0)
   // Collect all unique discipline slugs referenced by spaces (from API shape)
@@ -194,7 +207,10 @@ export default async function EspacesPage({
               )
             })}
           </StaggerContainer>
-          {filteredSpaces.length === 0 && (
+          {unavailable && (
+            <UnavailableNotice label="Les espaces" />
+          )}
+          {!unavailable && filteredSpaces.length === 0 && (
             <div className="border border-bsmk-black/10 bg-bsmk-sand/20 p-8 text-center rounded-xl">
               <h2 className="font-display text-2xl text-bsmk-black mb-2">
                 Aucun espace pour le moment.

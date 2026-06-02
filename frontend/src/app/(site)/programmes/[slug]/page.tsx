@@ -6,6 +6,7 @@ import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
 import { disciplines } from '@/data/disciplines'
 import { getProgram } from '@/lib/api/programs'
+import { isNotFound } from '@/lib/api'
 import { RequestForm } from '@/components/RequestForm'
 import { HeroText, ScaleIn, StaggerContainer, StaggerItem, FadeUp } from '@/components/ui/Motion'
 
@@ -50,8 +51,11 @@ export default async function ProgramDetailPage({
   let program
   try {
     program = await getProgram(slug)
-  } catch {
-    notFound()
+  } catch (err) {
+    // Genuinely missing → 404. Backend unreachable / server error → let the
+    // error boundary show "momentanément indisponible" instead of a wrong 404.
+    if (isNotFound(err)) notFound()
+    throw err
   }
 
   const disciplineSlugs = program.disciplines.map((d) => d.discipline.slug)

@@ -5,7 +5,9 @@ import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
 import { programTypes, audienceTypes } from '@/data/programs'
 import { disciplines } from '@/data/disciplines'
-import { getPrograms } from '@/lib/api/programs'
+import { getPrograms, type Program } from '@/lib/api/programs'
+import { ApiError } from '@/lib/api'
+import { UnavailableNotice } from '@/components/ui/UnavailableNotice'
 import { HeroText, FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/Motion'
 
 export const dynamic = 'force-dynamic'
@@ -62,7 +64,19 @@ export default async function ProgrammesPage({
   searchParams: Promise<{ discipline?: string; public?: string; type?: string }>
 }) {
   const filters = await searchParams
-  const { data: programs } = await getPrograms({ pageSize: 100 })
+
+  let programs: Program[] = []
+  let unavailable = false
+  try {
+    const result = await getPrograms({ pageSize: 100 })
+    programs = result.data
+  } catch (err) {
+    if (err instanceof ApiError) {
+      unavailable = true
+    } else {
+      throw err
+    }
+  }
 
   const featured = programs.filter((p) => p.featured).slice(0, 3)
   const filteredPrograms = programs.filter((program) => {
@@ -332,7 +346,12 @@ export default async function ProgrammesPage({
               </div>
             ))}
           </div>
-          {filteredPrograms.length === 0 && (
+          {unavailable && (
+            <div className="mb-6">
+              <UnavailableNotice label="Les programmes" />
+            </div>
+          )}
+          {!unavailable && filteredPrograms.length === 0 && (
             <div className="border border-bsmk-black/10 bg-bsmk-sand/20 p-8 text-center rounded-xl">
               <h3 className="font-display text-2xl font-bold mb-2">
                 {programs.length === 0
