@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getAuthUser, getAccessToken, logout } from '@/lib/auth'
+import { RequestsSection } from './sections/RequestsSection'
 
 interface UserStats {
   total: number
@@ -96,6 +97,7 @@ function RoleSelect({
 
 export function AdminDashboard() {
   const router = useRouter()
+  const [section, setSection] = useState<'users' | 'requests'>('users')
   const [stats, setStats] = useState<UserStats | null>(null)
   const [users, setUsers] = useState<PaginatedUsers | null>(null)
   const [page, setPage] = useState(1)
@@ -214,8 +216,36 @@ export function AdminDashboard() {
         </div>
 
         <h1 className="font-display text-3xl font-bold mb-2">Administration</h1>
-        <p className="text-sm text-bsmk-white/40 mb-10">Gestion des utilisateurs et accès plateforme BSMK</p>
+        <p className="text-sm text-bsmk-white/40 mb-8">Gestion des utilisateurs et accès plateforme BSMK</p>
 
+        {/* Section nav */}
+        <div className="flex gap-2 mb-10 border-b border-white/10">
+          {([
+            { key: 'users', label: 'Utilisateurs' },
+            { key: 'requests', label: 'Demandes' },
+          ] as const).map(tab => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setSection(tab.key)}
+              className={`relative px-4 py-2.5 text-sm tracking-wide transition-colors ${
+                section === tab.key
+                  ? 'text-bsmk-white'
+                  : 'text-bsmk-white/40 hover:text-bsmk-white/70'
+              }`}
+            >
+              {tab.label}
+              {section === tab.key && (
+                <span className="absolute left-0 right-0 -bottom-px h-0.5 bg-bsmk-sand rounded-full" />
+              )}
+            </button>
+          ))}
+        </div>
+
+        {section === 'requests' ? (
+          <RequestsSection />
+        ) : (
+          <>
         {/* Stats cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           {statCards.map(card => (
@@ -353,6 +383,8 @@ export function AdminDashboard() {
             </div>
           )}
         </div>
+          </>
+        )}
       </div>
     </div>
   )

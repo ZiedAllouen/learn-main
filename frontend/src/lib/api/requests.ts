@@ -26,6 +26,7 @@ export interface RequestRecord {
   createdAt: string
   program: { id: string; slug: string; title: string } | null
   space: { id: string; slug: string; name: string } | null
+  details?: Record<string, unknown> | null
 }
 
 export async function submitRequest(input: SubmitRequestInput): Promise<{ id: string; message: string }> {
