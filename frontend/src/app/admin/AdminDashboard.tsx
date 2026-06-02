@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getAuthUser, getAccessToken, logout } from '@/lib/auth'
 import { RequestsSection } from './sections/RequestsSection'
+import { ContentSection, RESOURCES } from './sections/ContentSection'
 
 interface UserStats {
   total: number
@@ -97,7 +98,7 @@ function RoleSelect({
 
 export function AdminDashboard() {
   const router = useRouter()
-  const [section, setSection] = useState<'users' | 'requests'>('users')
+  const [section, setSection] = useState<'users' | 'requests' | 'articles' | 'events' | 'programmes'>('users')
   const [stats, setStats] = useState<UserStats | null>(null)
   const [users, setUsers] = useState<PaginatedUsers | null>(null)
   const [page, setPage] = useState(1)
@@ -223,6 +224,9 @@ export function AdminDashboard() {
           {([
             { key: 'users', label: 'Utilisateurs' },
             { key: 'requests', label: 'Demandes' },
+            { key: 'articles', label: 'Articles' },
+            { key: 'events', label: 'Événements' },
+            { key: 'programmes', label: 'Programmes' },
           ] as const).map(tab => (
             <button
               key={tab.key}
@@ -244,6 +248,12 @@ export function AdminDashboard() {
 
         {section === 'requests' ? (
           <RequestsSection />
+        ) : section === 'articles' ? (
+          <ContentSection config={RESOURCES.articles} />
+        ) : section === 'events' ? (
+          <ContentSection config={RESOURCES.events} />
+        ) : section === 'programmes' ? (
+          <ContentSection config={RESOURCES.programmes} />
         ) : (
           <>
         {/* Stats cards */}
