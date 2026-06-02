@@ -9,6 +9,7 @@ import {
   type RequestStatus,
   type RequestType,
 } from '@/lib/api/requests'
+import { useToast, ToastView } from './Toast'
 
 const STATUS_OPTIONS: RequestStatus[] = ['NEW', 'REVIEWING', 'ACCEPTED', 'DECLINED']
 
@@ -41,6 +42,7 @@ export function RequestsSection() {
   const [statusFilter, setStatusFilter] = useState<'' | RequestStatus>('')
   const [loading, setLoading] = useState(true)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const { toast, showToast } = useToast()
 
   const token = getAccessToken()
 
@@ -53,7 +55,10 @@ export function RequestsSection() {
         if (!cancelled) setRequests(res.data)
       })
       .catch(() => {
-        if (!cancelled) setRequests([])
+        if (!cancelled) {
+          setRequests([])
+          showToast('Impossible de charger les demandes.', 'error')
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -61,7 +66,7 @@ export function RequestsSection() {
     return () => {
       cancelled = true
     }
-  }, [token, statusFilter])
+  }, [token, statusFilter, showToast])
 
   async function changeStatus(id: string, status: RequestStatus) {
     if (!token) return
@@ -70,8 +75,10 @@ export function RequestsSection() {
     setRequests(rs => rs.map(r => (r.id === id ? { ...r, status } : r)))
     try {
       await updateRequest(token, id, { status })
+      showToast('Statut mis à jour.', 'success')
     } catch {
       setRequests(prev) // roll back on failure
+      showToast('Échec de la mise à jour du statut.', 'error')
     } finally {
       setUpdatingId(null)
     }
@@ -150,6 +157,8 @@ export function RequestsSection() {
           </tbody>
         </table>
       )}
+
+      <ToastView toast={toast} />
     </div>
   )
 }

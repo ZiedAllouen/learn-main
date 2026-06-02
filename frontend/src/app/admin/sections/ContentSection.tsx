@@ -1,8 +1,9 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { apiFetch } from '@/lib/api'
+import { apiFetch, ApiError } from '@/lib/api'
 import { getAccessToken } from '@/lib/auth'
+import { useToast, ToastView } from './Toast'
 
 export interface FieldDef {
   name: string
@@ -81,8 +82,18 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
   const [form, setForm] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { toast, showToast } = useToast()
 
   const token = getAccessToken()
+
+  /** Turn any thrown error into a clear, user-facing message. */
+  function describeError(e: unknown): string {
+    if (e instanceof ApiError) {
+      if (e.status === 401) return 'Session expirée — reconnectez-vous.'
+      if (e.status === 0) return 'API injoignable — vérifiez que le serveur tourne.'
+    }
+    return `Échec : ${e instanceof Error ? e.message : 'erreur inconnue'}`
+  }
 
   const load = useCallback(() => {
     if (!token) {
@@ -172,8 +183,11 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
       }
       closeForm()
       load()
+      showToast(isUpdate ? 'Modifications enregistrées.' : 'Élément créé.', 'success')
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur lors de l’enregistrement')
+      const message = describeError(e)
+      setError(message)
+      showToast(message, 'error')
     } finally {
       setSaving(false)
     }
@@ -189,8 +203,9 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
         headers: { Authorization: `Bearer ${token}` },
       })
       load()
+      showToast('Élément supprimé.', 'success')
     } catch {
-      setError('La suppression a échoué.')
+      showToast('La suppression a échoué.', 'error')
     }
   }
 
@@ -301,6 +316,8 @@ export function ContentSection({ config }: { config: ResourceConfig }) {
           </tbody>
         </table>
       )}
+
+      <ToastView toast={toast} />
     </div>
   )
 }
