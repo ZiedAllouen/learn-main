@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import * as argon2 from 'argon2';
+import { programs, events, spaces, articles } from './seed-data';
 
 const prisma = new PrismaClient();
 
@@ -140,6 +141,124 @@ async function main() {
     { key: 'events_per_year', value: '80' },
   ]) {
     await prisma.siteStat.upsert({ where: { key: s.key }, update: { value: s.value }, create: s });
+  }
+
+  // ── Lookup maps for content relations ─────────────────────────────────────
+  const allDisciplines = await prisma.discipline.findMany({ select: { id: true, slug: true } });
+  const disciplineIdBySlug = new Map(allDisciplines.map((d) => [d.slug, d.id]));
+
+  const allAudiences = await prisma.audienceType.findMany({ select: { id: true, slug: true } });
+  const audienceIdBySlug = new Map(allAudiences.map((a) => [a.slug, a.id]));
+
+  const allProgramTypes = await prisma.programType.findMany({ select: { id: true, slug: true } });
+  const programTypeIdBySlug = new Map(allProgramTypes.map((p) => [p.slug, p.id]));
+
+  // Resolve discipline slugs → discipline-link create rows, skipping unknown slugs.
+  const disciplineLinks = (slugs: string[]) =>
+    slugs
+      .map((slug) => disciplineIdBySlug.get(slug))
+      .filter((id): id is string => Boolean(id))
+      .map((disciplineId) => ({ disciplineId }));
+
+  // Programs
+  for (const p of programs) {
+    const audienceLinks = p.audienceSlugs
+      .map((slug) => audienceIdBySlug.get(slug))
+      .filter((id): id is string => Boolean(id))
+      .map((audienceTypeId) => ({ audienceTypeId }));
+
+    await prisma.program.upsert({
+      where: { slug: p.slug },
+      update: {},
+      create: {
+        slug: p.slug,
+        title: p.title,
+        description: p.description,
+        body: { html: p.longDescription },
+        coverUrl: p.coverUrl,
+        modality: p.modality,
+        duration: p.duration,
+        priceIndicative: p.priceIndicative,
+        featured: p.featured,
+        status: 'PUBLISHED',
+        programTypeId: programTypeIdBySlug.get(p.programTypeSlug) ?? null,
+        disciplines: { create: disciplineLinks(p.disciplineSlugs) },
+        audiences: { create: audienceLinks },
+      },
+    });
+  }
+
+  // Events
+  for (const e of events) {
+    await prisma.event.upsert({
+      where: { slug: e.slug },
+      update: {},
+      create: {
+        slug: e.slug,
+        title: e.title,
+        description: e.description,
+        eventType: e.eventType,
+        startDate: new Date(e.startDate),
+        endDate: e.endDate ? new Date(e.endDate) : null,
+        location: e.location,
+        coverUrl: e.coverUrl,
+        ticketUrl: e.ticketUrl ?? null,
+        status: 'PUBLISHED',
+        disciplines: { create: disciplineLinks(e.disciplineSlugs) },
+      },
+    });
+  }
+
+  // Spaces
+  for (const [i, s] of spaces.entries()) {
+    await prisma.space.upsert({
+      where: { slug: s.slug },
+      update: {},
+      create: {
+        slug: s.slug,
+        name: s.name,
+        description: s.description,
+        floor: s.floor,
+        surfaceSqm: s.surfaceSqm,
+        capacity: s.capacity,
+        equipment: s.equipment,
+        imageUrls: s.imageUrls,
+        status: 'PUBLISHED',
+        sortOrder: i,
+        disciplines: { create: disciplineLinks(s.disciplineSlugs) },
+      },
+    });
+  }
+
+  // Articles (require an author + optional category)
+  const admin = await prisma.user.findUnique({ where: { email: 'admin@bsmk.tn' } });
+  if (!admin) throw new Error('Admin user not found — cannot seed articles');
+
+  for (const a of articles) {
+    const category = await prisma.category.upsert({
+      where: { slug: a.categorySlug },
+      update: {},
+      create: { slug: a.categorySlug, name: a.categoryName },
+    });
+
+    await prisma.article.upsert({
+      where: { slug: a.slug },
+      update: {},
+      create: {
+        slug: a.slug,
+        title: a.title,
+        excerpt: a.excerpt,
+        body: { html: a.body },
+        coverUrl: a.coverUrl,
+        authorId: admin.id,
+        categoryId: category.id,
+        status: 'PUBLISHED',
+        featured: a.featured,
+        readingTime: a.readingTime,
+        publishedAt: new Date(a.publishedAt),
+        disciplines: { create: disciplineLinks(a.disciplineSlugs) },
+      },
+    });
   }
 
   console.log('✓ Seed complete — admin@bsmk.tn / changeme123 (CHANGE THIS)');
