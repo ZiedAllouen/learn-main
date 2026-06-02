@@ -26,12 +26,17 @@ export function LoginForm() {
       }
       if (data.accessToken) localStorage.setItem('accessToken', data.accessToken)
       if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken)
-      // Redirect admin to dashboard, others to home
+      // Prefer a safe same-origin return path (?redirect=) over the role-based
+      // default. Reject open-redirects: must be a relative path, not
+      // protocol-relative (//) and not absolute (contains ://).
+      const raw = new URLSearchParams(window.location.search).get('redirect')
+      const safe = raw && raw.startsWith('/') && !raw.startsWith('//') && !raw.includes('://') ? raw : null
       try {
         const payload = JSON.parse(atob(data.accessToken.split('.')[1]))
-        window.location.href = payload.role === 'ADMIN' ? '/admin' : '/'
+        const fallback = payload.role === 'ADMIN' ? '/admin' : '/'
+        window.location.href = safe ?? fallback
       } catch {
-        window.location.href = '/'
+        window.location.href = safe ?? '/'
       }
     } catch {
       setError('Impossible de joindre le serveur. Réessayez.')
