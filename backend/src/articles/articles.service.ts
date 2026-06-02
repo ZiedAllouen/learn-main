@@ -14,7 +14,7 @@ export class ArticlesService {
     const skip = (page - 1) * pageSize;
 
     const where = {
-      ...(status ? { status } : { status: 'PUBLISHED' as const }),
+      ...(status === 'ALL' ? {} : status ? { status } : { status: 'PUBLISHED' as const }),
       ...(featured !== undefined && { featured }),
       ...(category && { category: { slug: category } }),
       ...(tag && { tags: { some: { tag: { slug: tag } } } }),

@@ -14,7 +14,7 @@ export class ProgramsService {
     const skip = (page - 1) * pageSize;
 
     const where = {
-      ...(status ? { status } : { status: 'PUBLISHED' as const }),
+      ...(status === 'ALL' ? {} : status ? { status } : { status: 'PUBLISHED' as const }),
       ...(featured !== undefined && { featured }),
       ...(modality && { modality }),
       ...(discipline && { disciplines: { some: { discipline: { slug: discipline } } } }),

@@ -14,7 +14,7 @@ export class EventsService {
     const skip = (page - 1) * pageSize;
 
     const where = {
-      ...(status ? { status } : { status: 'PUBLISHED' as const }),
+      ...(status === 'ALL' ? {} : status ? { status } : { status: 'PUBLISHED' as const }),
       ...(eventType && { eventType }),
       ...(discipline && { disciplines: { some: { discipline: { slug: discipline } } } }),
       ...((from || to) && {

@@ -28,8 +28,8 @@ export class ListProgramsDto {
   modality?: ProgramModality;
 
   @IsOptional()
-  @IsEnum(['DRAFT', 'PUBLISHED', 'FULL', 'ARCHIVED'] satisfies ProgramStatus[])
-  status?: ProgramStatus;
+  @IsEnum(['DRAFT', 'PUBLISHED', 'FULL', 'ARCHIVED', 'ALL'] satisfies (ProgramStatus | 'ALL')[])
+  status?: ProgramStatus | 'ALL';
 
   @IsOptional()
   @Transform(({ value }) => value === 'true')
