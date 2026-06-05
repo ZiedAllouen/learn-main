@@ -33,7 +33,12 @@ export function LoginForm() {
       const safe = raw && raw.startsWith('/') && !raw.startsWith('//') && !raw.includes('://') ? raw : null
       try {
         const payload = JSON.parse(atob(data.accessToken.split('.')[1]))
-        const fallback = payload.role === 'ADMIN' ? '/admin' : '/'
+        const byRole: Record<string, string> = {
+          ADMIN: '/admin',
+          EDITOR: '/editor',
+          ARTIST: '/artiste',
+        }
+        const fallback = byRole[payload.role] ?? '/'
         window.location.href = safe ?? fallback
       } catch {
         window.location.href = safe ?? '/'

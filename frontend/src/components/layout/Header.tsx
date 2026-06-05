@@ -41,8 +41,16 @@ export function Header() {
     setUser(getAuthUser())
   }, [pathname])
 
-  const isAdmin = user?.role === 'ADMIN'
   const isLoggedIn = !!user
+  // Role-aware dashboard link: each role goes to its own space.
+  const dashboard =
+    user?.role === 'ADMIN'
+      ? { href: '/admin', label: 'Admin' }
+      : user?.role === 'EDITOR'
+        ? { href: '/editor', label: 'Éditeur' }
+        : user?.role === 'ARTIST'
+          ? { href: '/artiste', label: 'Mon espace' }
+          : null
 
   function handleLogout() {
     logout()
@@ -153,13 +161,13 @@ export function Header() {
 
           {/* Desktop actions */}
           <div className="hidden lg:flex items-center gap-5">
-            {isAdmin && (
+            {dashboard && (
               <Link
-                href="/admin"
+                href={dashboard.href}
                 className="text-sm font-medium transition-colors tracking-wide"
                 style={{ color: '#C0392B' }}
               >
-                Admin
+                {dashboard.label}
               </Link>
             )}
             <Link
@@ -266,13 +274,13 @@ export function Header() {
                 </div>
               </div>
 
-              {isAdmin && (
+              {dashboard && (
                 <Link
-                  href="/admin"
+                  href={dashboard.href}
                   className="mt-4 block border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg"
                   style={{ borderColor: '#C0392B', color: '#C0392B' }}
                 >
-                  Administration
+                  {dashboard.label}
                 </Link>
               )}
               {isLoggedIn ? (

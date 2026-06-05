@@ -15,6 +15,14 @@ export class SpacesService {
     });
   }
 
+  async findAllAdmin() {
+    const data = await this.prisma.space.findMany({
+      orderBy: { sortOrder: 'asc' },
+      include: { disciplines: { include: { discipline: { select: { id: true, slug: true, name: true } } } } },
+    });
+    return { data, total: data.length, page: 1, pageSize: data.length, totalPages: 1 };
+  }
+
   async findOne(slug: string) {
     const space = await this.prisma.space.findUnique({
       where: { slug },

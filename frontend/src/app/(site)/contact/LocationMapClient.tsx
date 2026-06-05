@@ -8,7 +8,7 @@ const LocationMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-64 sm:h-80 lg:h-96 w-full rounded-sm bg-bsmk-sand/40 animate-pulse" />
+      <div className="h-64 sm:h-80 lg:h-96 w-full rounded-xl bg-bsmk-sand/40 animate-pulse" />
     ),
   },
 )

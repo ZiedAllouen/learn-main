@@ -25,7 +25,7 @@ export interface ResourceConfig {
   fields: FieldDef[] // editable fields
 }
 
-export const RESOURCES: Record<'articles' | 'events' | 'programmes', ResourceConfig> = {
+export const RESOURCES: Record<'articles' | 'events' | 'programmes' | 'spaces', ResourceConfig> = {
   articles: {
     path: '/articles',
     titleField: 'title',
@@ -102,6 +102,27 @@ export const RESOURCES: Record<'articles' | 'events' | 'programmes', ResourceCon
           { value: 'DRAFT', label: 'Brouillon' },
           { value: 'PUBLISHED', label: 'Publié' },
           { value: 'FULL', label: 'Complet' },
+          { value: 'ARCHIVED', label: 'Archivé' },
+        ],
+      },
+    ],
+  },
+  spaces: {
+    path: '/spaces',
+    titleField: 'name',
+    fields: [
+      { name: 'slug', label: 'Slug' },
+      { name: 'name', label: 'Nom' },
+      { name: 'description', label: 'Description', type: 'textarea' },
+      { name: 'floor', label: 'Étage' },
+      {
+        name: 'status',
+        label: 'Statut',
+        type: 'select',
+        default: 'DRAFT',
+        options: [
+          { value: 'DRAFT', label: 'Brouillon' },
+          { value: 'PUBLISHED', label: 'Publié' },
           { value: 'ARCHIVED', label: 'Archivé' },
         ],
       },

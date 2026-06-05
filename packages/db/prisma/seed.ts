@@ -80,6 +80,31 @@ async function main() {
     },
   });
 
+  // Editor + artist test users (same changeme123 password). CHANGE THESE.
+  await prisma.user.upsert({
+    where: { email: 'editor@bsmk.tn' },
+    update: { passwordHash },
+    create: {
+      email: 'editor@bsmk.tn',
+      passwordHash,
+      role: 'EDITOR',
+      firstName: 'Éditeur',
+      lastName: 'BSMK',
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { email: 'artist@bsmk.tn' },
+    update: { passwordHash },
+    create: {
+      email: 'artist@bsmk.tn',
+      passwordHash,
+      role: 'ARTIST',
+      firstName: 'Artiste',
+      lastName: 'Test',
+    },
+  });
+
   // Sample artists (Vitrinart) — linked to disciplines, with works + geo
   const artVisuels = await prisma.discipline.findUnique({ where: { slug: 'arts-visuels' } });
   const modeDesign = await prisma.discipline.findUnique({ where: { slug: 'mode-design' } });

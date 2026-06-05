@@ -66,7 +66,7 @@ export function LocationMap() {
       ref={containerRef}
       role="region"
       aria-label={`Carte — ${LABEL}`}
-      className="h-64 sm:h-80 lg:h-96 w-full rounded-sm overflow-hidden z-0"
+      className="h-64 sm:h-80 lg:h-96 w-full rounded-xl overflow-hidden z-0"
     />
   )
 }

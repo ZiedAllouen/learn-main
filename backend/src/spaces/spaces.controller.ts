@@ -15,6 +15,12 @@ export class SpacesController {
     return this.spaces.findAll();
   }
 
+  @Roles('ADMIN', 'EDITOR')
+  @Get('admin/all')
+  findAllAdmin() {
+    return this.spaces.findAllAdmin();
+  }
+
   @Public()
   @Get(':slug')
   findOne(@Param('slug') slug: string) {
