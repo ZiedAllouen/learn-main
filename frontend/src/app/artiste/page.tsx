@@ -1,7 +1,5 @@
-import { ArtistSpace } from './ArtistSpace'
-
-export const dynamic = 'force-dynamic'
+import { ArtistSpaceClient } from './ArtistSpaceClient'
 
 export default function ArtistePage() {
-  return <ArtistSpace />
+  return <ArtistSpaceClient />
 }

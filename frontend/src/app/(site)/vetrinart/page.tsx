@@ -209,21 +209,19 @@ export default async function VetrinArtPage({
       )}
 
       {/* ── Filter bar ── */}
-      <section className="py-10 border-b border-bsmk-black/10 bg-bsmk-white sticky top-0 z-10 shadow-sm">
+      <section className="sticky top-16 lg:top-20 z-30 border-b border-bsmk-black/10 bg-bsmk-white/95 py-4 shadow-sm backdrop-blur">
         <Container>
           <FadeIn>
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-8">
+            <div className="flex flex-wrap items-center gap-3">
               {/* Sector filters */}
               {sectors.length > 0 && (
-                <div>
-                  <p className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
-                    Secteur
-                  </p>
-                  <div className="flex flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 shrink-0">Secteur</span>
+                  <div className="flex flex-wrap gap-1.5">
                     <Link
                       href={buildHref(filters, 'sector')}
                       scroll={false}
-                      className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 rounded-full transition-colors ${
+                      className={`font-sans text-xs tracking-widest uppercase px-2.5 py-1 rounded-full transition-colors ${
                         !filters.sector
                           ? 'bg-bsmk-black text-bsmk-white'
                           : 'border border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'
@@ -236,7 +234,7 @@ export default async function VetrinArtPage({
                         key={s.slug}
                         href={buildHrefWithUpdate(filters, { sector: s.slug })}
                         scroll={false}
-                        className="font-sans text-xs tracking-widest uppercase px-3 py-1.5 rounded-full border transition-all"
+                        className="font-sans text-xs tracking-widest uppercase px-2.5 py-1 rounded-full border transition-all"
                         style={{
                           borderColor: filters.sector === s.slug ? s.color : `${s.color}60`,
                           color: filters.sector === s.slug ? 'white' : s.color,
@@ -247,19 +245,18 @@ export default async function VetrinArtPage({
                       </Link>
                     ))}
                   </div>
+                  <span className="text-bsmk-black/15">|</span>
                 </div>
               )}
 
               {/* Discipline filters */}
-              <div className="flex-1">
-                <p className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
-                  Discipline
-                </p>
-                <div className="flex flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <span className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 shrink-0">Discipline</span>
+                <div className="flex flex-wrap gap-1.5">
                   <Link
                     href={buildHref(filters, 'discipline')}
                     scroll={false}
-                    className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 transition-colors ${
+                    className={`font-sans text-xs tracking-widest uppercase px-2.5 py-1 transition-colors ${
                       !filters.discipline
                         ? 'bg-bsmk-black text-bsmk-white'
                         : 'border border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'
@@ -272,7 +269,7 @@ export default async function VetrinArtPage({
                       key={d.slug}
                       href={buildHrefWithUpdate(filters, { discipline: d.slug })}
                       scroll={false}
-                      className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors ${
+                      className={`font-sans text-xs tracking-widest uppercase px-2.5 py-1 border transition-colors ${
                         filters.discipline === d.slug
                           ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
                           : 'border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'
@@ -282,19 +279,18 @@ export default async function VetrinArtPage({
                     </Link>
                   ))}
                 </div>
+                {cities.length > 0 && <span className="text-bsmk-black/15">|</span>}
               </div>
 
               {/* City filter */}
               {cities.length > 0 && (
-                <div className="shrink-0">
-                  <p className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 mb-3">
-                    Ville
-                  </p>
-                  <div className="flex flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="font-sans text-xs tracking-widest uppercase text-bsmk-black/40 shrink-0">Ville</span>
+                  <div className="flex flex-wrap gap-1.5">
                     <Link
                       href={buildHref(filters, 'city')}
                       scroll={false}
-                      className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 transition-colors ${
+                      className={`font-sans text-xs tracking-widest uppercase px-2.5 py-1 transition-colors ${
                         !filters.city
                           ? 'bg-bsmk-black text-bsmk-white'
                           : 'border border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'
@@ -307,7 +303,7 @@ export default async function VetrinArtPage({
                         key={city}
                         href={buildHrefWithUpdate(filters, { city })}
                         scroll={false}
-                        className={`font-sans text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors ${
+                        className={`font-sans text-xs tracking-widest uppercase px-2.5 py-1 border transition-colors ${
                           filters.city === city
                             ? 'bg-bsmk-black text-bsmk-white border-bsmk-black'
                             : 'border-bsmk-black/20 text-bsmk-black hover:bg-bsmk-black hover:text-bsmk-white'

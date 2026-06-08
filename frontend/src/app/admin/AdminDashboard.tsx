@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { getAuthUser, getAccessToken, logout } from '@/lib/auth'
 import { RequestsSection } from './sections/RequestsSection'
 import { ContentSection, RESOURCES } from './sections/ContentSection'
+import { ArtistsSection } from './sections/ArtistsSection'
 import { ConfirmModal } from './sections/ConfirmModal'
 import { useToast, ToastView } from './sections/Toast'
 
@@ -111,7 +112,7 @@ export function AdminDashboard() {
     }
     return r.ok ? r.json() : null
   }
-  const [section, setSection] = useState<'users' | 'requests' | 'articles' | 'events' | 'programmes'>('users')
+  const [section, setSection] = useState<'users' | 'requests' | 'articles' | 'events' | 'programmes' | 'spaces' | 'artists'>('users')
   const [stats, setStats] = useState<UserStats | null>(null)
   const [users, setUsers] = useState<PaginatedUsers | null>(null)
   const [page, setPage] = useState(1)
@@ -257,10 +258,12 @@ export function AdminDashboard() {
         <div className="flex gap-2 mb-10 border-b border-bsmk-black/10">
           {([
             { key: 'users', label: 'Utilisateurs' },
+            { key: 'artists', label: 'Artistes' },
             { key: 'requests', label: 'Demandes' },
             { key: 'articles', label: 'Articles' },
             { key: 'events', label: 'Événements' },
             { key: 'programmes', label: 'Programmes' },
+            { key: 'spaces', label: 'Espaces' },
           ] as const).map(tab => (
             <button
               key={tab.key}
@@ -288,6 +291,10 @@ export function AdminDashboard() {
           <ContentSection config={RESOURCES.events} />
         ) : section === 'programmes' ? (
           <ContentSection config={RESOURCES.programmes} />
+        ) : section === 'spaces' ? (
+          <ContentSection config={RESOURCES.spaces} />
+        ) : section === 'artists' ? (
+          <ArtistsSection />
         ) : (
           <>
         {/* Stats cards */}

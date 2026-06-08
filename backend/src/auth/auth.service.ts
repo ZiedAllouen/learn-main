@@ -9,6 +9,7 @@ import { randomBytes } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import type { RegisterDto } from './dto/register.dto';
 import type { LoginDto } from './dto/login.dto';
+import type { ChangePasswordDto } from './dto/change-password.dto';
 import type { JwtPayload } from './strategies/jwt.strategy';
 
 const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -67,6 +68,18 @@ export class AuthService {
     } else {
       await this.prisma.refreshToken.deleteMany({ where: { userId } });
     }
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('User not found');
+
+    const valid = await argon2.verify(user.passwordHash, dto.currentPassword);
+    if (!valid) throw new UnauthorizedException('Current password is incorrect');
+
+    const passwordHash = await argon2.hash(dto.newPassword);
+    await this.prisma.user.update({ where: { id: userId }, data: { passwordHash } });
+    await this.prisma.refreshToken.deleteMany({ where: { userId } });
   }
 
   private async issueTokens(userId: string, email: string, role: string) {

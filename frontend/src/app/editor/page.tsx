@@ -1,7 +1,9 @@
-import { EditorDashboard } from './EditorDashboard'
+import { EditorDashboardClient } from './EditorDashboardClient'
 
-export const dynamic = 'force-dynamic'
+export const metadata = {
+  title: 'Espace Éditeur | BSMK',
+}
 
 export default function EditorPage() {
-  return <EditorDashboard />
+  return <EditorDashboardClient />
 }

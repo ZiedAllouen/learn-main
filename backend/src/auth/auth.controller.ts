@@ -1,8 +1,9 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Post, Patch, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshDto } from './dto/refresh.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { Public } from '../common/decorators/public.decorator';
 import type { Request } from 'express';
 
@@ -37,5 +38,10 @@ export class AuthController {
   @Post('logout')
   logout(@Req() req: Request & { user: AuthUser }, @Body() dto: Partial<RefreshDto>) {
     return this.auth.logout(req.user.id, dto.refreshToken);
+  }
+
+  @Patch('password')
+  changePassword(@Req() req: Request & { user: AuthUser }, @Body() dto: ChangePasswordDto) {
+    return this.auth.changePassword(req.user.id, dto);
   }
 }

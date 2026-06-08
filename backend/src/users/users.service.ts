@@ -1,7 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import * as argon2 from 'argon2';
 import { PrismaService } from '../prisma/prisma.service';
 import type { ListUsersDto } from './dto/list-users.dto';
 import type { UpdateUserDto } from './dto/update-user.dto';
+import type { ChangePasswordDto } from './dto/change-password.dto';
 import type { PaginatedResult } from '@bsmk/types';
 
 const USER_SELECT = {
@@ -51,6 +53,18 @@ export class UsersService {
   async update(id: string, dto: UpdateUserDto) {
     await this.findOne(id);
     return this.prisma.user.update({ where: { id }, data: dto, select: USER_SELECT });
+  }
+
+  async changePassword(id: string, dto: ChangePasswordDto) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const valid = await argon2.verify(user.passwordHash, dto.currentPassword);
+    if (!valid) throw new UnauthorizedException('Current password is incorrect');
+
+    const passwordHash = await argon2.hash(dto.newPassword);
+    await this.prisma.user.update({ where: { id }, data: { passwordHash } });
+    await this.prisma.refreshToken.deleteMany({ where: { userId: id } });
   }
 
   async remove(id: string) {

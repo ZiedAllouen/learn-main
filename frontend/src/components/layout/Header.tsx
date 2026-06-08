@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -23,8 +23,10 @@ const navLinks = [
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [disciplinesOpen, setDisciplinesOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [user, setUser] = useState<ReturnType<typeof getAuthUser>>(null)
+  const userMenuRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -40,6 +42,16 @@ export function Header() {
   useEffect(() => {
     setUser(getAuthUser())
   }, [pathname])
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const isLoggedIn = !!user
   // Role-aware dashboard link: each role goes to its own space.
@@ -161,15 +173,6 @@ export function Header() {
 
           {/* Desktop actions */}
           <div className="hidden lg:flex items-center gap-5">
-            {dashboard && (
-              <Link
-                href={dashboard.href}
-                className="text-sm font-medium transition-colors tracking-wide"
-                style={{ color: '#C0392B' }}
-              >
-                {dashboard.label}
-              </Link>
-            )}
             <Link
               href="/contact"
               className={`text-sm font-medium transition-colors tracking-wide ${actionText}`}
@@ -177,12 +180,47 @@ export function Header() {
               Contact
             </Link>
             {isLoggedIn ? (
-              <button
-                onClick={handleLogout}
-                className={`text-sm font-medium transition-colors tracking-wide ${actionText}`}
-              >
-                Déconnexion
-              </button>
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-2 text-sm font-medium text-bsmk-white/75 hover:text-bsmk-white transition-colors tracking-wide"
+                >
+                  <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs uppercase">
+                    {user?.email?.charAt(0)}
+                  </span>
+                </button>
+                {userMenuOpen && (
+                  <div className={`absolute right-0 top-full mt-2 w-52 border py-2 shadow-2xl rounded-xl overflow-hidden ${panelBg}`}>
+                    <div className="px-4 py-2.5 border-b border-white/10">
+                      <p className="text-xs text-white/40 truncate">{user?.email}</p>
+                    </div>
+                    {dashboard && (
+                      <Link
+                        href={dashboard.href}
+                        className={`block px-4 py-2.5 text-sm transition-colors ${panelItem}`}
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        {dashboard.label}
+                      </Link>
+                    )}
+                    <Link
+                      href="/profil"
+                      className={`block px-4 py-2.5 text-sm transition-colors ${panelItem}`}
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      Mon profil
+                    </Link>
+                    <div className={`border-t mt-1 pt-1 ${panelDivider}`}>
+                      <button
+                        onClick={() => { setUserMenuOpen(false); handleLogout() }}
+                        className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${panelItem}`}
+                      >
+                        Déconnexion
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
               <Link
                 href="/login"
@@ -274,22 +312,29 @@ export function Header() {
                 </div>
               </div>
 
-              {dashboard && (
-                <Link
-                  href={dashboard.href}
-                  className="mt-4 block border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg"
-                  style={{ borderColor: '#C0392B', color: '#C0392B' }}
-                >
-                  {dashboard.label}
-                </Link>
-              )}
               {isLoggedIn ? (
-                <button
-                  onClick={handleLogout}
-                  className={`mt-2 block w-full border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg ${mobileOutlineBtn}`}
-                >
-                  Déconnexion
-                </button>
+                <>
+                  {dashboard && (
+                    <Link
+                      href={dashboard.href}
+                      className={`mt-4 block border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg ${mobileOutlineBtn}`}
+                    >
+                      {dashboard.label}
+                    </Link>
+                  )}
+                  <Link
+                    href="/profil"
+                    className={`mt-2 block border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg ${mobileOutlineBtn}`}
+                  >
+                    Mon profil
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className={`mt-2 block w-full border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg ${mobileOutlineBtn}`}
+                  >
+                    Déconnexion
+                  </button>
+                </>
               ) : (
                 <Link
                   href="/login"

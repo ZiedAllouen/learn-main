@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Query } from '@nestjs/comm
 import { UsersService } from './users.service';
 import { ListUsersDto } from './dto/list-users.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { Roles } from '../common/decorators/roles.decorator';
 
 @Roles('ADMIN')
@@ -27,6 +28,11 @@ export class UsersController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     return this.users.update(id, dto);
+  }
+
+  @Patch(':id/password')
+  changePassword(@Param('id') id: string, @Body() dto: ChangePasswordDto) {
+    return this.users.changePassword(id, dto);
   }
 
   @Delete(':id')

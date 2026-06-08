@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import 'dotenv/config';
+import { PrismaClient } from '../generated/client';
 import * as argon2 from 'argon2';
 import { programs, events, spaces, articles } from './seed-data';
 
@@ -66,8 +67,8 @@ async function main() {
     await prisma.programType.upsert({ where: { slug: p.slug }, update: {}, create: p });
   }
 
-  // Admin user — argon2 hash of "changeme123". CHANGE THIS PASSWORD AFTER FIRST LOGIN.
-  const passwordHash = await argon2.hash('changeme123');
+  // Admin user — argon2 hash of "bsmkadmintn1998!". CHANGE THIS PASSWORD AFTER FIRST LOGIN.
+  const passwordHash = await argon2.hash('bsmkadmintn1998!');
   await prisma.user.upsert({
     where: { email: 'admin@bsmk.tn' },
     update: { passwordHash },
