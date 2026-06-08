@@ -7,24 +7,84 @@ const prisma = new PrismaClient();
 
 const SECTORS = [
   { slug: 'arts-de-scene', name: 'Arts de scène', color: '#2D5F99' },
-  { slug: 'evenements-expositions-festivals', name: 'Événements, expositions & festivals', color: '#C0392B' },
+  {
+    slug: 'evenements-expositions-festivals',
+    name: 'Événements, expositions & festivals',
+    color: '#C0392B',
+  },
   { slug: 'medias', name: 'Médias', color: '#7A2E73' },
-  { slug: 'sports-loisirs-alternatifs', name: 'Sports & loisirs alternatifs', color: '#5C8A3A' },
-  { slug: 'consulting-accompagnement', name: 'Consulting & accompagnement artistiques', color: '#147070' },
-  { slug: 'partenaires-communautes', name: 'Partenaires & communautés', color: '#C99A2E' },
-  { slug: 'showroom-recyclage', name: 'Showroom et recyclage', color: '#8A8F7A' },
+  {
+    slug: 'sports-loisirs-alternatifs',
+    name: 'Sports & loisirs alternatifs',
+    color: '#5C8A3A',
+  },
+  {
+    slug: 'consulting-accompagnement',
+    name: 'Consulting & accompagnement artistiques',
+    color: '#147070',
+  },
+  {
+    slug: 'partenaires-communautes',
+    name: 'Partenaires & communautés',
+    color: '#C99A2E',
+  },
+  {
+    slug: 'showroom-recyclage',
+    name: 'Showroom et recyclage',
+    color: '#8A8F7A',
+  },
 ];
 
 const DISCIPLINES = [
-  { slug: 'musique-production', name: 'Musique & Production', color: '#D8C3A5', sector: 'arts-de-scene' },
-  { slug: 'danse-mouvement', name: 'Danse & Mouvement', color: '#E0D2BE', sector: 'arts-de-scene' },
-  { slug: 'theatre-arts-vivants', name: 'Théâtre & Arts vivants', color: '#CDBBA0', sector: 'arts-de-scene' },
-  { slug: 'arts-visuels', name: 'Street Art & Arts Visuels', color: '#C9C2B0', sector: 'evenements-expositions-festivals' },
-  { slug: 'cinema-audiovisuel', name: 'Cinéma & Audiovisuel', color: '#BFB39A', sector: 'medias' },
+  {
+    slug: 'musique-production',
+    name: 'Musique & Production',
+    color: '#D8C3A5',
+    sector: 'arts-de-scene',
+  },
+  {
+    slug: 'danse-mouvement',
+    name: 'Danse & Mouvement',
+    color: '#E0D2BE',
+    sector: 'arts-de-scene',
+  },
+  {
+    slug: 'theatre-arts-vivants',
+    name: 'Théâtre & Arts vivants',
+    color: '#CDBBA0',
+    sector: 'arts-de-scene',
+  },
+  {
+    slug: 'arts-visuels',
+    name: 'Street Art & Arts Visuels',
+    color: '#C9C2B0',
+    sector: 'evenements-expositions-festivals',
+  },
+  {
+    slug: 'cinema-audiovisuel',
+    name: 'Cinéma & Audiovisuel',
+    color: '#BFB39A',
+    sector: 'medias',
+  },
   { slug: 'medias', name: 'Médias', color: '#B7AE9C', sector: 'medias' },
-  { slug: 'arts-numeriques-gaming', name: 'Arts Numériques & Gaming', color: '#C7BEAA', sector: 'medias' },
-  { slug: 'mode-design', name: 'Mode & Design', color: '#D2C0A8', sector: 'showroom-recyclage' },
-  { slug: 'sport-culture-urbaine', name: 'Sport & Culture Urbaine', color: '#C6CBB6', sector: 'sports-loisirs-alternatifs' },
+  {
+    slug: 'arts-numeriques-gaming',
+    name: 'Arts Numériques & Gaming',
+    color: '#C7BEAA',
+    sector: 'medias',
+  },
+  {
+    slug: 'mode-design',
+    name: 'Mode & Design',
+    color: '#D2C0A8',
+    sector: 'showroom-recyclage',
+  },
+  {
+    slug: 'sport-culture-urbaine',
+    name: 'Sport & Culture Urbaine',
+    color: '#C6CBB6',
+    sector: 'sports-loisirs-alternatifs',
+  },
 ];
 
 async function main() {
@@ -39,11 +99,24 @@ async function main() {
 
   // Disciplines (linked to sectors)
   for (const [i, d] of DISCIPLINES.entries()) {
-    const sector = await prisma.sector.findUnique({ where: { slug: d.sector } });
+    const sector = await prisma.sector.findUnique({
+      where: { slug: d.sector },
+    });
     await prisma.discipline.upsert({
       where: { slug: d.slug },
-      update: { name: d.name, color: d.color, sectorId: sector?.id, sortOrder: i },
-      create: { slug: d.slug, name: d.name, color: d.color, sectorId: sector?.id, sortOrder: i },
+      update: {
+        name: d.name,
+        color: d.color,
+        sectorId: sector?.id,
+        sortOrder: i,
+      },
+      create: {
+        slug: d.slug,
+        name: d.name,
+        color: d.color,
+        sectorId: sector?.id,
+        sortOrder: i,
+      },
     });
   }
 
@@ -54,7 +127,11 @@ async function main() {
     { slug: 'professionnels', name: 'Professionnels' },
     { slug: 'tout-public', name: 'Tout public' },
   ]) {
-    await prisma.audienceType.upsert({ where: { slug: a.slug }, update: {}, create: a });
+    await prisma.audienceType.upsert({
+      where: { slug: a.slug },
+      update: {},
+      create: a,
+    });
   }
 
   // Program types
@@ -64,7 +141,11 @@ async function main() {
     { slug: 'workshop', name: 'Atelier' },
     { slug: 'mentoring', name: 'Mentorat' },
   ]) {
-    await prisma.programType.upsert({ where: { slug: p.slug }, update: {}, create: p });
+    await prisma.programType.upsert({
+      where: { slug: p.slug },
+      update: {},
+      create: p,
+    });
   }
 
   // Admin user — argon2 hash of "bsmkadmintn1998!". CHANGE THIS PASSWORD AFTER FIRST LOGIN.
@@ -107,20 +188,36 @@ async function main() {
   });
 
   // Sample artists (Vitrinart) — linked to disciplines, with works + geo
-  const artVisuels = await prisma.discipline.findUnique({ where: { slug: 'arts-visuels' } });
-  const modeDesign = await prisma.discipline.findUnique({ where: { slug: 'mode-design' } });
+  const artVisuels = await prisma.discipline.findUnique({
+    where: { slug: 'arts-visuels' },
+  });
+  const modeDesign = await prisma.discipline.findUnique({
+    where: { slug: 'mode-design' },
+  });
 
   const sampleArtists = [
     {
-      slug: 'amira-ben-salah', name: 'Amira Ben Salah', city: 'Tunis',
-      bio: 'Artiste muraliste tunisoise.', status: 'PUBLISHED' as const, featured: true,
-      latitude: 36.8065, longitude: 10.1815, disciplineId: artVisuels?.id,
+      slug: 'amira-ben-salah',
+      name: 'Amira Ben Salah',
+      city: 'Tunis',
+      bio: 'Artiste muraliste tunisoise.',
+      status: 'PUBLISHED' as const,
+      featured: true,
+      latitude: 36.8065,
+      longitude: 10.1815,
+      disciplineId: artVisuels?.id,
       works: [{ title: 'Fresque Medina', type: 'mural', year: 2024 }],
     },
     {
-      slug: 'karim-designer', name: 'Karim Designer', city: 'Sfax',
-      bio: 'Designer objet et mobilier.', status: 'PUBLISHED' as const, featured: false,
-      latitude: 34.7406, longitude: 10.7603, disciplineId: modeDesign?.id,
+      slug: 'karim-designer',
+      name: 'Karim Designer',
+      city: 'Sfax',
+      bio: 'Designer objet et mobilier.',
+      status: 'PUBLISHED' as const,
+      featured: false,
+      latitude: 34.7406,
+      longitude: 10.7603,
+      disciplineId: modeDesign?.id,
       works: [{ title: 'Collection Sahel', type: 'produit', year: 2025 }],
     },
   ];
@@ -141,13 +238,30 @@ async function main() {
 
   // Sample media
   const sampleMedia = [
-    { slug: 'video-presentation-bsmk', title: 'Présentation BSMK', type: 'VIDEO' as const, status: 'PUBLISHED' as const, featured: true, url: 'https://example.com/video', disciplineSlug: 'medias' },
-    { slug: 'galerie-vernissage-2025', title: 'Vernissage 2025', type: 'PHOTO' as const, status: 'PUBLISHED' as const, featured: false, disciplineSlug: 'arts-visuels' },
+    {
+      slug: 'video-presentation-bsmk',
+      title: 'Présentation BSMK',
+      type: 'VIDEO' as const,
+      status: 'PUBLISHED' as const,
+      featured: true,
+      url: 'https://example.com/video',
+      disciplineSlug: 'medias',
+    },
+    {
+      slug: 'galerie-vernissage-2025',
+      title: 'Vernissage 2025',
+      type: 'PHOTO' as const,
+      status: 'PUBLISHED' as const,
+      featured: false,
+      disciplineSlug: 'arts-visuels',
+    },
   ];
 
   for (const m of sampleMedia) {
     const { disciplineSlug, ...rest } = m;
-    const disc = await prisma.discipline.findUnique({ where: { slug: disciplineSlug } });
+    const disc = await prisma.discipline.findUnique({
+      where: { slug: disciplineSlug },
+    });
     await prisma.media.upsert({
       where: { slug: m.slug },
       update: {},
@@ -166,18 +280,30 @@ async function main() {
     { key: 'spaces_count', value: '10' },
     { key: 'events_per_year', value: '80' },
   ]) {
-    await prisma.siteStat.upsert({ where: { key: s.key }, update: { value: s.value }, create: s });
+    await prisma.siteStat.upsert({
+      where: { key: s.key },
+      update: { value: s.value },
+      create: s,
+    });
   }
 
   // ── Lookup maps for content relations ─────────────────────────────────────
-  const allDisciplines = await prisma.discipline.findMany({ select: { id: true, slug: true } });
+  const allDisciplines = await prisma.discipline.findMany({
+    select: { id: true, slug: true },
+  });
   const disciplineIdBySlug = new Map(allDisciplines.map((d) => [d.slug, d.id]));
 
-  const allAudiences = await prisma.audienceType.findMany({ select: { id: true, slug: true } });
+  const allAudiences = await prisma.audienceType.findMany({
+    select: { id: true, slug: true },
+  });
   const audienceIdBySlug = new Map(allAudiences.map((a) => [a.slug, a.id]));
 
-  const allProgramTypes = await prisma.programType.findMany({ select: { id: true, slug: true } });
-  const programTypeIdBySlug = new Map(allProgramTypes.map((p) => [p.slug, p.id]));
+  const allProgramTypes = await prisma.programType.findMany({
+    select: { id: true, slug: true },
+  });
+  const programTypeIdBySlug = new Map(
+    allProgramTypes.map((p) => [p.slug, p.id]),
+  );
 
   // Resolve discipline slugs → discipline-link create rows, skipping unknown slugs.
   const disciplineLinks = (slugs: string[]) =>
@@ -257,7 +383,9 @@ async function main() {
   }
 
   // Articles (require an author + optional category)
-  const admin = await prisma.user.findUnique({ where: { email: 'admin@bsmk.tn' } });
+  const admin = await prisma.user.findUnique({
+    where: { email: 'admin@bsmk.tn' },
+  });
   if (!admin) throw new Error('Admin user not found — cannot seed articles');
 
   for (const a of articles) {
@@ -291,5 +419,8 @@ async function main() {
 }
 
 main()
-  .catch((e) => { console.error(e); process.exit(1); })
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
   .finally(() => prisma.$disconnect());
