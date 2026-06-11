@@ -89,6 +89,9 @@ export function Header() {
   const mobileDiscLabel = 'text-bsmk-sand/40'
   const mobileDiscItem = 'text-bsmk-white/50 hover:text-bsmk-white'
   const mobileOutlineBtn = 'border-white/20 text-white/70 hover:border-white/50 hover:text-white'
+  const desktopNavLink = 'font-ui text-[1rem] font-normal tracking-[0.005em] transition-colors'
+  const desktopActionLink = 'font-ui text-[0.98rem] font-normal tracking-[0.005em] transition-colors'
+  const mobileNavLink = 'font-ui text-[1.02rem] font-normal tracking-[0.005em] transition-colors'
 
   return (
     <motion.header
@@ -123,7 +126,7 @@ export function Header() {
                 >
                   <Link
                     href={item.href}
-                    className={`text-sm font-medium tracking-wide transition-colors ${navText}`}
+                    className={`${desktopNavLink} ${navText}`}
                     style={isActive(item.href) ? { color: sectionColor } : {}}
                   >
                     {item.label}
@@ -162,7 +165,7 @@ export function Header() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`text-sm font-medium tracking-wide transition-colors ${navText}`}
+                  className={`${desktopNavLink} ${navText}`}
                   style={isActive(item.href) ? { color: sectionColor } : {}}
                 >
                   {item.label}
@@ -175,7 +178,7 @@ export function Header() {
           <div className="hidden lg:flex items-center gap-5">
             <Link
               href="/contact"
-              className={`text-sm font-medium transition-colors tracking-wide ${actionText}`}
+              className={`${desktopActionLink} ${actionText}`}
             >
               Contact
             </Link>
@@ -183,7 +186,7 @@ export function Header() {
               <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 text-sm font-medium text-bsmk-white/75 hover:text-bsmk-white transition-colors tracking-wide"
+                  className={`flex items-center gap-2 text-bsmk-white/75 hover:text-bsmk-white ${desktopActionLink}`}
                 >
                   <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs uppercase">
                     {user?.email?.charAt(0)}
@@ -224,7 +227,7 @@ export function Header() {
             ) : (
               <Link
                 href="/login"
-                className={`text-sm font-medium transition-colors tracking-wide ${actionText}`}
+                className={`${desktopActionLink} ${actionText}`}
                 style={isActive('/login') ? { color: sectionColor } : {}}
               >
                 Connexion
@@ -232,7 +235,7 @@ export function Header() {
             )}
             <Link
               href="/participer"
-              className="bg-bsmk-terracotta text-white text-sm font-medium px-5 py-2.5 hover:bg-bsmk-terracotta/85 transition-colors tracking-wide rounded-lg"
+              className="font-ui bg-bsmk-terracotta text-white text-[0.98rem] font-normal px-5 py-2.5 hover:bg-bsmk-terracotta/85 transition-colors tracking-[0.005em] rounded-lg"
             >
               Participer
             </Link>
@@ -285,7 +288,7 @@ export function Header() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`py-3.5 text-sm font-medium tracking-wide border-b transition-colors ${mobileItemBorder} ${navText}`}
+                  className={`py-3.5 border-b ${mobileNavLink} ${mobileItemBorder} ${navText}`}
                   style={isActive(item.href) ? { color: sectionColor } : {}}
                 >
                   {item.label}
@@ -300,7 +303,7 @@ export function Header() {
                     <Link
                       key={d.slug}
                       href={`/disciplines/${d.slug}`}
-                      className={`flex items-center gap-2 text-sm transition-colors py-1 ${mobileDiscItem}`}
+                      className={`font-ui flex items-center gap-2 text-sm font-medium transition-colors py-1 ${mobileDiscItem}`}
                     >
                       <span
                         className="w-1.5 h-1.5 rounded-full shrink-0"
@@ -317,20 +320,20 @@ export function Header() {
                   {dashboard && (
                     <Link
                       href={dashboard.href}
-                      className={`mt-4 block border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg ${mobileOutlineBtn}`}
+                      className={`font-ui mt-4 block border text-base font-normal px-5 py-3.5 text-center tracking-[0.005em] transition-colors rounded-lg ${mobileOutlineBtn}`}
                     >
                       {dashboard.label}
                     </Link>
                   )}
                   <Link
                     href="/profil"
-                    className={`mt-2 block border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg ${mobileOutlineBtn}`}
+                    className={`font-ui mt-2 block border text-base font-normal px-5 py-3.5 text-center tracking-[0.005em] transition-colors rounded-lg ${mobileOutlineBtn}`}
                   >
                     Mon profil
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className={`mt-2 block w-full border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg ${mobileOutlineBtn}`}
+                    className={`font-ui mt-2 block w-full border text-base font-normal px-5 py-3.5 text-center tracking-[0.005em] transition-colors rounded-lg ${mobileOutlineBtn}`}
                   >
                     Déconnexion
                   </button>
@@ -338,14 +341,14 @@ export function Header() {
               ) : (
                 <Link
                   href="/login"
-                  className={`mt-2 block border text-sm font-medium px-5 py-3.5 text-center tracking-wide transition-colors rounded-lg ${mobileOutlineBtn}`}
+                  className={`font-ui mt-2 block border text-base font-normal px-5 py-3.5 text-center tracking-[0.005em] transition-colors rounded-lg ${mobileOutlineBtn}`}
                 >
                   Connexion
                 </Link>
               )}
               <Link
                 href="/participer"
-                className="mt-2 block bg-bsmk-terracotta text-white text-sm font-medium px-5 py-3.5 text-center tracking-wide hover:bg-bsmk-terracotta/85 transition-colors rounded-lg"
+                className="font-ui mt-2 block bg-bsmk-terracotta text-white text-base font-normal px-5 py-3.5 text-center tracking-[0.005em] hover:bg-bsmk-terracotta/85 transition-colors rounded-lg"
               >
                 Participer au BSMK
               </Link>

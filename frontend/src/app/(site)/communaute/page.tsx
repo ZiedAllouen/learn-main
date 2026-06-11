@@ -8,26 +8,26 @@ import { disciplines } from '@/data/disciplines'
 import { HeroText, StaggerContainer, StaggerItem, FadeUp } from '@/components/ui/Motion'
 
 export const metadata: Metadata = {
-  title: 'Communauté & Réseau | BSMK',
+  title: 'Communaute & Reseau | BSMK',
   description:
-    'Artistes résidents, collectifs, institutions, partenaires et bénévoles autour de BSMK × VetrinArt.',
+    'Artistes du reseau, collectifs, institutions, partenaires et benevoles autour de BSMK x VetrinArt.',
 }
 
 const networkGroups = [
-  'Artistes résidents',
+  'Artistes du reseau',
   'Collectifs partenaires',
   'Institutions culturelles',
-  'Écoles & universités',
-  'Bénévoles',
-  'Partenaires média',
+  'Ecoles & universites',
+  'Benevoles',
+  'Partenaires media',
 ]
 
 const partnerExamples = [
-  'Résidences méditerranéennes',
+  'Residences mediterraneennes',
   'Diffusion internationale',
   'Ateliers jeunesse',
-  'Production média',
-  'Événements urbains',
+  'Production media',
+  'Evenements urbains',
   'Recherche & archives',
 ]
 
@@ -40,18 +40,18 @@ export default function CommunautePage() {
         <Container>
           <HeroText delay={0}>
             <p className="text-xs tracking-widest uppercase text-page-accent mb-5">
-              Communauté · Réseau · Coopération
+              Communaute · Reseau · Cooperation
             </p>
           </HeroText>
           <HeroText delay={0.1}>
             <h1 className="font-display text-5xl lg:text-7xl font-bold leading-none mb-6">
-              Communauté & Réseau
+              Communaute & Reseau
             </h1>
           </HeroText>
           <HeroText delay={0.25}>
             <p className="max-w-2xl text-lg text-bsmk-sand/75 leading-relaxed">
-              BSMK × VetrinArt connecte artistes, collectifs, institutions, publics et
-              partenaires pour faire circuler les pratiques, les opportunités et les projets.
+              BSMK x VetrinArt connecte artistes, collectifs, institutions, publics et
+              partenaires pour faire circuler les pratiques, les opportunites et les projets.
             </p>
           </HeroText>
         </Container>
@@ -79,11 +79,11 @@ export default function CommunautePage() {
                 VetrinArt
               </p>
               <h2 className="font-display text-3xl lg:text-4xl font-bold">
-                Artistes à la une
+                Artistes a la une
               </h2>
             </div>
             <Link href="/vetrinart" className="hidden sm:inline text-sm text-page-accent hover:underline">
-              Voir le réseau →
+              Voir le reseau -&gt;
             </Link>
           </div>
 
@@ -120,10 +120,10 @@ export default function CommunautePage() {
         <Container>
           <FadeUp>
             <p className="text-xs tracking-widest uppercase text-page-accent mb-3">
-              Axes de coopération
+              Axes de cooperation
             </p>
             <h2 className="font-display text-3xl lg:text-4xl font-bold mb-8">
-              Les partenariats sont structurés autour de projets concrets.
+              Les partenariats sont structures autour de projets concrets.
             </h2>
           </FadeUp>
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -140,7 +140,7 @@ export default function CommunautePage() {
               href="/participer"
               className="inline-flex items-center h-12 px-6 bg-page-accent text-white text-sm font-medium tracking-wide hover:bg-page-accent/90 transition-colors rounded-lg"
             >
-              Rejoindre le réseau
+              Rejoindre le reseau
             </Link>
           </div>
         </Container>

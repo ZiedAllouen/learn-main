@@ -27,16 +27,14 @@ export const SECTION_COLORS: Record<string, SectionColor> = {
   '/participer': { base: '#C0392B', hover: '#D9594B' },
 }
 
-// Brand terracotta — fallback accent for pages outside the section map
+// Brand olive — fallback accent for pages outside the section map
 // (home, login, register, …).
 export const DEFAULT_SECTION_COLOR: SectionColor = {
-  base: '#C4622D',
-  hover: '#E07B54',
+  base: '#6E7F63',
+  hover: '#87987B',
 }
 
-// Routes whose hero/top section is dark — the header sits on dark and uses light text.
-// All other routes are light-topped and get a light header.
-/** Resolve a pathname to its section accent, falling back to terracotta. */
+/** Resolve a pathname to its section accent, falling back to brand olive. */
 export function getSectionColor(pathname: string): SectionColor {
   let match: { prefix: string; color: SectionColor } | null = null
   for (const [prefix, color] of Object.entries(SECTION_COLORS)) {
@@ -49,7 +47,7 @@ export function getSectionColor(pathname: string): SectionColor {
   return match?.color ?? DEFAULT_SECTION_COLOR
 }
 
-/** "#C4622D" -> "196 98 45" for use in `rgb(var(--page-accent) / <alpha>)`. */
+/** "#6E7F63" -> "110 127 99" for use in `rgb(var(--page-accent) / <alpha>)`. */
 export function hexToRgbChannels(hex: string): string {
   const h = hex.replace('#', '')
   const full = h.length === 3 ? h.split('').map(c => c + c).join('') : h

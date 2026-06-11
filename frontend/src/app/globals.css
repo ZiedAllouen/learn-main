@@ -4,11 +4,11 @@
 
 @layer base {
   :root {
-    /* Default page accent (brand terracotta #C4622D). The (site) layout
+    /* Default page accent (brand olive #6E7F63). The (site) layout
        overrides these per section via the PageAccent wrapper. RGB channels
        so Tailwind `page-accent` can apply opacity modifiers. */
-    --page-accent: 196 98 45;
-    --page-accent-hover: 224 123 84;
+    --page-accent: 110 127 99;
+    --page-accent-hover: 135 152 123;
   }
 
   html {

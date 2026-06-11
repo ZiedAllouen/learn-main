@@ -15,14 +15,14 @@
 
 | Page | URL |
 |------|-----|
-| Site public | `http://localhost:9003` |
-| Connexion | `http://localhost:9003/login` |
-| Inscription | `http://localhost:9003/register` |
-| Admin Dashboard | `http://localhost:9003/admin` |
-| Espace éditeur | `http://localhost:9003/editor` |
-| Espace artiste | `http://localhost:9003/artiste` |
-| Mon profil | `http://localhost:9003/profil` |
-| VitrinArt (annuaire) | `http://localhost:9003/vetrinart` |
+| Site public | `https://bsmkv1.netlify.app` |
+| Connexion | `https://bsmkv1.netlify.app/login` |
+| Inscription | `https://bsmkv1.netlify.app/register` |
+| Admin Dashboard | `https://bsmkv1.netlify.app/admin` |
+| Espace éditeur | `https://bsmkv1.netlify.app/editor` |
+| Espace artiste | `https://bsmkv1.netlify.app/artiste` |
+| Mon profil | `https://bsmkv1.netlify.app/profil` |
+| VitrinArt (annuaire) | `https://bsmkv1.netlify.app/vetrinart` |
 
 ---
 
@@ -135,6 +135,14 @@ Se connecter avec un compte **ADMIN**, puis aller sur `/admin`.
 ---
 
 ## Informations techniques
+
+### Production
+
+- **Frontend** : `https://bsmkv1.netlify.app` (Netlify)
+- **Backend (API)** : `https://bsmk-api.onrender.com` (Render)
+- **Base de données** : Neon PostgreSQL (cloud)
+
+### Développement local
 
 - **Frontend** : Next.js 15 (React 19) — port `9003`
 - **Backend** : NestJS 11 (API) — port `3001`
