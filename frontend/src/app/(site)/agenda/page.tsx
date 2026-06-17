@@ -222,7 +222,7 @@ export default async function AgendaPage({
               >
                 <div className="relative aspect-video overflow-hidden">
                   <Image
-                    src={evt.coverUrl ?? 'https://picsum.photos/seed/bsmk-event/800/450'}
+                    src={evt.coverUrl ?? '/assets/images/andrii-olishevskyi.jpg'}
                     alt={evt.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"

@@ -17,6 +17,10 @@ export class ListArtistsDto {
 
   @IsOptional()
   @IsString()
+  search?: string;
+
+  @IsOptional()
+  @IsString()
   discipline?: string;
 
   @IsOptional()

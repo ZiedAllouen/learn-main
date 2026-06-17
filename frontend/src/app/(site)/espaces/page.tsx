@@ -142,7 +142,7 @@ export default async function EspacesPage({
                   {/* Image */}
                   <div className="relative aspect-video overflow-hidden bg-bsmk-sand/20">
                     <Image
-                      src={space.imageUrls[0] ?? `https://picsum.photos/seed/space-${space.slug}/800/500`}
+                      src={space.imageUrls[0] ?? '/assets/images/techivation.jpg'}
                       alt={space.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"

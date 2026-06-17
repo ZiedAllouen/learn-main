@@ -239,7 +239,7 @@ export default async function ProgrammesPage({
                   {/* Cover */}
                   <div className="relative aspect-video overflow-hidden">
                     <Image
-                      src={program.coverUrl ?? `https://picsum.photos/seed/prog-${program.slug}/800/450`}
+                      src={program.coverUrl ?? '/assets/images/caught-in-joy.jpg'}
                       alt={program.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -307,7 +307,7 @@ export default async function ProgrammesPage({
                   {/* Thumbnail */}
                   <div className="relative w-40 shrink-0 overflow-hidden">
                     <Image
-                      src={program.coverUrl ?? `https://picsum.photos/seed/prog-${program.slug}/800/450`}
+                      src={program.coverUrl ?? '/assets/images/caught-in-joy.jpg'}
                       alt={program.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"

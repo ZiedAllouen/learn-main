@@ -128,7 +128,7 @@ export default async function ArtistPage({ params }: Props) {
               <ScaleIn>
                 <div className="relative w-full" style={{ aspectRatio: '3/4' }}>
                   <Image
-                    src={artist.photoUrl ?? 'https://picsum.photos/seed/artist/400/600'}
+                    src={artist.photoUrl ?? '/assets/images/happy-face.jpg'}
                     alt={artist.name}
                     fill
                     priority
@@ -342,7 +342,7 @@ export default async function ArtistPage({ params }: Props) {
                     >
                       <div className="relative aspect-square overflow-hidden bg-bsmk-sand/20 mb-4 rounded-lg">
                         <Image
-                          src={other.photoUrl ?? 'https://picsum.photos/seed/artist/400/400'}
+                          src={other.photoUrl ?? '/assets/images/happy-face.jpg'}
                           alt={other.name}
                           fill
                           className="object-cover object-top group-hover:scale-105 transition-transform duration-500"

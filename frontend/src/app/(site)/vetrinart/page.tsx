@@ -70,7 +70,7 @@ function ArtistCard({ artist }: { artist: Artist }) {
           style={{ backgroundColor: primaryDiscipline?.color ?? '#D4C5A9' }}
         >
           <Image
-            src={artist.photoUrl ?? 'https://picsum.photos/seed/artist/400/400'}
+            src={artist.photoUrl ?? '/assets/images/happy-face.jpg'}
             alt={artist.name}
             fill
             className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
@@ -236,7 +236,7 @@ export default async function VetrinArtPage({
                     >
                       <div className="relative w-48 lg:w-56 shrink-0 aspect-[3/4]">
                         <Image
-                          src={artist.photoUrl ?? 'https://picsum.photos/seed/artist/400/600'}
+                          src={artist.photoUrl ?? '/assets/images/happy-face.jpg'}
                           alt={artist.name}
                           fill
                           className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"

@@ -35,9 +35,9 @@ export const disciplines: Discipline[] = [
     longDescription: `La danse et le mouvement au BSMK forment un espace de pratique, d'entraînement et de recherche. De la danse contemporaine aux formes traditionnelles nord-africaines et méditerranéennes, en passant par les cultures urbaines et la performance.`,
     coverUrl: 'https://picsum.photos/seed/danse/1200/600',
     color: '#D4B8A8',
-    accentColor: '#C0392B',
+    accentColor: '#E07A5F',
     sectorSlug: 'arts-de-scene',
-    sectorColor: '#2D5F99',
+    sectorColor: '#E07A5F',
   },
   {
     id: '3',
@@ -61,9 +61,9 @@ export const disciplines: Discipline[] = [
     longDescription: `Le pôle Théâtre & Arts vivants rassemble les pratiques de scène, de texte et de performance. Il connecte jeu d'acteur, mise en scène, arts circassiens, performance et projets portés par les communautés artistiques de Tunis.`,
     coverUrl: 'https://picsum.photos/seed/theatre/1200/600',
     color: '#C8B8D4',
-    accentColor: '#7A2E73',
+    accentColor: '#6B4C9A',
     sectorSlug: 'arts-de-scene',
-    sectorColor: '#2D5F99',
+    sectorColor: '#6B4C9A',
   },
   {
     id: '5',

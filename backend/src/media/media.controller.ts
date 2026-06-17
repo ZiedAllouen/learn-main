@@ -16,6 +16,12 @@ export class MediaController {
     return this.media.findAll(dto);
   }
 
+  @Roles('ADMIN', 'EDITOR')
+  @Get('admin/all')
+  findAllAdmin(@Query() dto: ListMediaDto) {
+    return this.media.findAllAdmin(dto);
+  }
+
   @Public()
   @Get(':slug')
   findOne(@Param('slug') slug: string) {

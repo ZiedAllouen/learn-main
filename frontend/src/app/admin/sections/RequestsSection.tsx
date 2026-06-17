@@ -32,6 +32,7 @@ function objet(r: RequestRecord): string {
   return (
     r.program?.title ??
     r.space?.name ??
+    (typeof r.details?.contactSubjectLabel === 'string' ? (r.details.contactSubjectLabel as string) : undefined) ??
     (typeof r.details?.eventTitle === 'string' ? (r.details.eventTitle as string) : undefined) ??
     '—'
   )
@@ -113,6 +114,7 @@ export function RequestsSection() {
               <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal">Type</th>
               <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal">Nom</th>
               <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden md:table-cell">Email</th>
+              <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden lg:table-cell">Téléphone</th>
               <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden lg:table-cell">Objet</th>
               <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden lg:table-cell">Date</th>
               <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal">Statut</th>
@@ -132,6 +134,7 @@ export function RequestsSection() {
                   )}
                 </td>
                 <td className="px-6 py-4 text-bsmk-black/60 hidden md:table-cell">{r.email}</td>
+                <td className="px-6 py-4 text-bsmk-black/60 hidden lg:table-cell">{r.phone ?? '—'}</td>
                 <td className="px-6 py-4 text-bsmk-black/60 hidden lg:table-cell">{objet(r)}</td>
                 <td className="px-6 py-4 text-bsmk-black/40 text-xs hidden lg:table-cell">
                   {new Date(r.createdAt).toLocaleDateString('fr-FR')}

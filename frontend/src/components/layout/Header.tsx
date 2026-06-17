@@ -89,9 +89,9 @@ export function Header() {
   const mobileDiscLabel = 'text-bsmk-sand/40'
   const mobileDiscItem = 'text-bsmk-white/50 hover:text-bsmk-white'
   const mobileOutlineBtn = 'border-white/20 text-white/70 hover:border-white/50 hover:text-white'
-  const desktopNavLink = 'font-ui text-[1rem] font-normal tracking-[0.005em] transition-colors'
-  const desktopActionLink = 'font-ui text-[0.98rem] font-normal tracking-[0.005em] transition-colors'
-  const mobileNavLink = 'font-ui text-[1.02rem] font-normal tracking-[0.005em] transition-colors'
+  const desktopNavLink = 'text-xs tracking-widest uppercase transition-colors'
+  const desktopActionLink = 'text-xs tracking-widest uppercase transition-colors'
+  const mobileNavLink = 'text-xs tracking-widest uppercase transition-colors'
 
   return (
     <motion.header
@@ -235,7 +235,7 @@ export function Header() {
             )}
             <Link
               href="/participer"
-              className="font-ui bg-bsmk-terracotta text-white text-[0.98rem] font-normal px-5 py-2.5 hover:bg-bsmk-terracotta/85 transition-colors tracking-[0.005em] rounded-lg"
+              className={`${desktopActionLink} ${actionText}`}
             >
               Participer
             </Link>
@@ -341,14 +341,14 @@ export function Header() {
               ) : (
                 <Link
                   href="/login"
-                  className={`font-ui mt-2 block border text-base font-normal px-5 py-3.5 text-center tracking-[0.005em] transition-colors rounded-lg ${mobileOutlineBtn}`}
+                  className={`mt-2 block ${mobileNavLink} ${navText} py-3.5 border-b ${mobileItemBorder}`}
                 >
                   Connexion
                 </Link>
               )}
               <Link
                 href="/participer"
-                className="font-ui mt-2 block bg-bsmk-terracotta text-white text-base font-normal px-5 py-3.5 text-center tracking-[0.005em] hover:bg-bsmk-terracotta/85 transition-colors rounded-lg"
+                className={`mt-2 block ${mobileNavLink} ${navText} py-3.5 border-b ${mobileItemBorder}`}
               >
                 Participer au BSMK
               </Link>

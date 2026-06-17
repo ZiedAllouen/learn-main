@@ -49,8 +49,8 @@ export default function SiteError({ error, reset }: ErrorProps) {
           <FadeUp delay={0.45}>
             <p className="text-bsmk-black/40 text-xs">
               Si le problème persiste, contactez-nous à{' '}
-              <a href="mailto:contact@bsmk.tn" className="text-page-accent hover:underline">
-                contact@bsmk.tn
+              <a href="mailto:urban.whyz@gmail.com" className="text-page-accent hover:underline">
+                urban.whyz@gmail.com
               </a>
             </p>
           </FadeUp>

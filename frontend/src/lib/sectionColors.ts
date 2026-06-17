@@ -14,6 +14,7 @@ export type SectionColor = {
 
 // Route prefix -> accent. Order doesn't matter; longest matching prefix wins.
 export const SECTION_COLORS: Record<string, SectionColor> = {
+  '/': { base: '#2F66FC', hover: '#1E96FF' },
   '/bsmk': { base: '#2D5F99', hover: '#4A7CB8' },
   '/disciplines': { base: '#2D5F99', hover: '#4A7CB8' },
   '/programmes': { base: '#C0392B', hover: '#D9594B' },
@@ -28,7 +29,7 @@ export const SECTION_COLORS: Record<string, SectionColor> = {
 }
 
 // Brand olive — fallback accent for pages outside the section map
-// (home, login, register, …).
+// (login, register, etc.).
 export const DEFAULT_SECTION_COLOR: SectionColor = {
   base: '#6E7F63',
   hover: '#87987B',

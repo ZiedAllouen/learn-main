@@ -7,6 +7,7 @@ import { getAuthUser, getAccessToken, logout } from '@/lib/auth'
 import { RequestsSection } from './sections/RequestsSection'
 import { ContentSection, RESOURCES } from './sections/ContentSection'
 import { ArtistsSection } from './sections/ArtistsSection'
+import { MediaSection } from './sections/MediaSection'
 import { ConfirmModal } from './sections/ConfirmModal'
 import { useToast, ToastView } from './sections/Toast'
 
@@ -22,6 +23,7 @@ interface User {
   role: string
   firstName: string | null
   lastName: string | null
+  phone: string | null
   createdAt: string
 }
 
@@ -33,10 +35,10 @@ interface PaginatedUsers {
 }
 
 const ROLE_COLORS: Record<string, string> = {
-  ADMIN: '#C0392B',
-  EDITOR: '#2D5F99',
-  ARTIST: '#7A2E73',
-  USER: '#5C8A3A',
+  ADMIN: '#2F66FC',
+  EDITOR: '#1E96FF',
+  ARTIST: '#00E00E',
+  USER: '#2F66FC',
 }
 
 const ROLE_LABELS: Record<string, string> = {
@@ -112,7 +114,7 @@ export function AdminDashboard() {
     }
     return r.ok ? r.json() : null
   }
-  const [section, setSection] = useState<'users' | 'requests' | 'articles' | 'events' | 'programmes' | 'spaces' | 'artists'>('users')
+  const [section, setSection] = useState<'users' | 'requests' | 'articles' | 'events' | 'programmes' | 'spaces' | 'artists' | 'media'>('users')
   const [stats, setStats] = useState<UserStats | null>(null)
   const [users, setUsers] = useState<PaginatedUsers | null>(null)
   const [page, setPage] = useState(1)
@@ -246,8 +248,8 @@ export function AdminDashboard() {
       <div className="max-w-7xl mx-auto px-6 py-10">
         {/* Section color bar */}
         <div className="flex gap-1 mb-8">
-          {['#C0392B', '#2D5F99', '#7A2E73', '#5C8A3A', '#147070', '#C99A2E'].map(c => (
-            <div key={c} className="h-0.5 flex-1 rounded-full" style={{ backgroundColor: c }} />
+          {['#2D5F99', '#C0392B', '#7A2E73', '#5C8A3A', '#147070', '#C99A2E', '#8A8F7A'].map((c, i) => (
+            <div key={i} className="h-0.5 flex-1 rounded-full" style={{ backgroundColor: c }} />
           ))}
         </div>
 
@@ -264,6 +266,7 @@ export function AdminDashboard() {
             { key: 'events', label: 'Événements' },
             { key: 'programmes', label: 'Programmes' },
             { key: 'spaces', label: 'Espaces' },
+            { key: 'media', label: 'Médias' },
           ] as const).map(tab => (
             <button
               key={tab.key}
@@ -293,6 +296,8 @@ export function AdminDashboard() {
           <ContentSection config={RESOURCES.programmes} />
         ) : section === 'spaces' ? (
           <ContentSection config={RESOURCES.spaces} />
+        ) : section === 'media' ? (
+          <MediaSection />
         ) : section === 'artists' ? (
           <ArtistsSection />
         ) : (
@@ -312,10 +317,10 @@ export function AdminDashboard() {
         {/* Quick links */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
           {[
-            { label: 'Articles', href: '/magazine', color: '#7A2E73' },
-            { label: 'Événements', href: '/agenda', color: '#C0392B' },
-            { label: 'Programmes', href: '/programmes', color: '#2D5F99' },
-            { label: 'Espaces', href: '/espaces', color: '#5C8A3A' },
+            { label: 'Articles', href: '/magazine', color: '#1E96FF' },
+            { label: 'Événements', href: '/agenda', color: '#2F66FC' },
+            { label: 'Programmes', href: '/programmes', color: '#2F66FC' },
+            { label: 'Espaces', href: '/espaces', color: '#00E00E' },
           ].map(item => (
             <Link
               key={item.label}
@@ -343,6 +348,14 @@ export function AdminDashboard() {
                 />
                 <button type="submit" className="text-xs text-bsmk-black/50 hover:text-bsmk-black transition-colors px-2">→</button>
               </form>
+              {(search || roleFilter) && (
+                <button
+                  onClick={() => { setSearch(''); setSearchInput(''); setRoleFilter(''); setPage(1) }}
+                  className="text-xs text-bsmk-black/40 hover:text-red-500 transition-colors px-2 py-1.5"
+                >
+                  Réinitialiser
+                </button>
+              )}
               {/* Role filter */}
               <select
                 value={roleFilter}
@@ -368,6 +381,7 @@ export function AdminDashboard() {
                 <tr className="border-b border-bsmk-black/5">
                   <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal">Nom</th>
                   <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden md:table-cell">Email</th>
+                  <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden xl:table-cell">Téléphone</th>
                   <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal">Rôle</th>
                   <th className="text-left px-6 py-3 text-xs tracking-widest uppercase text-bsmk-black/40 font-normal hidden lg:table-cell">Inscrit</th>
                   <th className="px-6 py-3" />
@@ -383,6 +397,7 @@ export function AdminDashboard() {
                       <div className="text-xs text-bsmk-black/50 md:hidden mt-0.5">{u.email}</div>
                     </td>
                     <td className="px-6 py-4 text-bsmk-black/60 hidden md:table-cell">{u.email}</td>
+                    <td className="px-6 py-4 text-bsmk-black/60 hidden xl:table-cell">{u.phone || '—'}</td>
                     <td className="px-6 py-4">
                       <RoleSelect
                         value={u.role}

@@ -57,7 +57,7 @@ export default function LeLieuPage() {
       {/* ── HERO IMAGE ── */}
       <section className="relative h-[70vh] bg-bsmk-black overflow-hidden">
         <Image
-          src="https://picsum.photos/seed/bsmk-lieu/1920/1080"
+          src="/assets/images/techivation.jpg"
           alt="Vue extérieure du BSMK, Tunis"
           fill
           className="object-cover opacity-80"
@@ -207,8 +207,8 @@ export default function LeLieuPage() {
               <div className="bg-bsmk-white p-8 border border-bsmk-sand/40">
                 <p className="text-xs tracking-widest uppercase text-bsmk-black/40 mb-2">Adresse</p>
                 <p className="text-xl font-display font-bold text-bsmk-black mb-1">BSMK — Centre des arts et de la culture</p>
-                <p className="text-bsmk-black/60">12, Rue de la Kasbah</p>
-                <p className="text-bsmk-black/60">1008 Tunis, Tunisie</p>
+                <p className="text-bsmk-black/60">R56J+42J, 36 Av. de La Liberté</p>
+                <p className="text-bsmk-black/60">1002 Tunis, Tunisie</p>
                 <div className="mt-6 pt-6 border-t border-bsmk-sand/40">
                   <Button href="/espaces" variant="primary">
                     Réserver un espace →

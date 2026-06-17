@@ -36,6 +36,33 @@ export class MediaService {
     return { data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
   }
 
+  async findAllAdmin(dto: ListMediaDto): Promise<PaginatedResult<unknown>> {
+    const { page, pageSize, type, discipline, status, featured } = dto;
+    const skip = (page - 1) * pageSize;
+
+    const where = {
+      ...(status && { status }),
+      ...(featured !== undefined && { featured }),
+      ...(type && { type }),
+      ...(discipline && { disciplines: { some: { discipline: { slug: discipline } } } }),
+    };
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.media.findMany({
+        where,
+        skip,
+        take: pageSize,
+        orderBy: [{ createdAt: 'desc' }],
+        include: {
+          disciplines: { include: { discipline: { select: { id: true, slug: true, name: true, color: true } } } },
+        },
+      }),
+      this.prisma.media.count({ where }),
+    ]);
+
+    return { data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+  }
+
   async findOne(slug: string) {
     const media = await this.prisma.media.findUnique({
       where: { slug },

@@ -46,7 +46,7 @@ export default async function EspacePage({ params }: Props) {
     spaceDisciplineSlugs.includes(d.slug),
   )
 
-  const heroImage = space.imageUrls[0] ?? `https://picsum.photos/seed/space-${space.slug}/1200/600`
+  const heroImage = space.imageUrls[0] ?? '/assets/images/techivation.jpg'
   const thumbImages = space.imageUrls.slice(1, 3)
 
   return (

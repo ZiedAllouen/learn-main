@@ -105,7 +105,7 @@ export default async function EventDetailPage({
       <section className="relative h-[60vh] bg-bsmk-black">
         <ScaleIn className="absolute inset-0">
         <Image
-          src={event.coverUrl ?? 'https://picsum.photos/seed/bsmk-event/800/450'}
+          src={event.coverUrl ?? '/assets/images/andrii-olishevskyi.jpg'}
           alt={event.title}
           fill
           className="object-cover opacity-55"
@@ -332,7 +332,7 @@ export default async function EventDetailPage({
                 >
                   <div className="relative aspect-video overflow-hidden">
                     <Image
-                      src={rel.coverUrl ?? 'https://picsum.photos/seed/bsmk-event/800/450'}
+                      src={rel.coverUrl ?? '/assets/images/andrii-olishevskyi.jpg'}
                       alt={rel.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"

@@ -18,8 +18,8 @@ interface Artist {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  DRAFT: '#C99A2E',
-  PUBLISHED: '#5C8A3A',
+  DRAFT: '#1E96FF',
+  PUBLISHED: '#00E00E',
   ARCHIVED: '#999',
 }
 
@@ -137,6 +137,14 @@ export function ArtistsSection() {
             />
             <button type="submit" className="text-xs text-bsmk-black/50 hover:text-bsmk-black transition-colors px-2">→</button>
           </form>
+          {(search || statusFilter) && (
+            <button
+              onClick={() => { setSearch(''); setSearchInput(''); setStatusFilter(''); setPage(1) }}
+              className="text-xs text-bsmk-black/40 hover:text-red-500 transition-colors px-2 py-1.5"
+            >
+              Réinitialiser
+            </button>
+          )}
           <select
             value={statusFilter}
             onChange={e => { setStatusFilter(e.target.value); setPage(1) }}
@@ -205,7 +213,7 @@ export function ArtistsSection() {
                     onClick={() => toggleFeatured(a)}
                     disabled={updatingId === a.id}
                     className="text-xs transition-colors disabled:opacity-40"
-                    style={{ color: a.featured ? '#C0392B' : '#ccc' }}
+                    style={{ color: a.featured ? '#2F66FC' : '#ccc' }}
                   >
                     {a.featured ? '★' : '☆'}
                   </button>

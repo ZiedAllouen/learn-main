@@ -63,22 +63,40 @@ export function Footer() {
               Méditerranée, création, transmission.
             </p>
             <address className="not-italic text-sm text-bsmk-white/45 leading-relaxed">
-              Tunis, Tunisie<br />
-              <a href="mailto:contact@bsmk.tn" className="hover:text-bsmk-white transition-colors">
-                contact@bsmk.tn
+              R56J+42J, 36 Av. de La Liberté<br />
+              Tunis 1002, Tunisie<br />
+              <a href="mailto:urban.whyz@gmail.com" className="hover:text-bsmk-white transition-colors">
+                urban.whyz@gmail.com
               </a>
             </address>
             <div className="flex gap-5 pt-1">
-              {['Instagram', 'Facebook', 'YouTube'].map(social => (
-                <a
-                  key={social}
-                  href="#"
-                  className="text-xs text-bsmk-white/35 hover:text-bsmk-white transition-colors tracking-wide"
-                  aria-label={social}
-                >
-                  {social}
-                </a>
-              ))}
+              <a
+                href="https://www.instagram.com/bsmk.hub?utm_source=qr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-bsmk-white/35 hover:text-bsmk-white transition-colors tracking-wide"
+                aria-label="Instagram"
+              >
+                Instagram
+              </a>
+              <a
+                href="https://www.facebook.com/URBAN.WHYZ/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-bsmk-white/35 hover:text-bsmk-white transition-colors tracking-wide"
+                aria-label="Facebook"
+              >
+                Facebook
+              </a>
+              <a
+                href="https://www.youtube.com/@whyzurban1860/videos"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-bsmk-white/35 hover:text-bsmk-white transition-colors tracking-wide"
+                aria-label="YouTube"
+              >
+                YouTube
+              </a>
             </div>
           </div>
 

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
 import { ScaleIn } from '@/components/ui/Motion'
+import { submitRequest, type RequestType } from '@/lib/api/requests'
 
 const subjectOptions = [
   { value: '', label: 'Choisir un sujet…' },
@@ -18,13 +19,80 @@ const subjectOptions = [
   { value: 'autre', label: 'Autre' },
 ]
 
-export function ContactForm() {
-  const [submitted, setSubmitted] = useState(false)
+const SUBJECT_TO_REQUEST_TYPE: Record<string, RequestType> = {
+  renseignements: 'OPPORTUNITY',
+  reservation: 'BOOKING',
+  programme: 'ENROLLMENT',
+  projet: 'PROJECT',
+  vetrinart: 'ENROLLMENT',
+  soutien: 'PARTNERSHIP',
+  partenariat: 'PARTNERSHIP',
+  presse: 'OPPORTUNITY',
+  autre: 'OPPORTUNITY',
+}
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+interface ContactFormProps {
+  initialSubject?: string
+}
+
+function normalizeSubjectValue(value: string): string {
+  const normalized = value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+
+  if (subjectOptions.some((option) => option.value === normalized)) {
+    return normalized
+  }
+  if (normalized.includes('reservation')) return 'reservation'
+  if (normalized.includes('programme')) return 'programme'
+  if (normalized.includes('projet')) return 'projet'
+  if (normalized.includes('partenariat')) return 'partenariat'
+  if (normalized.includes('soutien') || normalized.includes('mecenat')) return 'soutien'
+  if (normalized.includes('presse')) return 'presse'
+  if (normalized.includes('vetrinart')) return 'vetrinart'
+  if (normalized.includes('renseignement') || normalized.includes('information')) return 'renseignements'
+
+  return ''
+}
+
+export function ContactForm({ initialSubject = '' }: ContactFormProps) {
+  const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [subject, setSubject] = useState(normalizeSubjectValue(initialSubject))
+  const [message, setMessage] = useState('')
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    // In a real project this would call an API route or server action
-    setSubmitted(true)
+    setError('')
+    setSending(true)
+
+    try {
+      const trimmedSubject = subject.trim()
+      const selectedSubject = subjectOptions.find((opt) => opt.value === trimmedSubject)
+
+      await submitRequest({
+        type: SUBJECT_TO_REQUEST_TYPE[trimmedSubject] ?? 'OPPORTUNITY',
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim() || undefined,
+        message: message.trim(),
+        details: {
+          contactSubjectValue: trimmedSubject,
+          contactSubjectLabel: selectedSubject?.label ?? trimmedSubject,
+        },
+      })
+      setSubmitted(true)
+    } catch {
+      setError('Une erreur est survenue. Réessayez.')
+    } finally {
+      setSending(false)
+    }
   }
 
   if (submitted) {
@@ -59,6 +127,8 @@ export function ContactForm() {
           required
           autoComplete="name"
           aria-required="true"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           placeholder="Votre nom et prénom"
           className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black placeholder:text-bsmk-black/30 focus:outline-none focus:border-page-accent transition-colors text-sm rounded-md"
         />
@@ -79,7 +149,31 @@ export function ContactForm() {
           required
           autoComplete="email"
           aria-required="true"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="votre@email.com"
+          className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black placeholder:text-bsmk-black/30 focus:outline-none focus:border-page-accent transition-colors text-sm rounded-md"
+        />
+      </div>
+
+      {/* Téléphone */}
+      <div>
+        <label
+          htmlFor="phone"
+          className="block text-xs tracking-widest uppercase text-bsmk-black/60 mb-2"
+        >
+          Téléphone <span aria-hidden="true" className="text-page-accent">*</span>
+        </label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          required
+          autoComplete="tel"
+          aria-required="true"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="+216 XX XXX XXX"
           className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black placeholder:text-bsmk-black/30 focus:outline-none focus:border-page-accent transition-colors text-sm rounded-md"
         />
       </div>
@@ -97,6 +191,8 @@ export function ContactForm() {
           name="subject"
           required
           aria-required="true"
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
           className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black focus:outline-none focus:border-page-accent transition-colors text-sm appearance-none rounded-md"
         >
           {subjectOptions.map((opt) => (
@@ -121,6 +217,8 @@ export function ContactForm() {
           required
           aria-required="true"
           rows={6}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           placeholder="Décrivez votre demande…"
           className="w-full border border-bsmk-sand/60 bg-bsmk-white px-4 py-3 text-bsmk-black placeholder:text-bsmk-black/30 focus:outline-none focus:border-page-accent transition-colors text-sm resize-y rounded-md"
         />
@@ -130,9 +228,11 @@ export function ContactForm() {
         Les champs marqués <span className="text-page-accent">*</span> sont obligatoires.
       </p>
 
+      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+
       <motion.div whileTap={{ scale: 0.97 }} className="inline-block w-full sm:w-auto">
-        <Button type="submit" variant="primary" size="lg" className="w-full sm:w-auto">
-          Envoyer le message
+        <Button type="submit" variant="primary" size="lg" className="w-full sm:w-auto" disabled={sending}>
+          {sending ? 'Envoi…' : 'Envoyer le message'}
         </Button>
       </motion.div>
     </form>

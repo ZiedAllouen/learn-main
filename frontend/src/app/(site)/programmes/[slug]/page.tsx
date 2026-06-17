@@ -86,7 +86,7 @@ export default async function ProgramDetailPage({
       <section className="relative h-[60vh] bg-bsmk-black">
         <ScaleIn className="absolute inset-0">
         <Image
-          src={program.coverUrl ?? `https://picsum.photos/seed/prog-${program.slug}/1200/600`}
+          src={program.coverUrl ?? '/assets/images/caught-in-joy.jpg'}
           alt={program.title}
           fill
           className="object-cover opacity-60"

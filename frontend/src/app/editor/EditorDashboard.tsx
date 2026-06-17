@@ -75,7 +75,7 @@ export function EditorDashboard() {
       <div className="max-w-7xl mx-auto px-6 py-10">
         {/* Section color bar */}
         <div className="flex gap-1 mb-8">
-          {['#C0392B', '#2D5F99', '#7A2E73', '#5C8A3A', '#147070', '#C99A2E'].map(c => (
+          {['#2F66FC', '#1E96FF', '#00E00E', '#2F66FC', '#1E96FF', '#00E00E'].map(c => (
             <div key={c} className="h-0.5 flex-1 rounded-full" style={{ backgroundColor: c }} />
           ))}
         </div>

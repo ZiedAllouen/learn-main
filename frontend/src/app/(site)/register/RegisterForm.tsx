@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 
 export function RegisterForm() {
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', confirm: '' })
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirm: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -32,6 +32,7 @@ export function RegisterForm() {
           firstName: form.firstName,
           lastName: form.lastName,
           email: form.email,
+          phone: form.phone.trim() || undefined,
           password: form.password,
         }),
       })
@@ -104,6 +105,22 @@ export function RegisterForm() {
           required
           autoComplete="email"
           placeholder="vous@exemple.tn"
+          className={inputClass}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label htmlFor="phone" className="text-xs tracking-widest uppercase text-bsmk-black/50 font-sans">
+          Téléphone
+        </label>
+        <input
+          id="phone"
+          type="tel"
+          value={form.phone}
+          onChange={set('phone')}
+          required
+          autoComplete="tel"
+          placeholder="+216 XX XXX XXX"
           className={inputClass}
         />
       </div>

@@ -26,7 +26,7 @@ export const programs: Program[] = [
 La formation est dispensée par des professionnels actifs de la scène musicale tunisienne et internationale. Elle alterne ateliers techniques, sessions en studio et critiques de productions.
 
 À l'issue de la formation, chaque participant produit un EP ou un projet personnel finalisé, présenté lors d'une écoute publique au BSMK.`,
-    coverUrl: 'https://picsum.photos/seed/prog-son/800/450',
+    coverUrl: '/assets/images/caught-in-joy.jpg',
     programType: 'Formation',
     programTypeSlug: 'formation',
     modality: 'IN_PERSON',
@@ -46,7 +46,7 @@ La formation est dispensée par des professionnels actifs de la scène musicale 
 Le cours du mercredi soir est orienté pratique et improvisation. Le samedi matin est plus technique, avec un travail approfondi sur la composition et l'interprétation.
 
 Ces ateliers sont également un espace de rencontre et de création informelle : des collaborations entre participants ont régulièrement débouché sur des projets présentés lors de nos événements.`,
-    coverUrl: 'https://picsum.photos/seed/prog-danse/800/450',
+    coverUrl: '/assets/images/morgan-petroski.jpg',
     programType: 'Atelier',
     programTypeSlug: 'workshop',
     modality: 'IN_PERSON',
@@ -66,7 +66,7 @@ Ces ateliers sont également un espace de rencontre et de création informelle :
 La résidence se termine par une restitution publique : exposition, performance, projection ou concert selon les disciplines. Ces restitutions sont ouvertes au public et donnent souvent naissance à des projets plus aboutis présentés dans d'autres lieux.
 
 Les candidatures sont examinées par un comité artistique. Nous recherchons des projets qui engagent la question méditerranéenne — non comme décor, mais comme sujet de recherche.`,
-    coverUrl: 'https://picsum.photos/seed/prog-residence/800/450',
+    coverUrl: '/assets/images/andrii-olishevskyi.jpg',
     programType: 'Résidence',
     programTypeSlug: 'residency',
     modality: 'IN_PERSON',
@@ -86,7 +86,7 @@ Les candidatures sont examinées par un comité artistique. Nous recherchons des
 Chaque participant repart avec un court-métrage documentaire de 5 à 10 minutes, réalisé durant la semaine. Les meilleurs projets sont présentés lors d'une projection publique et peuvent être soumis à des festivals jeunesse.
 
 Le stage est encadré par deux cinéastes professionnels et limite à 10 participants pour garantir un accompagnement individuel de qualité.`,
-    coverUrl: 'https://picsum.photos/seed/prog-cinema/800/450',
+    coverUrl: '/assets/images/dakota-lim.jpg',
     programType: 'Stage',
     programTypeSlug: 'workshop',
     modality: 'IN_PERSON',
@@ -106,7 +106,7 @@ Le stage est encadré par deux cinéastes professionnels et limite à 10 partici
 Animée par une designer graphique invitée, la masterclass alterne apports théoriques, études de cas et exercices pratiques. Les participants travaillent sur leur propre cas ou sur un cas fictif.
 
 Les thèmes abordés : typographie et mise en page, couleur et émotion, systèmes graphiques, identité numérique et print, cohérence cross-platform.`,
-    coverUrl: 'https://picsum.photos/seed/prog-design/800/450',
+    coverUrl: '/assets/images/minh.jpg',
     programType: 'Masterclass',
     programTypeSlug: 'workshop',
     modality: 'IN_PERSON',
@@ -126,7 +126,7 @@ Les thèmes abordés : typographie et mise en page, couleur et émotion, systèm
 Les participants bénéficient d'un accès prioritaire aux espaces du BSMK, d'un suivi individualisé par un mentor artiste, d'une aide à la production pour un projet par an, et d'une intégration dans les réseaux nationaux et méditerranéens du BSMK.
 
 Le programme se termine par une exposition collective ou une soirée de performance ouverte au public et aux professionnels.`,
-    coverUrl: 'https://picsum.photos/seed/prog-jeunes/800/450',
+    coverUrl: '/assets/images/rainier-ridao.jpg',
     programType: 'Mentorat',
     programTypeSlug: 'mentoring',
     modality: 'IN_PERSON',
@@ -144,7 +144,7 @@ Le programme se termine par une exposition collective ou une soirée de performa
     longDescription: `Le Kids Lab initie les enfants à la création par la matière : carton, textile, objets récupérés, peinture, collage et petites constructions. L'objectif est de développer l'imagination, la motricité, l'attention écologique et la joie de fabriquer ensemble.
 
 Chaque cycle se termine par une mini-restitution ouverte aux familles. Les enfants repartent avec leurs créations et une première compréhension de la logique circulaire portée par le BSMK.`,
-    coverUrl: 'https://picsum.photos/seed/prog-kids-lab/800/450',
+    coverUrl: '/assets/images/vitaly-gariev.jpg',
     programType: 'Atelier',
     programTypeSlug: 'workshop',
     modality: 'IN_PERSON',
@@ -162,7 +162,7 @@ Chaque cycle se termine par une mini-restitution ouverte aux familles. Les enfan
     longDescription: `Ce programme combine entraînement physique, mouvement, danse urbaine, présence scénique et culture collective. Il s'adresse aux adolescents et jeunes qui veulent pratiquer régulièrement, rejoindre une communauté et préparer des restitutions publiques.
 
 Les sessions alternent travail corporel, ateliers avec artistes invités, préparation de battles, initiation à la scène et discussion sur les cultures urbaines à Tunis et en Méditerranée.`,
-    coverUrl: 'https://picsum.photos/seed/prog-urban-training/800/450',
+    coverUrl: '/assets/images/gift-habeshaw.jpg',
     programType: 'Entraînement',
     programTypeSlug: 'training',
     modality: 'IN_PERSON',

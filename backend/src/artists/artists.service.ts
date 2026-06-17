@@ -78,7 +78,7 @@ export class ArtistsService {
   }
 
   async findAllAdmin(dto: ListArtistsDto): Promise<PaginatedResult<unknown>> {
-    const { page, pageSize, discipline, sector, city, status, featured } = dto;
+    const { page, pageSize, search, discipline, sector, city, status, featured } = dto;
     const skip = (page - 1) * pageSize;
 
     const disciplineWhere = discipline
@@ -94,6 +94,13 @@ export class ArtistsService {
       ...(featured !== undefined && { featured }),
       ...(city && { city }),
       ...(disciplineWhere && { disciplines: disciplineWhere }),
+      ...(search && {
+        OR: [
+          { name: { contains: search, mode: 'insensitive' as const } },
+          { email: { contains: search, mode: 'insensitive' as const } },
+          { city: { contains: search, mode: 'insensitive' as const } },
+        ],
+      }),
     };
 
     const [data, total] = await this.prisma.$transaction([

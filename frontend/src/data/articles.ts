@@ -29,9 +29,9 @@ Au BSMK, cette conviction est fondatrice. Nous croyons que l'art méditerranéen
 Les résidences que nous accueillons chaque année réunissent des artistes de Tunis, Marseille, Beyrouth, Barcelone, Naples. Ils partagent un espace, des repas, des débats. Ils fabriquent ensemble des œuvres qui n'auraient pas pu naître ailleurs.
 
 Cette dynamique, nous voulons la rendre visible et accessible. C'est le sens du BSMK : être un passage, une membrane, un lieu où la Méditerranée se pense et se crée.`,
-    coverUrl: 'https://picsum.photos/seed/med-art/1200/600',
+    coverUrl: '/assets/images/andrii-olishevskyi.jpg',
     authorName: 'Nadia Bouzid',
-    authorPhotoUrl: 'https://picsum.photos/seed/nadia/100/100',
+    authorPhotoUrl: '/assets/images/morgan-petroski.jpg',
     category: 'Réflexions',
     categorySlug: 'reflexions',
     disciplineSlugs: ['arts-visuels', 'danse-performance'],
@@ -52,9 +52,9 @@ Cette dynamique, nous voulons la rendre visible et accessible. C'est le sens du 
 Son nouveau projet l'a ramenée dans le Sahel tunisien, région dont elle est originaire. Pendant deux ans, elle a collecté les témoignages de femmes âgées — mères, grands-mères, arrière-grands-mères — sur leur rapport au temps, au corps, à la transmission.
 
 "Ce qui m'intéresse, c'est ce que la mémoire fait au présent. Ces femmes ne parlent pas du passé pour nostalgier. Elles parlent du passé pour comprendre maintenant."`,
-    coverUrl: 'https://picsum.photos/seed/selma/1200/600',
+    coverUrl: '/assets/images/dakota-lim.jpg',
     authorName: 'Ines Chaabane',
-    authorPhotoUrl: 'https://picsum.photos/seed/ines/100/100',
+    authorPhotoUrl: '/assets/images/dakota-lim.jpg',
     category: 'Portrait',
     categorySlug: 'portrait',
     disciplineSlugs: ['cinema-audiovisuel'],
@@ -73,9 +73,9 @@ Son nouveau projet l'a ramenée dans le Sahel tunisien, région dont elle est or
 Le phénomène n'est pas uniquement quantitatif. Ces nouveaux espaces ont inventé de nouvelles formes d'organisation : gouvernance collective, résidences courtes, programmation pluridisciplinaire, ancrage territorial fort. Ils ont créé un écosystème qui n'existait pas.
 
 Le BSMK fait partie de cette nouvelle génération. Mais comme ses pairs, il doit faire face à des défis communs : modèles économiques précaires, dépendance aux subventions, turn-over des équipes. La question de la pérennité reste ouverte.`,
-    coverUrl: 'https://picsum.photos/seed/tunis-espaces/1200/600',
+    coverUrl: '/assets/images/andy-bodemer.jpg',
     authorName: 'Ines Chaabane',
-    authorPhotoUrl: 'https://picsum.photos/seed/ines/100/100',
+    authorPhotoUrl: '/assets/images/dakota-lim.jpg',
     category: 'Reportage',
     categorySlug: 'reportage',
     disciplineSlugs: ['arts-visuels'],
@@ -94,9 +94,9 @@ Le BSMK fait partie de cette nouvelle génération. Mais comme ses pairs, il doi
 Les chorégraphes contemporains maghrébins héritent de cette densité. Quand ils créent, ils négocient avec des formes qui ont des siècles — ou des millénaires — d'histoire. La ahidous berbère. Le guedra saharien. Le stambali tunisien. Ces formes ne sont pas des folklores à réactiver : elles sont des savoirs vivants.
 
 Comment les intégrer dans une écriture chorégraphique contemporaine sans les trahir ? Comment les transformer sans les vider de sens ? C'est la question que se posent les artistes de notre résidence de danse ce printemps.`,
-    coverUrl: 'https://picsum.photos/seed/danse-maghreb/1200/600',
+    coverUrl: '/assets/images/jose-garcia.jpg',
     authorName: 'Karim Mansouri',
-    authorPhotoUrl: 'https://picsum.photos/seed/karim/100/100',
+    authorPhotoUrl: '/assets/images/happy-face.jpg',
     category: 'Essai',
     categorySlug: 'essai',
     disciplineSlugs: ['danse-performance'],
@@ -115,9 +115,9 @@ Comment les intégrer dans une écriture chorégraphique contemporaine sans les 
 Le premier projet est né d'une résidence de deux semaines. Le musicien électronique Adel Mejri et la réalisatrice Sonia Gamha se sont rencontrés autour d'un thème commun : les mémoires sonores de Médina. L'un collectait des sons, l'autre filmait les textures visuelles. Le résultat : un film-concert de 45 minutes présenté en avant-première dans notre grande salle.
 
 Le deuxième projet est plus intime. Une compositrice et un photographe ont exploré ensemble la représentation du deuil dans la culture tunisienne contemporaine. Leur œuvre, "Quarante jours", est une série de vingt photographies accompagnées d'une partition pour piano préparée.`,
-    coverUrl: 'https://picsum.photos/seed/son-image/1200/600',
+    coverUrl: '/assets/images/jakob-owens.jpg',
     authorName: 'Ines Chaabane',
-    authorPhotoUrl: 'https://picsum.photos/seed/ines/100/100',
+    authorPhotoUrl: '/assets/images/dakota-lim.jpg',
     category: 'Reportage',
     categorySlug: 'reportage',
     disciplineSlugs: ['musique-production', 'cinema-audiovisuel'],
@@ -136,9 +136,9 @@ Le deuxième projet est plus intime. Une compositrice et un photographe ont expl
 VetrinArt est né de la conviction que les artistes méritent mieux. Un espace qui ne dicte pas la fréquence des publications, qui n'impose pas de formats, qui ne monétise pas l'attention. Un espace qui aide à construire une présence professionnelle cohérente avec une démarche artistique.
 
 En développement depuis deux ans, VetrinArt compte aujourd'hui plus de 150 artistes inscrits. Sa logique est simple : un profil, un portfolio, un réseau. Rien de plus. Rien de moins.`,
-    coverUrl: 'https://picsum.photos/seed/vetrinart/1200/600',
+    coverUrl: '/assets/images/happy-face.jpg',
     authorName: 'Sana Trabelsi',
-    authorPhotoUrl: 'https://picsum.photos/seed/sana/100/100',
+    authorPhotoUrl: '/assets/images/sable-flow.jpg',
     category: 'Pratique',
     categorySlug: 'pratique',
     disciplineSlugs: ['arts-numeriques'],
@@ -157,9 +157,9 @@ En développement depuis deux ans, VetrinArt compte aujourd'hui plus de 150 arti
 La salle de répétition théâtre du BSMK devient leur maison. Ils y passent dix heures par jour, parfois plus. Les premières journées sont désordonnées, comme toujours. On improvise, on jette, on recommence. Le metteur en scène, Mondher Slim, dit que le premier tiers d'une résidence sert à désapprendre.
 
 Semaine 2. Le travail prend forme. Une structure dramaturgique émerge — non pas une narration linéaire, mais une série de tableaux qui se répondent. La danseuse de la compagnie commence à tisser ses improvisations avec le texte des deux comédiens.`,
-    coverUrl: 'https://picsum.photos/seed/residence/1200/600',
+    coverUrl: '/assets/images/hamish-kale.jpg',
     authorName: 'Ines Chaabane',
-    authorPhotoUrl: 'https://picsum.photos/seed/ines/100/100',
+    authorPhotoUrl: '/assets/images/dakota-lim.jpg',
     category: 'Reportage',
     categorySlug: 'reportage',
     disciplineSlugs: ['theatre-arts-vivants'],
@@ -178,9 +178,9 @@ Semaine 2. Le travail prend forme. Une structure dramaturgique émerge — non p
 C'est la question que se posent plusieurs artistes numériques tunisiens, réunis au FabLab du BSMK dans le cadre d'un projet pilote de deux ans. Leur approche : utiliser les technologies numériques non pas comme des outils de reproduction, mais comme des outils d'interprétation.
 
 La céramiste et programmeuse Rima Jebali a développé un algorithme qui génère des variations infinies à partir des motifs de la poterie de Sejnane. L'objet final n'est pas une copie : c'est une conversation entre le passé et le présent.`,
-    coverUrl: 'https://picsum.photos/seed/numerique-patrimoine/1200/600',
+    coverUrl: '/assets/images/swastik-arora.jpg',
     authorName: 'Sana Trabelsi',
-    authorPhotoUrl: 'https://picsum.photos/seed/sana/100/100',
+    authorPhotoUrl: '/assets/images/sable-flow.jpg',
     category: 'Dossier',
     categorySlug: 'dossier',
     disciplineSlugs: ['arts-numeriques', 'artisanat-design'],

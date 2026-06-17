@@ -13,19 +13,13 @@ const contactDetails = [
   {
     label: 'Adresse',
     icon: '◷',
-    lines: ['12, Rue de la Kasbah', '1008 Tunis, Tunisie'],
+    lines: ['R56J+42J, 36 Av. de La Liberté', '1002 Tunis, Tunisie'],
   },
   {
     label: 'Email',
     icon: '◻',
-    lines: ['contact@bsmk.tn'],
-    link: 'mailto:contact@bsmk.tn',
-  },
-  {
-    label: 'Téléphone',
-    icon: '✦',
-    lines: ['+216 71 234 567'],
-    link: 'tel:+21671234567',
+    lines: ['urban.whyz@gmail.com'],
+    link: 'mailto:urban.whyz@gmail.com',
   },
   {
     label: 'Horaires d\'accueil',
@@ -34,14 +28,15 @@ const contactDetails = [
   },
 ]
 
-const departments = [
-  { name: 'Programmes & formations', email: 'programmes@bsmk.tn' },
-  { name: 'Réservation d\'espaces', email: 'espaces@bsmk.tn' },
-  { name: 'Presse & communication', email: 'presse@bsmk.tn' },
-  { name: 'Partenariats', email: 'partenariats@bsmk.tn' },
-]
+interface ContactPageProps {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}
 
-export default function ContactPage() {
+export default async function ContactPage({ searchParams }: ContactPageProps) {
+  const params = (await searchParams) ?? {}
+  const sujetParam = params.sujet
+  const initialSubject = Array.isArray(sujetParam) ? sujetParam[0] ?? '' : sujetParam ?? ''
+
   return (
     <main>
       {/* ── HERO ── */}
@@ -112,26 +107,6 @@ export default function ContactPage() {
                 </StaggerContainer>
               </div>
 
-              {/* Departments */}
-              <div className="border-t border-bsmk-sand/40 pt-8">
-                <p className="text-page-accent text-xs tracking-widest uppercase mb-6">
-                  Contacts directs
-                </p>
-                <div className="space-y-4">
-                  {departments.map((dept) => (
-                    <div key={dept.name}>
-                      <p className="text-xs text-bsmk-black/40 mb-0.5">{dept.name}</p>
-                      <a
-                        href={`mailto:${dept.email}`}
-                        className="text-sm text-bsmk-black hover:text-page-accent transition-colors"
-                      >
-                        {dept.email}
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               {/* Social */}
               <div className="border-t border-bsmk-sand/40 pt-8">
                 <p className="text-page-accent text-xs tracking-widest uppercase mb-4">
@@ -139,7 +114,7 @@ export default function ContactPage() {
                 </p>
                 <div className="flex gap-4">
                   <a
-                    href="https://instagram.com/bsmk.tn"
+                    href="https://www.instagram.com/bsmk.hub?utm_source=qr"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs tracking-widest uppercase text-bsmk-black/40 hover:text-page-accent transition-colors"
@@ -147,7 +122,7 @@ export default function ContactPage() {
                     Instagram
                   </a>
                   <a
-                    href="https://facebook.com/bsmk.tn"
+                    href="https://www.facebook.com/URBAN.WHYZ/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs tracking-widest uppercase text-bsmk-black/40 hover:text-bsmk-blue transition-colors"
@@ -155,12 +130,12 @@ export default function ContactPage() {
                     Facebook
                   </a>
                   <a
-                    href="https://linkedin.com/company/bsmk"
+                    href="https://www.youtube.com/@whyzurban1860/videos"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs tracking-widest uppercase text-bsmk-black/40 hover:text-bsmk-blue transition-colors"
                   >
-                    LinkedIn
+                    YouTube
                   </a>
                 </div>
               </div>
@@ -174,7 +149,7 @@ export default function ContactPage() {
               <h2 className="text-3xl font-display font-bold text-bsmk-black mb-8">
                 Envoyez-nous un message
               </h2>
-              <ContactForm />
+              <ContactForm initialSubject={initialSubject} />
             </FadeUp>
           </div>
         </Container>
@@ -185,9 +160,9 @@ export default function ContactPage() {
         <Container>
           <div className="flex flex-col items-center text-center mb-6">
             <p className="text-bsmk-black/40 text-xs tracking-widest uppercase mb-2">Localisation</p>
-            <p className="font-display text-bsmk-black/60 text-lg">12, Rue de la Kasbah — Tunis</p>
+            <p className="font-display text-bsmk-black/60 text-lg">36 Av. de La Liberté — Tunis 1002</p>
             <a
-              href="https://www.google.com/maps/search/?api=1&query=36.798,10.168"
+              href="https://www.google.com/maps/search/?api=1&query=36.806389,10.181667"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs tracking-widest uppercase text-page-accent hover:underline mt-3 inline-block"

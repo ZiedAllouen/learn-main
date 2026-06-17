@@ -20,21 +20,21 @@ const designPrinciples = [
     title: 'Lumière méditerranéenne',
     description:
       'La lumière est le premier matériau de l\'architecture du BSMK. Chaque espace a été orienté et dimensionné pour capter la lumière naturelle tunisienne — vive, changeante, dorée. Les grandes baies vitrées de l\'atelier arts visuels au troisième étage inondent l\'espace d\'une clarté douce, sans éblouissement. Les puits de lumière zénithale traversent les couloirs de circulation, transformant les espaces de passage en espaces de contemplation.',
-    imageUrl: 'https://picsum.photos/seed/archi-lumiere/800/600',
+    imageUrl: '/assets/images/andy-bodemer.jpg',
     imageAlt: 'Jeu de lumière dans les espaces du BSMK',
   },
   {
     title: 'Espaces ouverts, frontières fluides',
     description:
       'L\'architecture du BSMK refuse les cloisonnements inutiles. Les espaces ont été conçus pour être poreux les uns aux autres — non dans le sens d\'une grande salle indifférenciée, mais dans celui de frontières négociables, d\'espaces qui peuvent s\'ouvrir ou se fermer selon les besoins. Des portes coulissantes en bois permettent de connecter ou d\'isoler les salles. Les couloirs sont dimensionnés pour être des espaces à part entière, où des expositions peuvent prendre place.',
-    imageUrl: 'https://picsum.photos/seed/archi-open/800/600',
+    imageUrl: '/assets/images/sable-flow.jpg',
     imageAlt: 'Espaces ouverts et modulables du BSMK',
   },
   {
     title: 'Modularité au service de l\'art',
     description:
       'Aucun espace du BSMK n\'a une seule configuration figée. La grande salle peut accueillir 300 personnes en concert ou se transformer en espace d\'exposition pour une installation monumentale. La salle de répétition théâtre a des gradins amovibles et un sol modulable. Cette flexibilité n\'est pas un compromis — c\'est une philosophie. L\'architecture doit servir l\'art, pas l\'inverse. Nous refusons les boîtes noires qui imposent leur logique aux artistes.',
-    imageUrl: 'https://picsum.photos/seed/archi-modular/800/600',
+    imageUrl: '/assets/images/techivation.jpg',
     imageAlt: 'Configuration modulable de la grande salle',
   },
 ]
@@ -46,7 +46,7 @@ export default function ArchitecturePage() {
       <section className="relative bg-bsmk-black overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://picsum.photos/seed/bsmk-archi-hero/1920/900"
+            src="/assets/images/andy-bodemer.jpg"
             alt="Vue architecturale du BSMK"
             fill
             className="object-cover opacity-50"
@@ -162,11 +162,18 @@ export default function ArchitecturePage() {
             <p className="text-page-accent text-xs tracking-widest uppercase mb-8">Galerie photographique</p>
           </FadeUp>
           <StaggerContainer className="grid grid-cols-2 lg:grid-cols-3 gap-2">
-            {['archi-detail-1', 'archi-detail-2', 'archi-detail-3', 'archi-detail-4', 'archi-detail-5', 'archi-detail-6'].map((seed) => (
-              <StaggerItem key={seed}>
+            {[
+              '/assets/images/andy-bodemer.jpg',
+              '/assets/images/sable-flow.jpg',
+              '/assets/images/techivation.jpg',
+              '/assets/images/happy-face.jpg',
+              '/assets/images/minh.jpg',
+              '/assets/images/vitaly-gariev.jpg',
+            ].map((src) => (
+              <StaggerItem key={src}>
                 <div className="relative aspect-square overflow-hidden rounded-lg">
                   <Image
-                    src={`https://picsum.photos/seed/${seed}/600/600`}
+                    src={src}
                     alt="Détail architectural du BSMK"
                     fill
                     className="object-cover hover:scale-105 transition-transform duration-500"

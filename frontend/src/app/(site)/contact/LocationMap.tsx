@@ -4,10 +4,10 @@ import { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
-// 12, Rue de la Kasbah — 1008 Tunis (Médina, near Place de la Kasbah)
-const LAT = 36.798
-const LNG = 10.168
-const LABEL = '12, Rue de la Kasbah — Tunis'
+// R56J+42J, 36 Av. de La Liberté — Tunis 1002 (Lafayette)
+const LAT = 36.806389
+const LNG = 10.181667
+const LABEL = '36 Av. de La Liberté — Tunis 1002'
 
 export function LocationMap() {
   const containerRef = useRef<HTMLDivElement>(null)

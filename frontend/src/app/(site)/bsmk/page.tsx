@@ -56,7 +56,7 @@ export default function AboutPage() {
       <ScaleIn>
         <div className="relative h-[50vh] bg-bsmk-black overflow-hidden">
           <Image
-            src="https://picsum.photos/seed/bsmk-about/1920/800"
+            src="/assets/images/samantha.jpg"
             alt="Vue intérieure du BSMK"
             fill
             className="object-cover opacity-70"
