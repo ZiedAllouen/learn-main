@@ -157,6 +157,22 @@ export default async function VetrinArtPage({
     .filter(group => group.artists.length > 0)
     .sort((a, b) => collator.compare(a.discipline.name, b.discipline.name))
 
+  const allWorks = directory
+    .flatMap(artist =>
+      artist.works.map(work => ({
+        id: work.id,
+        title: work.title,
+        description: work.description,
+        imageUrl: work.imageUrls[0] ?? null,
+        type: work.type,
+        year: work.year,
+        artistName: artist.name,
+        artistSlug: artist.slug,
+      })),
+    )
+    .filter(work => work.title)
+    .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
+
   return (
     <main className="bg-bsmk-white min-h-screen">
       <section className="bg-bsmk-black text-bsmk-white py-24 lg:py-36">
@@ -295,6 +311,73 @@ export default async function VetrinArtPage({
                   </div>
                 )
               })}
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {allWorks.length > 0 && (
+        <section className="py-20 lg:py-28 border-b border-bsmk-black/10">
+          <Container>
+            <div className="flex items-baseline justify-between mb-12">
+              <div>
+                <p className="font-sans text-xs tracking-widest uppercase text-page-accent mb-3">
+                  Oeuvres &amp; Produits
+                </p>
+                <h2 className="font-display text-4xl lg:text-5xl text-bsmk-black">
+                  Creations du reseau
+                </h2>
+              </div>
+              <p className="font-sans text-sm text-bsmk-black/40">
+                {allWorks.length} oeuvre{allWorks.length > 1 ? 's' : ''}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+              {allWorks.map((work) => (
+                <Link
+                  key={work.id}
+                  href={`/vetrinart/${work.artistSlug}`}
+                  className="group block"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl mb-3 bg-bsmk-sand/20">
+                    {work.imageUrl ? (
+                      <Image
+                        src={work.imageUrl}
+                        alt={work.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center bg-page-accent/10">
+                        <span className="font-display text-4xl text-page-accent/30">
+                          {work.title.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    {work.type && (
+                      <div className="absolute top-2 left-2">
+                        <span className="font-sans text-[10px] tracking-widest uppercase bg-bsmk-black/80 text-white px-2 py-0.5 rounded-full backdrop-blur-sm">
+                          {formatProductLabel(work.type)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="font-sans text-sm font-medium text-bsmk-black group-hover:text-page-accent transition-colors leading-tight mb-1">
+                    {work.title}
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <p className="font-sans text-xs text-bsmk-black/50">
+                      {work.artistName}
+                    </p>
+                    {work.year && (
+                      <span className="font-sans text-xs text-bsmk-black/30">
+                        · {work.year}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              ))}
             </div>
           </Container>
         </section>

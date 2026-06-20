@@ -24,7 +24,7 @@ const caladea = Caladea({
 
 export const metadata: Metadata = {
   title: {
-    default: 'BSMK - Centre des arts et de la culture',
+    default: 'BSMK - Centre artistique, sportif et écologique hybride multidisciplinaire',
     template: '%s | BSMK',
   },
   description:

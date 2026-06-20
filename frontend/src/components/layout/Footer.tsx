@@ -59,7 +59,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-bsmk-white/45 leading-relaxed">
-              Centre des arts et de la culture.<br />
+              Centre artistique, sportif et écologique hybride<br />
               Méditerranée, création, transmission.
             </p>
             <address className="not-italic text-sm text-bsmk-white/45 leading-relaxed">
@@ -125,7 +125,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 py-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-xs text-bsmk-white/25">
-            © {new Date().getFullYear()} BSMK — Centre des arts et de la culture. Tous droits réservés.
+            © {new Date().getFullYear()} BSMK — Centre artistique, sportif et écologique hybride multidisciplinaire. Tous droits réservés.
           </p>
           <div className="flex gap-6">
             <a href="#" className="text-xs text-bsmk-white/25 hover:text-bsmk-white/60 transition-colors">

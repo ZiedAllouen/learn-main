@@ -36,7 +36,7 @@ import {
 } from '@/components/ui/Motion'
 
 export const metadata = {
-  title: 'BSMK — Centre des arts et de la culture',
+  title: 'BSMK — Centre artistique, sportif et écologique hybride multidisciplinaire',
   description:
     'BSMK est un centre culturel et artistique dédié à la création, la formation et la diffusion des arts en Méditerranée.',
 }
@@ -128,15 +128,17 @@ export default async function HomePage() {
               </p>
             </HeroText>
             <HeroText delay={0.1}>
-              <h1 className="text-[clamp(5rem,15vw,14rem)] font-display font-bold text-bsmk-white leading-none tracking-tight mb-6">
+              <h1 className="text-[clamp(5rem,15vw,14rem)] font-sans font-bold text-bsmk-white leading-none tracking-tight mb-6">
                 BSMK
               </h1>
             </HeroText>
             <HeroText delay={0.25}>
-              <p className="text-[clamp(1.5rem,4vw,3.5rem)] font-display text-bsmk-sand leading-tight mb-12">
-                Centre des arts
+              <p className="text-[clamp(1.5rem,4vw,3.5rem)] text-bsmk-sand leading-tight mb-12">
+                Centre artistique
                 <br />
-                et de la culture
+                sportif et écologique
+                <br />
+                hybride multidisciplinaire
               </p>
             </HeroText>
             <HeroText delay={0.4}>
@@ -581,7 +583,7 @@ export default async function HomePage() {
         <Container>
           <ScaleIn>
             <div className="max-w-2xl mx-auto text-center relative z-10">
-              <ScrollTextReveal text="Rejoignez la communauté BSMK" className="text-4xl lg:text-5xl font-display font-bold text-white mb-6" as="h2" />
+              <ScrollTextReveal text="Rejoignez la communauté BSMK" className="text-4xl lg:text-5xl font-bold text-white mb-6" as="h2" />
               <p className="text-white/80 text-lg mb-10 leading-relaxed">
                 Ateliers, résidences, formations, événements — trouvez votre place dans notre écosystème artistique méditerranéen.
               </p>

@@ -206,7 +206,7 @@ export default function LeLieuPage() {
             <SlideLeft>
               <div className="bg-bsmk-white p-8 border border-bsmk-sand/40">
                 <p className="text-xs tracking-widest uppercase text-bsmk-black/40 mb-2">Adresse</p>
-                <p className="text-xl font-display font-bold text-bsmk-black mb-1">BSMK — Centre des arts et de la culture</p>
+                <p className="text-xl font-display font-bold text-bsmk-black mb-1">BSMK — Centre artistique, sportif et écologique hybride multidisciplinaire</p>
                 <p className="text-bsmk-black/60">R56J+42J, 36 Av. de La Liberté</p>
                 <p className="text-bsmk-black/60">1002 Tunis, Tunisie</p>
                 <div className="mt-6 pt-6 border-t border-bsmk-sand/40">

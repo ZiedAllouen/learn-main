@@ -41,7 +41,7 @@ export default function LoginPage() {
             Tunis · Méditerranée · Création
           </p>
           <h2 className="font-display text-4xl lg:text-5xl text-bsmk-white leading-tight mb-6">
-            Centre des arts<br />et de la culture
+            Centre artistique<br />sportif et écologique<br />hybride multidisciplinaire
           </h2>
           <p className="font-sans text-bsmk-white/50 text-base leading-relaxed max-w-sm">
             Accédez à votre espace personnel pour gérer vos inscriptions, suivre vos programmes et contribuer à la communauté BSMK.
