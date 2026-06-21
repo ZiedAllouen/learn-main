@@ -176,12 +176,6 @@ export function Header() {
 
           {/* Desktop actions */}
           <div className="hidden lg:flex items-center gap-5">
-            <Link
-              href="/contact"
-              className={`${desktopActionLink} ${actionText}`}
-            >
-              Contact
-            </Link>
             {isLoggedIn ? (
               <div className="relative" ref={userMenuRef}>
                 <button
@@ -233,12 +227,6 @@ export function Header() {
                 Connexion
               </Link>
             )}
-            <Link
-              href="/participer"
-              className={`${desktopActionLink} ${actionText}`}
-            >
-              Participer
-            </Link>
           </div>
 
           {/* Mobile hamburger */}

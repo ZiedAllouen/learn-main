@@ -587,18 +587,22 @@ export default async function HomePage() {
               <p className="text-white/80 text-lg mb-10 leading-relaxed">
                 Ateliers, résidences, formations, événements — trouvez votre place dans notre écosystème artistique méditerranéen.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <MagneticHover strength={0.1}>
                   <Button href="/programmes" variant="secondary" size="lg">
                     Voir les programmes
                   </Button>
                 </MagneticHover>
-                <Link
-                  href="/participer"
-                  className="text-white/80 hover:text-white text-sm tracking-wide underline underline-offset-4 transition-colors"
-                >
-                  Ou proposer un projet
-                </Link>
+                <MagneticHover strength={0.1}>
+                  <Button href="/contact" variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-bsmk-black">
+                    Contact
+                  </Button>
+                </MagneticHover>
+                <MagneticHover strength={0.1}>
+                  <Button href="/participer" variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-bsmk-black">
+                    Participer
+                  </Button>
+                </MagneticHover>
               </div>
             </div>
           </ScaleIn>

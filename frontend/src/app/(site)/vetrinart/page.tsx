@@ -332,54 +332,110 @@ export default async function VetrinArtPage({
                 {allWorks.length} oeuvre{allWorks.length > 1 ? 's' : ''}
               </p>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-              {allWorks.map((work) => (
-                <Link
-                  key={work.id}
-                  href={`/vetrinart/${work.artistSlug}`}
-                  className="group block"
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl mb-3 bg-bsmk-sand/20">
-                    {work.imageUrl ? (
-                      <Image
-                        src={work.imageUrl}
-                        alt={work.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-page-accent/10">
-                        <span className="font-display text-4xl text-page-accent/30">
-                          {work.title.charAt(0)}
-                        </span>
-                      </div>
-                    )}
-                    {work.type && (
-                      <div className="absolute top-2 left-2">
-                        <span className="font-sans text-[10px] tracking-widest uppercase bg-bsmk-black/80 text-white px-2 py-0.5 rounded-full backdrop-blur-sm">
-                          {formatProductLabel(work.type)}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <h3 className="font-sans text-sm font-medium text-bsmk-black group-hover:text-page-accent transition-colors leading-tight mb-1">
-                    {work.title}
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    <p className="font-sans text-xs text-bsmk-black/50">
-                      {work.artistName}
-                    </p>
-                    {work.year && (
-                      <span className="font-sans text-xs text-bsmk-black/30">
-                        · {work.year}
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
           </Container>
+
+          {productCategories.map((category) => {
+            const categoryWorks = allWorks.filter((w) => w.type === category)
+            if (categoryWorks.length === 0) return null
+            return (
+              <div key={category} className="mb-16 last:mb-0">
+                <Container>
+                  <div className="flex items-baseline gap-4 mb-8 pb-4 border-b border-bsmk-black/10">
+                    <h3 className="font-display text-2xl lg:text-3xl text-bsmk-black">
+                      {formatProductLabel(category)}
+                    </h3>
+                    <span className="font-sans text-sm text-bsmk-black/40">
+                      {categoryWorks.length} oeuvre{categoryWorks.length > 1 ? 's' : ''}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+                    {categoryWorks.map((work) => (
+                      <Link
+                        key={work.id}
+                        href={`/vetrinart/${work.artistSlug}`}
+                        className="group block"
+                      >
+                        <div className="relative aspect-[4/3] overflow-hidden rounded-xl mb-3 bg-bsmk-sand/20">
+                          {work.imageUrl ? (
+                            <Image
+                              src={work.imageUrl}
+                              alt={work.title}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center bg-page-accent/10">
+                              <span className="font-display text-4xl text-page-accent/30">
+                                {work.title.charAt(0)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <h3 className="font-sans text-sm font-medium text-bsmk-black group-hover:text-page-accent transition-colors leading-tight mb-1">
+                          {work.title}
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          <p className="font-sans text-xs text-bsmk-black/50">
+                            {work.artistName}
+                          </p>
+                          {work.year && (
+                            <span className="font-sans text-xs text-bsmk-black/30">
+                              · {work.year}
+                            </span>
+                          )}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </Container>
+              </div>
+            )
+          })}
+
+          {productCategories.length === 0 && (
+            <Container>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+                {allWorks.map((work) => (
+                  <Link
+                    key={work.id}
+                    href={`/vetrinart/${work.artistSlug}`}
+                    className="group block"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-xl mb-3 bg-bsmk-sand/20">
+                      {work.imageUrl ? (
+                        <Image
+                          src={work.imageUrl}
+                          alt={work.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center bg-page-accent/10">
+                          <span className="font-display text-4xl text-page-accent/30">
+                            {work.title.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="font-sans text-sm font-medium text-bsmk-black group-hover:text-page-accent transition-colors leading-tight mb-1">
+                      {work.title}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      <p className="font-sans text-xs text-bsmk-black/50">
+                        {work.artistName}
+                      </p>
+                      {work.year && (
+                        <span className="font-sans text-xs text-bsmk-black/30">
+                          · {work.year}
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </Container>
+          )}
         </section>
       )}
 
