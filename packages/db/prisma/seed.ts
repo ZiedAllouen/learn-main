@@ -140,6 +140,9 @@ async function main() {
     { slug: 'residency', name: 'Résidence artistique' },
     { slug: 'workshop', name: 'Atelier' },
     { slug: 'mentoring', name: 'Mentorat' },
+    { slug: 'accompaniment', name: 'Accompagnement' },
+    { slug: 'coaching', name: 'Coaching' },
+    { slug: 'consulting', name: 'Consulting' },
   ]) {
     await prisma.programType.upsert({
       where: { slug: p.slug },

@@ -16,7 +16,7 @@ export class ListMediaDto {
   pageSize: number = 20;
 
   @IsOptional()
-  @IsEnum(['VIDEO', 'PHOTO', 'EDITO', 'MAGAZINE', 'PUBLICATION'] satisfies MediaType[])
+  @IsEnum(['VIDEO', 'PHOTO', 'AUDIO', 'EDITO', 'MAGAZINE', 'PUBLICATION'] satisfies MediaType[])
   type?: MediaType;
 
   @IsOptional()

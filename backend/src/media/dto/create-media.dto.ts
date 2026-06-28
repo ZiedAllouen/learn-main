@@ -10,7 +10,7 @@ export class CreateMediaDto {
   @IsString()
   title: string;
 
-  @IsEnum(['VIDEO', 'PHOTO', 'EDITO', 'MAGAZINE', 'PUBLICATION'] satisfies MediaType[])
+  @IsEnum(['VIDEO', 'PHOTO', 'AUDIO', 'EDITO', 'MAGAZINE', 'PUBLICATION'] satisfies MediaType[])
   type: MediaType;
 
   @IsOptional() @IsString() description?: string;

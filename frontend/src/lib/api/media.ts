@@ -1,10 +1,11 @@
 import { apiFetch, type PaginatedResult } from '@/lib/api'
 
-export type MediaType = 'VIDEO' | 'PHOTO' | 'EDITO' | 'MAGAZINE' | 'PUBLICATION'
+export type MediaType = 'VIDEO' | 'PHOTO' | 'AUDIO' | 'EDITO' | 'MAGAZINE' | 'PUBLICATION'
 
 export const mediaTypeLabels: Record<MediaType, string> = {
   VIDEO: 'Vidéo',
   PHOTO: 'Photo',
+  AUDIO: 'Audio',
   EDITO: 'Éditorial',
   MAGAZINE: 'Magazine',
   PUBLICATION: 'Publication',

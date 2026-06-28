@@ -50,6 +50,7 @@ enum EventType {
 enum MediaType {
   VIDEO
   PHOTO
+  AUDIO
   EDITO
   MAGAZINE
   PUBLICATION

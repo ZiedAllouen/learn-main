@@ -18,4 +18,4 @@ export type EventType =
   | 'FESTIVAL'
   | 'OTHER';
 
-export type MediaType = 'VIDEO' | 'PHOTO' | 'EDITO' | 'MAGAZINE' | 'PUBLICATION';
+export type MediaType = 'VIDEO' | 'PHOTO' | 'AUDIO' | 'EDITO' | 'MAGAZINE' | 'PUBLICATION';

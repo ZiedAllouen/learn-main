@@ -80,7 +80,7 @@ export function Footer() {
                 Instagram
               </a>
               <a
-                href="https://www.facebook.com/URBAN.WHYZ/"
+                href="https://www.facebook.com/profile.php?id=61591361213559"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-bsmk-white/35 hover:text-bsmk-white transition-colors tracking-wide"
@@ -89,7 +89,7 @@ export function Footer() {
                 Facebook
               </a>
               <a
-                href="https://www.youtube.com/@whyzurban1860/videos"
+                href="https://www.youtube.com/@BsmkHub"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-bsmk-white/35 hover:text-bsmk-white transition-colors tracking-wide"

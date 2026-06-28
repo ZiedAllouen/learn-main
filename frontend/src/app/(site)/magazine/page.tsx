@@ -16,12 +16,13 @@ export const metadata: Metadata = {
 const mediaTypeColors: Record<MediaType, string> = {
   VIDEO: '#C0392B',
   PHOTO: '#7A2E73',
+  AUDIO: '#27AE60',
   EDITO: '#2D5F99',
   MAGAZINE: '#C99A2E',
   PUBLICATION: '#147070',
 }
 
-const ALL_MEDIA_TYPES: MediaType[] = ['VIDEO', 'PHOTO', 'EDITO', 'MAGAZINE', 'PUBLICATION']
+const ALL_MEDIA_TYPES: MediaType[] = ['VIDEO', 'PHOTO', 'AUDIO', 'EDITO', 'MAGAZINE', 'PUBLICATION']
 
 export default async function MagazinePage({
   searchParams,

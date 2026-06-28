@@ -180,6 +180,9 @@ export const programTypes = [
   { slug: 'workshop', name: 'Atelier / Stage' },
   { slug: 'mentoring', name: 'Mentorat' },
   { slug: 'training', name: 'Entraînement' },
+  { slug: 'accompaniment', name: 'Accompagnement' },
+  { slug: 'coaching', name: 'Coaching' },
+  { slug: 'consulting', name: 'Consulting' },
 ]
 
 export const audienceTypes = [
