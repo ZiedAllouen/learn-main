@@ -38,6 +38,17 @@ export default async function MagazinePage({
       })
     : articles
 
+  // Helper: build /magazine?... preserving the other filter param
+  function magazineHref(overrides: { type?: string; category?: string }) {
+    const params = new URLSearchParams()
+    const nextType = overrides.type !== undefined ? overrides.type : type
+    const nextCat = overrides.category !== undefined ? overrides.category : category
+    if (nextType) params.set('type', nextType)
+    if (nextCat) params.set('category', nextCat)
+    const qs = params.toString()
+    return `/magazine${qs ? `?${qs}` : ''}`
+  }
+
   // Load media items from API (graceful fallback)
   let mediaItems: Awaited<ReturnType<typeof getMedia>>['data'] = []
   let mediaTotal = 0
@@ -77,50 +88,48 @@ export default async function MagazinePage({
       </section>
 
       {/* Media type filter strip (new API types) */}
-      {mediaTotal > 0 && (
-        <section className="border-b border-bsmk-black/10 bg-bsmk-white sticky top-0 z-20 shadow-sm">
-          <Container>
-            <FadeIn className="flex items-center gap-2 overflow-x-auto py-4 scrollbar-hide">
+      <section className="border-b border-bsmk-black/10 bg-bsmk-white sticky top-0 z-20 shadow-sm">
+        <Container>
+          <FadeIn className="flex items-center gap-2 overflow-x-auto py-4 scrollbar-hide">
+            <Link
+              href={magazineHref({ type: '' })}
+              className={`shrink-0 px-4 py-1.5 text-xs font-medium tracking-widest uppercase font-sans transition-colors rounded-full ${
+                !type ? 'bg-bsmk-black text-bsmk-white' : 'text-bsmk-black/60 border border-bsmk-black/20 hover:bg-bsmk-black hover:text-bsmk-white'
+              }`}
+            >
+              Tout
+            </Link>
+            {ALL_MEDIA_TYPES.map((t) => (
               <Link
-                href="/magazine"
-                className={`shrink-0 px-4 py-1.5 text-xs font-medium tracking-widest uppercase font-sans transition-colors rounded-full ${
-                  !type ? 'bg-bsmk-black text-bsmk-white' : 'text-bsmk-black/60 border border-bsmk-black/20 hover:bg-bsmk-black hover:text-bsmk-white'
-                }`}
+                key={t}
+                href={magazineHref({ type: t })}
+                className="shrink-0 px-4 py-1.5 text-xs font-medium tracking-widest uppercase font-sans transition-all rounded-full border hover:text-white"
+                style={{
+                  borderColor: type === t ? mediaTypeColors[t] : `${mediaTypeColors[t]}60`,
+                  color: type === t ? 'white' : mediaTypeColors[t],
+                  backgroundColor: type === t ? mediaTypeColors[t] : 'transparent',
+                }}
               >
-                Tout
+                {mediaTypeLabels[t]}
               </Link>
-              {ALL_MEDIA_TYPES.map((t) => (
-                <Link
-                  key={t}
-                  href={`/magazine?type=${t}`}
-                  className="shrink-0 px-4 py-1.5 text-xs font-medium tracking-widest uppercase font-sans transition-all rounded-full border hover:text-white"
-                  style={{
-                    borderColor: type === t ? mediaTypeColors[t] : `${mediaTypeColors[t]}60`,
-                    color: type === t ? 'white' : mediaTypeColors[t],
-                    backgroundColor: type === t ? mediaTypeColors[t] : 'transparent',
-                  }}
-                >
-                  {mediaTypeLabels[t]}
-                </Link>
-              ))}
-            </FadeIn>
+            ))}
+          </FadeIn>
           </Container>
         </section>
-      )}
 
       {/* Media grid from API */}
-      {mediaItems.length > 0 && (
-        <section className="py-16 bg-bsmk-black">
-          <Container>
-            <div className="flex items-baseline justify-between mb-10">
-              <FadeUp>
-                <h2 className="font-display text-3xl text-bsmk-white">
-                  {type ? mediaTypeLabels[type as MediaType] : 'Tous les médias'}
-                </h2>
-              </FadeUp>
-              <span className="font-sans text-sm text-bsmk-white/40">{mediaTotal} éléments</span>
-            </div>
+      <section className="py-16 bg-bsmk-black">
+        <Container>
+          <div className="flex items-baseline justify-between mb-10">
+            <FadeUp>
+              <h2 className="font-display text-3xl text-bsmk-white">
+                {type ? mediaTypeLabels[type as MediaType] : 'Tous les médias'}
+              </h2>
+            </FadeUp>
+            <span className="font-sans text-sm text-bsmk-white/40">{mediaTotal} éléments</span>
+          </div>
 
+          {mediaItems.length > 0 ? (
             <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {mediaItems.map((item) => (
                 <StaggerItem key={item.id}>
@@ -143,7 +152,7 @@ export default async function MagazinePage({
                           style={{ backgroundColor: `${mediaTypeColors[item.type]}20` }}
                         >
                           <span className="text-4xl opacity-40">
-                            {item.type === 'VIDEO' ? '▶' : item.type === 'PHOTO' ? '◼' : '✦'}
+                            {item.type === 'VIDEO' ? '▶' : item.type === 'AUDIO' ? '♫' : '◼'}
                           </span>
                         </div>
                       )}
@@ -192,9 +201,25 @@ export default async function MagazinePage({
                 </StaggerItem>
               ))}
             </StaggerContainer>
-          </Container>
-        </section>
-      )}
+          ) : (
+            <div className="text-center py-16">
+              <p className="text-bsmk-white/40 text-sm mb-4">
+                {type
+                  ? `Aucun média de type « ${mediaTypeLabels[type as MediaType]} » pour le moment.`
+                  : 'Aucun média pour le moment.'}
+              </p>
+              {type && (
+                <Link
+                  href={magazineHref({ type: '' })}
+                  className="text-xs tracking-widest uppercase text-page-accent hover:underline"
+                >
+                  Voir tous les médias →
+                </Link>
+              )}
+            </div>
+          )}
+        </Container>
+      </section>
 
       {/* Category filter bar for articles */}
       <section className="border-b border-bsmk-black/10 bg-bsmk-white">
@@ -202,7 +227,7 @@ export default async function MagazinePage({
           <FadeIn className="flex items-center gap-1 overflow-x-auto py-4 scrollbar-hide">
             <span className="text-xs tracking-widest uppercase text-bsmk-black/30 mr-3 shrink-0">Articles :</span>
             <Link
-              href="/magazine"
+              href={magazineHref({ category: '' })}
               className={`shrink-0 px-4 py-2 text-xs font-medium tracking-widest uppercase font-sans transition-colors rounded-full ${
                 !category ? 'bg-bsmk-black text-bsmk-white' : 'text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
               }`}
@@ -212,7 +237,7 @@ export default async function MagazinePage({
             {categories.map((cat) => (
               <Link
                 key={cat.slug}
-                href={`/magazine?category=${cat.slug}`}
+                href={magazineHref({ category: cat.slug })}
                 className={`shrink-0 px-4 py-2 text-xs font-medium tracking-widest uppercase font-sans transition-colors rounded-full ${
                   category === cat.slug ? 'bg-bsmk-black text-bsmk-white' : 'text-bsmk-black/60 hover:bg-bsmk-black hover:text-bsmk-white'
                 }`}

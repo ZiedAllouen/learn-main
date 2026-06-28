@@ -10,7 +10,7 @@ interface MediaItem {
   id: string
   slug: string
   title: string
-  type: 'VIDEO' | 'PHOTO'
+  type: 'VIDEO' | 'PHOTO' | 'AUDIO' | 'EDITO' | 'MAGAZINE' | 'PUBLICATION'
   description: string | null
   url: string | null
   thumbnailUrl: string | null
@@ -24,11 +24,19 @@ interface MediaItem {
 const TYPE_COLORS: Record<string, string> = {
   VIDEO: '#E07A5F',
   PHOTO: '#2F66FC',
+  AUDIO: '#27AE60',
+  EDITO: '#2D5F99',
+  MAGAZINE: '#C99A2E',
+  PUBLICATION: '#147070',
 }
 
 const TYPE_LABELS: Record<string, string> = {
   VIDEO: 'Vidéo',
   PHOTO: 'Photo',
+  AUDIO: 'Audio',
+  EDITO: 'Éditorial',
+  MAGAZINE: 'Magazine',
+  PUBLICATION: 'Publication',
 }
 
 const MAX_TOTAL = 10
@@ -41,7 +49,7 @@ export function MediaSection() {
   const [isCreating, setIsCreating] = useState(false)
   const [form, setForm] = useState({
     title: '',
-    type: 'VIDEO' as 'VIDEO' | 'PHOTO',
+    type: 'VIDEO' as MediaItem['type'],
     description: '',
     url: '',
     publishedAt: '',
@@ -68,11 +76,19 @@ export function MediaSection() {
 
   const videoCount = items.filter(i => i.type === 'VIDEO').length
   const photoCount = items.filter(i => i.type === 'PHOTO').length
+  const audioCount = items.filter(i => i.type === 'AUDIO').length
+  const editoCount = items.filter(i => i.type === 'EDITO').length
+  const magazineCount = items.filter(i => i.type === 'MAGAZINE').length
+  const publicationCount = items.filter(i => i.type === 'PUBLICATION').length
   const canAddVideo = videoCount < MAX_PER_TYPE
   const canAddPhoto = photoCount < MAX_PER_TYPE
-  const canAdd = items.length < MAX_TOTAL && (canAddVideo || canAddPhoto)
+  const canAddAudio = audioCount < MAX_PER_TYPE
+  const canAddEdito = editoCount < MAX_PER_TYPE
+  const canAddMagazine = magazineCount < MAX_PER_TYPE
+  const canAddPublication = publicationCount < MAX_PER_TYPE
+  const canAdd = items.length < MAX_TOTAL && (canAddVideo || canAddPhoto || canAddAudio || canAddEdito || canAddMagazine || canAddPublication)
 
-  function openNew(type: 'VIDEO' | 'PHOTO') {
+  function openNew(type: MediaItem['type']) {
     setError(null)
     setEditing(null)
     setIsCreating(true)
@@ -138,7 +154,7 @@ export function MediaSection() {
       closeForm()
       load()
     } catch (e) {
-      const msg = `Échec : ${e instanceof Error ? e.message : 'erreur inconnue'}`
+      const msg = 'Échec de l\'enregistrement. Vérifiez les données et réessayez.'
       setError(msg)
       showToast(msg, 'error')
     } finally {
@@ -170,11 +186,11 @@ export function MediaSection() {
         <div>
           <h2 className="font-medium text-bsmk-black">Médias ({items.length}/{MAX_TOTAL})</h2>
           <p className="text-xs text-bsmk-black/40 mt-1">
-            Vidéos : {videoCount}/{MAX_PER_TYPE} · Photos : {photoCount}/{MAX_PER_TYPE}
+            Vidéos : {videoCount}/{MAX_PER_TYPE} · Photos : {photoCount}/{MAX_PER_TYPE} · Audio : {audioCount}/{MAX_PER_TYPE}
           </p>
         </div>
         {canAdd && !editing && !isCreating && (
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {canAddVideo && (
               <button
                 onClick={() => openNew('VIDEO')}
@@ -191,6 +207,42 @@ export function MediaSection() {
                 style={{ color: TYPE_COLORS.PHOTO }}
               >
                 + Photo
+              </button>
+            )}
+            {canAddAudio && (
+              <button
+                onClick={() => openNew('AUDIO')}
+                className="text-xs tracking-wide uppercase border border-bsmk-black/15 hover:border-bsmk-black/30 rounded-lg px-3 py-1.5 transition-colors"
+                style={{ color: TYPE_COLORS.AUDIO }}
+              >
+                + Audio
+              </button>
+            )}
+            {canAddEdito && (
+              <button
+                onClick={() => openNew('EDITO')}
+                className="text-xs tracking-wide uppercase border border-bsmk-black/15 hover:border-bsmk-black/30 rounded-lg px-3 py-1.5 transition-colors"
+                style={{ color: TYPE_COLORS.EDITO }}
+              >
+                + Éditorial
+              </button>
+            )}
+            {canAddMagazine && (
+              <button
+                onClick={() => openNew('MAGAZINE')}
+                className="text-xs tracking-wide uppercase border border-bsmk-black/15 hover:border-bsmk-black/30 rounded-lg px-3 py-1.5 transition-colors"
+                style={{ color: TYPE_COLORS.MAGAZINE }}
+              >
+                + Magazine
+              </button>
+            )}
+            {canAddPublication && (
+              <button
+                onClick={() => openNew('PUBLICATION')}
+                className="text-xs tracking-wide uppercase border border-bsmk-black/15 hover:border-bsmk-black/30 rounded-lg px-3 py-1.5 transition-colors"
+                style={{ color: TYPE_COLORS.PUBLICATION }}
+              >
+                + Publication
               </button>
             )}
           </div>
@@ -220,19 +272,19 @@ export function MediaSection() {
             <input
               value={form.title}
               onChange={e => setForm(s => ({ ...s, title: e.target.value }))}
-              placeholder={form.type === 'VIDEO' ? 'Ex: Présentation BSMK' : 'Ex: Vernissage 2025'}
+              placeholder={form.type === 'VIDEO' ? 'Ex: Présentation BSMK' : form.type === 'AUDIO' ? 'Ex: Podcast BSMK' : 'Ex: Vernissage 2025'}
               className={inputClass}
             />
           </div>
 
           <div>
             <label className="block text-xs tracking-widest uppercase text-bsmk-black/40 mb-1.5">
-              Lien {form.type === 'VIDEO' ? 'YouTube' : 'image'} *
+              Lien {form.type === 'VIDEO' ? 'YouTube' : form.type === 'AUDIO' ? 'podcast / SoundCloud' : 'image'} *
             </label>
             <input
               value={form.url}
               onChange={e => setForm(s => ({ ...s, url: e.target.value }))}
-              placeholder={form.type === 'VIDEO' ? 'https://youtube.com/watch?v=...' : 'https://example.com/photo.jpg'}
+              placeholder={form.type === 'VIDEO' ? 'https://youtube.com/watch?v=...' : form.type === 'AUDIO' ? 'https://soundcloud.com/...' : 'https://example.com/photo.jpg'}
               className={inputClass}
             />
           </div>
@@ -282,7 +334,7 @@ export function MediaSection() {
         <div className="px-6 py-16 text-center text-bsmk-black/40 text-sm">Chargement…</div>
       ) : !items.length ? (
         <div className="px-6 py-16 text-center text-bsmk-black/40 text-sm">
-          Aucun média. Ajoutez des vidéos ou des photos pour les afficher sur le site.
+          Aucun média. Ajoutez des vidéos, photos, audios ou autres pour les afficher sur le site.
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
@@ -309,7 +361,7 @@ export function MediaSection() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-bsmk-black/20 text-3xl">
-                    {item.type === 'VIDEO' ? '▶' : '◼'}
+                    {item.type === 'VIDEO' ? '▶' : item.type === 'AUDIO' ? '♫' : '◼'}
                   </div>
                 )}
                 {/* Type badge */}
