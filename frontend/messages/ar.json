@@ -1,0 +1,42 @@
+{
+  "Header": {
+    "nav": {
+      "centre": "المركز",
+      "disciplines": "التخصصات",
+      "programmes": "البرامج",
+      "espaces": "الفضاءات",
+      "medias": "الوسائط",
+      "agenda": "الأجندة",
+      "vitrinart": "فيترينارت"
+    },
+    "ariaNavPrincipale": "التنقل الرئيسي",
+    "ariaNavMobile": "التنقل عبر الهاتف",
+    "toutesLesDisciplines": "→ جميع التخصصات",
+    "connexion": "تسجيل الدخول",
+    "deconnexion": "تسجيل الخروج",
+    "monProfil": "ملفي الشخصي",
+    "participer": "انضم إلى BSMK",
+    "ouvrirMenu": "فتح القائمة",
+    "fermerMenu": "إغلاق القائمة",
+    "dashboardAdmin": "الإدارة",
+    "dashboardEditeur": "المحرر",
+    "dashboardArtiste": "مساحتي",
+    "langue": "اللغة"
+  },
+  "Footer": {
+    "sections": {
+      "centre": "المركز",
+      "disciplines": "التخصصات",
+      "explorer": "استكشاف"
+    },
+    "brandTagline": "مركز فني ورياضي وبيئي هجين",
+    "brandTaglineLine2": "المتوسط، الإبداع، النقل.",
+    "copyright": "BSMK — مركز فني ورياضي وبيئي هجين متعدد التخصصات. جميع الحقوق محفوظة.",
+    "mentionsLegales": "الإشعار القانوني",
+    "confidentialite": "الخصوصية"
+  },
+  "HomePage": {
+    "heroTitle": "BSMK",
+    "heroSubtitle": "مركز فني ورياضي وبيئي هجين متعدد التخصصات"
+  }
+}

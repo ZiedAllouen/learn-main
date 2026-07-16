@@ -1,0 +1,42 @@
+{
+  "Header": {
+    "nav": {
+      "centre": "The Center",
+      "disciplines": "Disciplines",
+      "programmes": "Programs",
+      "espaces": "Spaces",
+      "medias": "Media",
+      "agenda": "Agenda",
+      "vitrinart": "Vitrinart"
+    },
+    "ariaNavPrincipale": "Main navigation",
+    "ariaNavMobile": "Mobile navigation",
+    "toutesLesDisciplines": "All disciplines →",
+    "connexion": "Log in",
+    "deconnexion": "Log out",
+    "monProfil": "My profile",
+    "participer": "Join BSMK",
+    "ouvrirMenu": "Open menu",
+    "fermerMenu": "Close menu",
+    "dashboardAdmin": "Admin",
+    "dashboardEditeur": "Editor",
+    "dashboardArtiste": "My space",
+    "langue": "Language"
+  },
+  "Footer": {
+    "sections": {
+      "centre": "The Center",
+      "disciplines": "Disciplines",
+      "explorer": "Explore"
+    },
+    "brandTagline": "Hybrid artistic, sports, and ecological center",
+    "brandTaglineLine2": "Mediterranean, creation, transmission.",
+    "copyright": "BSMK — Multidisciplinary hybrid artistic, sports, and ecological center. All rights reserved.",
+    "mentionsLegales": "Legal notice",
+    "confidentialite": "Privacy"
+  },
+  "HomePage": {
+    "heroTitle": "BSMK",
+    "heroSubtitle": "Multidisciplinary hybrid artistic, sports, and ecological center"
+  }
+}
