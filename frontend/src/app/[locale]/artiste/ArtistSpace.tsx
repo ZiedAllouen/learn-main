@@ -13,8 +13,8 @@ import {
   type DisciplineOption,
   type UpsertArtistPayload,
 } from '@/lib/artist'
-import { useToast, ToastView } from '@/app/admin/sections/Toast'
-import { ConfirmModal } from '@/app/admin/sections/ConfirmModal'
+import { useToast, ToastView } from '@/app/[locale]/admin/sections/Toast'
+import { ConfirmModal } from '@/app/[locale]/admin/sections/ConfirmModal'
 
 /** Roles allowed to access the artist self-service space. */
 const ALLOWED_ROLES = new Set(['ADMIN', 'EDITOR', 'ARTIST'])

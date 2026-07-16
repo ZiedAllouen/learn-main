@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getAuthUser, logout } from '@/lib/auth'
-import { ContentSection, RESOURCES } from '@/app/admin/sections/ContentSection'
-import { RequestsSection } from '@/app/admin/sections/RequestsSection'
+import { ContentSection, RESOURCES } from '@/app/[locale]/admin/sections/ContentSection'
+import { RequestsSection } from '@/app/[locale]/admin/sections/RequestsSection'
 import { ArtistsModeration } from './ArtistsModeration'
 
 type Section =

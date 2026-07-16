@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { apiFetch, ApiError } from '@/lib/api'
 import { getAccessToken } from '@/lib/auth'
-import { useToast, ToastView } from '@/app/admin/sections/Toast'
+import { useToast, ToastView } from '@/app/[locale]/admin/sections/Toast'
 import type { ArtistProfile } from '@/lib/artist'
 
 interface AdminArtistList {
